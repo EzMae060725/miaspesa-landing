@@ -338,10 +338,9 @@
   .faq-item.open .faq-q::after { transform: rotate(45deg); }
   .faq-a {
     font-size: 0.92rem; color: var(--grigio);
-    line-height: 1.7; max-height: 0; overflow: hidden;
-    transition: max-height 0.3s ease, padding 0.3s;
+    line-height: 1.7; display: none; padding-top: 0;
   }
-  .faq-item.open .faq-a { max-height: 300px; padding-top: 14px; }
+  .faq-item.open .faq-a { display: block; padding-top: 14px; }
 
   /* ── CTA FINALE ── */
   .cta-section {
@@ -419,19 +418,19 @@
 <section class="hero">
   <div class="hero-tag">La spesa delle famiglie italiane<br>Panel scontrini</div>
   <h1>La Spesa<em>che Conta.</em></h1>
-  <p class="hero-sub">
-    La tua spesa influenza le aziende.<br>I premi arrivano a te.
-  </p>
   <div style="display:flex;align-items:center;gap:14px;margin:0 auto 16px;max-width:480px;padding:0 20px">
     <div style="flex:1;height:1px;background:rgba(245,158,11,0.35)"></div>
     <span style="font-size:0.82rem;color:#FDE68A;font-style:italic;white-space:nowrap;letter-spacing:0.2px">Con una foto allo scontrino e un clic</span>
     <div style="flex:1;height:1px;background:rgba(245,158,11,0.35)"></div>
   </div>
-  <p class="hero-sub" style="margin-top:0">
+  <p class="hero-sub">
+    La tua spesa influenza le aziende.<br>I premi arrivano a te.
+  </p>
+  <p class="hero-sub" style="margin-top:-8px">
     <span style="font-size:0.82em;opacity:0.65">In 15 minuti al mese — senza cambiare nulla della tua routine.</span>
   </p>
   <div class="hero-ctas">
-    <a href="https://panel-scontrini.vercel.app/?demo=true" target="_blank" class="btn-primary">
+    <a href="https://panel-scontrini.vercel.app/?demo=true" class="btn-primary">
       📱 Prova subito — senza registrarti
     </a>
     <a href="#vantaggi" class="btn-secondary">Scopri i vantaggi ↓</a>
@@ -482,7 +481,7 @@
       <div class="section-label">Prova senza impegno</div>
       <h2 class="section-title">Tocca con mano<br><em>come funziona.</em></h2>
       <p>Abbiamo preparato un ambiente di prova con dati fittizi. Esplora l'app senza registrarti — nessun dato reale, nessun impegno. Puoi tornare qui e iscriverti dopo.</p>
-      <a href="https://panel-scontrini.vercel.app/?demo=true" target="_blank" class="btn-verde">
+      <a href="https://panel-scontrini.vercel.app/?demo=true" class="btn-verde">
         Entra nell'app di prova →
       </a>
     </div>
@@ -647,7 +646,7 @@
     <a href="https://panel-scontrini.vercel.app/join/MIASPESA2026" class="btn-primary">
       Candidati al panel →
     </a>
-    <a href="https://panel-scontrini.vercel.app/?demo=true" target="_blank" class="btn-secondary">
+    <a href="https://panel-scontrini.vercel.app/?demo=true" class="btn-secondary">
       Prima prova l'app demo
     </a>
   </div>
@@ -666,18 +665,9 @@
   document.querySelectorAll('.faq-q').forEach(q => {
     q.addEventListener('click', () => {
       const item = q.parentElement;
-      const ans = item.querySelector('.faq-a');
       const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => {
-        i.classList.remove('open');
-        i.querySelector('.faq-a').style.maxHeight = '0';
-        i.querySelector('.faq-a').style.paddingTop = '0';
-      });
-      if (!isOpen) {
-        item.classList.add('open');
-        ans.style.maxHeight = ans.scrollHeight + 'px';
-        ans.style.paddingTop = '14px';
-      }
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
     });
   });
 
