@@ -418,11 +418,7 @@
 <section class="hero">
   <div class="hero-tag">La spesa delle famiglie italiane<br>Panel scontrini</div>
   <h1>La Spesa<em>che Conta.</em></h1>
-  <div style="display:flex;align-items:center;gap:14px;margin:0 auto 16px;max-width:480px;padding:0 20px">
-    <div style="flex:1;height:1px;background:rgba(245,158,11,0.35)"></div>
-    <span style="font-size:0.82rem;color:#FDE68A;font-style:italic;white-space:nowrap;letter-spacing:0.2px">Con una foto allo scontrino e un clic</span>
-    <div style="flex:1;height:1px;background:rgba(245,158,11,0.35)"></div>
-  </div>
+  <p style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3.5vw,2.2rem);font-style:italic;color:#FDE68A;margin:0 0 8px;animation:fadeUp 0.7s ease 0.15s both">Con una foto allo scontrino e un clic</p>
   <p class="hero-sub">
     La tua spesa influenza le aziende.<br>I premi arrivano a te.
   </p>
@@ -573,37 +569,42 @@
   <div class="faq-inner">
     <div class="section-label" style="text-align:center">Domande frequenti</div>
     <h2 class="section-title" style="text-align:center;margin-bottom:48px">Tutto quello che<br><em>vuoi sapere.</em></h2>
+    <script>function toggleFaq(el){var item=el.parentElement;var ans=item.querySelector('.faq-a');var isOpen=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open');i.querySelector('.faq-a').style.display='none';});if(!isOpen){item.classList.add('open');ans.style.display='block';}}</script>
 
     <div class="faq-item">
-      <div class="faq-q">Cosa ottengo in cambio?</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Cosa devo fare?</div>
+      <div class="faq-a" style="display:none">Dopo la registrazione ricevi le credenziali di accesso. Da quel momento fotografi gli scontrini della spesa con il telefono, li carichi nell'app e ogni tanto rispondi a qualche breve questionario sulle tue abitudini di acquisto. Tutto qui.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Cosa ottengo in cambio?</div>
       <div class="faq-a">Mediamente 1€ per ogni scontrino caricato. Se rispondi anche ai questionari sulla tua spesa e sulle tue preferenze di acquisto, puoi aggiungere fino a 3€ in più. I premi sono buoni acquisto Amazon, buoni carburante o buoni spesa — a tua scelta.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Quanto posso guadagnare in un mese?</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Quanto posso guadagnare in un mese?</div>
       <div class="faq-a">Mediamente una famiglia accumula premi tra i 15 e i 50 euro al mese, a seconda del numero di scontrini caricati e dei questionari compilati. Più partecipi, più guadagni — ma anche con il minimo indispensabile il risultato è significativo.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Posso abbandonare quando voglio?</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Posso abbandonare quando voglio?</div>
       <div class="faq-a">Sì, senza nessun obbligo o limite di permanenza. Puoi uscire dal panel in qualsiasi momento, senza penalizzazioni. I punti già accumulati restano a tua disposizione per il riscatto.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Quanto tempo ci vuole davvero?</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Quanto tempo ci vuole davvero?</div>
       <div class="faq-a">In media 10-15 minuti al mese. Caricare uno scontrino richiede meno di 30 secondi — fotografa, carica, aspetti il beep di conferma.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">I miei dati sono al sicuro?</div>
+      <div class="faq-q" onclick="toggleFaq(this)">I miei dati sono al sicuro?</div>
       <div class="faq-a">Sì. I tuoi dati sono protetti secondo il GDPR. Non vengono mai venduti né ceduti a terzi. Vengono usati solo in forma aggregata e anonima per la ricerca di mercato.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Devo caricare ogni scontrino?</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Devo caricare ogni scontrino?</div>
       <div class="faq-a">No. Più carichi, più punti guadagni — ma non c'è un minimo obbligatorio. Carichi quando puoi, come puoi.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Chi c'è dietro questo panel?</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Chi c'è dietro questo panel?</div>
       <div class="faq-a">Nomesis S.a.s., società italiana di ricerca di mercato con sede a Milano. I dati raccolti vengono usati da aziende del settore alimentare per migliorare prodotti e servizi.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Cosa succede dopo che mi iscrivo?</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Cosa succede dopo che mi iscrivo?</div>
       <div class="faq-a">Ricevi le credenziali di accesso entro 48 ore. Da quel momento puoi iniziare a caricare scontrini e guadagnare punti. Prima di iniziare, ti consigliamo di esplorare l'ambiente di prova qui sopra.</div>
     </div>
   </div>
@@ -627,7 +628,7 @@
     <div class="trust-card reveal" style="transition-delay:0.2s">
       <div class="trust-icon">🏢</div>
       <h4>Ricerca seria</h4>
-      <p>Il panel è gestito da Nomesis S.a.s., società di ricerca di mercato con sede a Milano. Non una startup — una realtà consolidata.</p>
+      <p>Il panel è un progetto di Nomesis S.a.s., società di ricerca di mercato di Brescia fondata nel 1989.</p>
     </div>
     <div class="trust-card reveal" style="transition-delay:0.3s">
       <div class="trust-icon">🚪</div>
@@ -655,7 +656,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2026 Nomesis S.a.s. · Via Papa Giovanni XXIII 74, Rezzato (BS) · P.IVA 03107170171 · <a href="https://www.nomesis.it" target="_blank">nomesis.it</a> · 
+  <p>© 2026 Nomesis S.a.s. · Via Papa Giovanni XXIII 74, Rezzato (BS) · P.IVA 03107170171 · <a href="https://www.nomesis.it">nomesis.it</a> · 
     <a href="privacy.html">Privacy</a> · <a href="privacy.html#cookie">Cookie</a> · <a href="mailto:info@nomesis.it">Contatti</a>
   </p>
 </footer>
@@ -679,7 +680,7 @@
 </script>
 <!-- FLOATING CTA MOBILE -->
 <div id="floatCta" style="position:fixed;bottom:0;left:0;right:0;z-index:200;padding:16px;background:rgba(26,26,46,0.95);backdrop-filter:blur(8px);display:none;border-top:1px solid rgba(255,255,255,0.1)">
-  <a href="https://panel-scontrini.vercel.app/?demo=true" target="_blank"
+  <a href="https://panel-scontrini.vercel.app/?demo=true"
     style="display:block;background:var(--oro);color:var(--nero);text-align:center;padding:14px;border-radius:50px;font-weight:700;font-size:0.95rem;text-decoration:none">
     📱 Prova subito — senza registrarti
   </a>
