@@ -183,8 +183,19 @@
 
     <div class="field" id="f-email">
       <label>Email *</label>
-      <input type="email" id="email" placeholder="mario.rossi@email.it" autocomplete="email">
+      <div style="position:relative">
+        <input type="email" id="email" placeholder="mario.rossi@email.it" autocomplete="email" oninput="checkEmail()">
+        <span id="email-icon" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1rem;display:none"></span>
+      </div>
       <div class="err">Email non valida</div>
+    </div>
+    <div class="field" id="f-email2">
+      <label>Conferma email *</label>
+      <div style="position:relative">
+        <input type="email" id="email2" placeholder="ripeti l'indirizzo email" autocomplete="off" oninput="checkEmail()">
+        <span id="email2-icon" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1rem;display:none"></span>
+      </div>
+      <div class="err" id="email2-err">Le email non coincidono</div>
     </div>
 
     <div class="grid2">
@@ -375,6 +386,37 @@
 </div>
 
 <script>
+function checkEmail() {
+  var e1 = document.getElementById('email').value.trim();
+  var e2 = document.getElementById('email2').value.trim();
+  var icon1 = document.getElementById('email-icon');
+  var icon2 = document.getElementById('email2-icon');
+  var f2 = document.getElementById('f-email2');
+
+  // Icona email 1
+  if (e1.length > 4) {
+    icon1.style.display = 'block';
+    icon1.textContent = e1.includes('@') ? '✅' : '❌';
+  } else {
+    icon1.style.display = 'none';
+  }
+
+  // Icona e validazione email 2
+  if (e2.length > 0) {
+    icon2.style.display = 'block';
+    if (e1 === e2) {
+      icon2.textContent = '✅';
+      f2.classList.remove('has-err');
+    } else {
+      icon2.textContent = '❌';
+      f2.classList.add('has-err');
+    }
+  } else {
+    icon2.style.display = 'none';
+    f2.classList.remove('has-err');
+  }
+}
+
 function styleRadio() {
   ['F','M','A'].forEach(function(v) {
     var lbl = document.getElementById('r-' + v);
@@ -476,6 +518,8 @@ function validateStep(s) {
     if (!sesso) { setErr('sesso'); ok = false; } else clearErr('sesso');
     if (!anno || anno < 1924 || anno > 2006) { setErr('anno'); ok = false; } else clearErr('anno');
     if (!email || !email.includes('@')) { setErr('email', 'Email non valida'); ok = false; } else clearErr('email');
+    var email2 = document.getElementById('email2').value.trim();
+    if (email !== email2) { document.getElementById('f-email2').classList.add('has-err'); ok = false; } else { document.getElementById('f-email2').classList.remove('has-err'); }
     if (!mobile) { setErr('mobile'); ok = false; } else clearErr('mobile');
   }
   if (s === 2) {
