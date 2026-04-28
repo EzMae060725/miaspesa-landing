@@ -120,7 +120,7 @@
 
 <div class="hero-mini">
   <div class="label">Candidatura al panel</div>
-  <h1>Entra nel panel</h1>
+  <h1>Entra nel panel scontrini</h1>
   <p>Compila il form in 2 minuti. Riceverai una risposta entro 48 ore.</p>
 </div>
 
@@ -161,15 +161,15 @@
     <div class="grid2">
       <div class="field" id="f-sesso">
         <label>Sesso *</label>
-        <div style="display:flex;gap:12px;margin-top:4px">
-          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;font-size:0.92rem">
-            <input type="radio" name="sesso" value="F" style="width:auto;accent-color:var(--viola)"> Femmina
+        <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap">
+          <label id="r-F" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border-radius:50px;border:1.5px solid #E5E7EB;font-size:0.9rem;font-weight:500;transition:all 0.15s;background:white">
+            <input type="radio" name="sesso" value="F" style="display:none" onchange="styleRadio()"> Femmina
           </label>
-          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;font-size:0.92rem">
-            <input type="radio" name="sesso" value="M" style="width:auto;accent-color:var(--viola)"> Maschio
+          <label id="r-M" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border-radius:50px;border:1.5px solid #E5E7EB;font-size:0.9rem;font-weight:500;transition:all 0.15s;background:white">
+            <input type="radio" name="sesso" value="M" style="display:none" onchange="styleRadio()"> Maschio
           </label>
-          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;font-size:0.92rem">
-            <input type="radio" name="sesso" value="A" style="width:auto;accent-color:var(--viola)"> Altro
+          <label id="r-A" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border-radius:50px;border:1.5px solid #E5E7EB;font-size:0.9rem;font-weight:500;transition:all 0.15s;background:white">
+            <input type="radio" name="sesso" value="A" style="display:none" onchange="styleRadio()"> Altro
           </label>
         </div>
         <div class="err">Campo obbligatorio</div>
@@ -340,9 +340,18 @@
     </div>
 
     <!-- Privacy -->
-    <div style="background:var(--grigio-light);border-radius:12px;padding:16px;margin-top:8px;font-size:0.8rem;color:var(--grigio);line-height:1.6">
-      Inviando questo modulo accetti il trattamento dei tuoi dati da parte di Nomesis S.a.s. per la gestione del panel, ai sensi del GDPR. I tuoi dati non saranno mai venduti a terzi.
-      <a href="privacy.html" target="_blank" style="color:var(--viola);text-decoration:none;font-weight:600"> Leggi la Privacy Policy</a>.
+    <div style="background:var(--grigio-light);border-radius:12px;padding:16px 18px;margin-top:8px">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer" id="privacy-label">
+        <input type="checkbox" id="privacyOk" style="width:auto;margin-top:3px;accent-color:var(--viola);flex-shrink:0">
+        <span style="font-size:0.8rem;color:var(--grigio);line-height:1.65">
+          Ho letto e accetto la 
+          <a href="privacy.html" target="_blank" style="color:var(--viola);font-weight:600;text-decoration:none">Privacy Policy</a> 
+          di Nomesis S.a.s. Autorizzo il trattamento dei miei dati personali per la partecipazione al panel di ricerca, 
+          ai sensi del GDPR (Reg. UE 2016/679). I dati saranno usati esclusivamente in forma aggregata e anonima — 
+          mai ceduti o comunicati a terzi senza il tuo esplicito e informato consenso. I dati forniti verranno usati esclusivamente per analisi statistiche anonimizzate. *
+        </span>
+      </label>
+      <div id="err-privacy" style="font-size:0.75rem;color:#ef4444;margin-top:6px;display:none">Devi accettare la privacy policy per procedere</div>
     </div>
 
     <div class="btn-nav">
@@ -366,6 +375,22 @@
 </div>
 
 <script>
+function styleRadio() {
+  ['F','M','A'].forEach(function(v) {
+    var lbl = document.getElementById('r-' + v);
+    var inp = lbl.querySelector('input');
+    if (inp.checked) {
+      lbl.style.borderColor = 'var(--viola)';
+      lbl.style.background = 'rgba(60,52,137,0.08)';
+      lbl.style.color = 'var(--viola)';
+    } else {
+      lbl.style.borderColor = '#E5E7EB';
+      lbl.style.background = 'white';
+      lbl.style.color = 'var(--nero)';
+    }
+  });
+}
+
 var PROVINCE = {
   'Abruzzo': ['AQ','CH','PE','TE'],
   'Basilicata': ['MT','PZ'],
@@ -469,6 +494,10 @@ function validateStep(s) {
 
 async function invia() {
   if (!validateStep(3)) return;
+  var privacyOk = document.getElementById('privacyOk').checked;
+  var errPrivacy = document.getElementById('err-privacy');
+  if (!privacyOk) { errPrivacy.style.display = 'block'; return; }
+  errPrivacy.style.display = 'none';
 
   var btn = document.getElementById('btnInvia');
   btn.classList.add('loading');
