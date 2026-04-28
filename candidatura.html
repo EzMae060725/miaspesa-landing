@@ -184,18 +184,19 @@
     <div class="field" id="f-email">
       <label>Email *</label>
       <div style="position:relative">
-        <input type="email" id="email" placeholder="mario.rossi@email.it" autocomplete="email" oninput="checkEmail()">
-        <span id="email-icon" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1rem;display:none"></span>
+        <input type="email" id="email" placeholder="mario.rossi@email.it" autocomplete="email"
+          onblur="showEmailConfirm()" oninput="hideEmailConfirm()">
       </div>
       <div class="err">Email non valida</div>
-    </div>
-    <div class="field" id="f-email2">
-      <label>Conferma email *</label>
-      <div style="position:relative">
-        <input type="email" id="email2" placeholder="ripeti l'indirizzo email" autocomplete="off" oninput="checkEmail()">
-        <span id="email2-icon" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1rem;display:none"></span>
+      <!-- Confirm box -->
+      <div id="email-confirm" style="display:none;margin-top:8px;background:#eef2ff;border:1.5px solid rgba(60,52,137,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:#374151">
+        <span>Hai inserito: <strong id="email-preview"></strong> — è corretto?</span>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="button" onclick="confirmEmail(true)" style="flex:1;background:var(--verde);color:white;border:none;border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">✓ Sì, è corretta</button>
+          <button type="button" onclick="confirmEmail(false)" style="flex:1;background:white;color:var(--viola);border:1.5px solid var(--viola);border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">✗ Modifico</button>
+        </div>
       </div>
-      <div class="err" id="email2-err">Le email non coincidono</div>
+      <div id="email-ok" style="display:none;margin-top:6px;font-size:0.8rem;color:var(--verde);font-weight:600">✅ Email confermata</div>
     </div>
 
     <div class="grid2">
@@ -345,6 +346,54 @@
       </select>
     </div>
 
+    <div class="grid2">
+      <div class="field">
+        <label>Tipologia negozio abituale <span class="opt">(opz.)</span></label>
+        <select id="tipoNegozio">
+          <option value="">Seleziona...</option>
+          <option value="iper">Ipermercato</option>
+          <option value="super">Supermercato</option>
+          <option value="discount">Discount</option>
+          <option value="tradizionale">Negozio tradizionale</option>
+          <option value="altro">Altro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Il negozio è... <span class="opt">(opz.)</span></label>
+        <select id="posizioneNegozio">
+          <option value="">Seleziona...</option>
+          <option value="casa">Vicino a casa</option>
+          <option value="lavoro">Vicino al lavoro</option>
+          <option value="altra">Altra situazione</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Acquisti online in generale <span class="opt">(opz.)</span></label>
+        <select id="acquistiOnline">
+          <option value="">Seleziona...</option>
+          <option value="regolarmente">Regolarmente</option>
+          <option value="spesso">Spesso</option>
+          <option value="ogni_tanto">Ogni tanto</option>
+          <option value="raramente">Molto raramente</option>
+          <option value="mai">Mai</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Alimentari/casa online <span class="opt">(opz.)</span></label>
+        <select id="alimentariOnline">
+          <option value="">Seleziona...</option>
+          <option value="regolarmente">Regolarmente</option>
+          <option value="spesso">Spesso</option>
+          <option value="ogni_tanto">Ogni tanto</option>
+          <option value="raramente">Molto raramente</option>
+          <option value="mai">Mai</option>
+        </select>
+      </div>
+    </div>
+
     <div class="field">
       <label>Note <span class="opt">(opzionale)</span></label>
       <textarea id="note" rows="3" placeholder="Qualcosa che vuoi dirci..." style="resize:vertical"></textarea>
@@ -386,34 +435,31 @@
 </div>
 
 <script>
-function checkEmail() {
-  var e1 = document.getElementById('email').value.trim();
-  var e2 = document.getElementById('email2').value.trim();
-  var icon1 = document.getElementById('email-icon');
-  var icon2 = document.getElementById('email2-icon');
-  var f2 = document.getElementById('f-email2');
-
-  // Icona email 1
-  if (e1.length > 4) {
-    icon1.style.display = 'block';
-    icon1.textContent = e1.includes('@') ? '✅' : '❌';
+var emailConfirmed = false;
+function showEmailConfirm() {
+  var email = document.getElementById('email').value.trim();
+  if (!email || !email.includes('@')) return;
+  if (emailConfirmed) return;
+  document.getElementById('email-preview').textContent = email;
+  document.getElementById('email-confirm').style.display = 'block';
+  document.getElementById('email-ok').style.display = 'none';
+}
+function hideEmailConfirm() {
+  emailConfirmed = false;
+  document.getElementById('email-confirm').style.display = 'none';
+  document.getElementById('email-ok').style.display = 'none';
+}
+function confirmEmail(ok) {
+  document.getElementById('email-confirm').style.display = 'none';
+  if (ok) {
+    emailConfirmed = true;
+    document.getElementById('email-ok').style.display = 'block';
+    document.getElementById('f-email').classList.remove('has-err');
   } else {
-    icon1.style.display = 'none';
-  }
-
-  // Icona e validazione email 2
-  if (e2.length > 0) {
-    icon2.style.display = 'block';
-    if (e1 === e2) {
-      icon2.textContent = '✅';
-      f2.classList.remove('has-err');
-    } else {
-      icon2.textContent = '❌';
-      f2.classList.add('has-err');
-    }
-  } else {
-    icon2.style.display = 'none';
-    f2.classList.remove('has-err');
+    emailConfirmed = false;
+    var inp = document.getElementById('email');
+    inp.value = '';
+    inp.focus();
   }
 }
 
@@ -518,8 +564,7 @@ function validateStep(s) {
     if (!sesso) { setErr('sesso'); ok = false; } else clearErr('sesso');
     if (!anno || anno < 1924 || anno > 2006) { setErr('anno'); ok = false; } else clearErr('anno');
     if (!email || !email.includes('@')) { setErr('email', 'Email non valida'); ok = false; } else clearErr('email');
-    var email2 = document.getElementById('email2').value.trim();
-    if (email !== email2) { document.getElementById('f-email2').classList.add('has-err'); ok = false; } else { document.getElementById('f-email2').classList.remove('has-err'); }
+    if (!emailConfirmed) { setErr('email', 'Conferma la tua email prima di procedere'); ok = false; }
     if (!mobile) { setErr('mobile'); ok = false; } else clearErr('mobile');
   }
   if (s === 2) {
@@ -566,6 +611,10 @@ async function invia() {
     spesaMedia: document.getElementById('spesaMedia').value,
     frequenzaSpesa: document.getElementById('frequenzaSpesa').value,
     reddito: document.getElementById('reddito').value,
+    tipoNegozio: document.getElementById('tipoNegozio').value,
+    posizioneNegozio: document.getElementById('posizioneNegozio').value,
+    acquistiOnline: document.getElementById('acquistiOnline').value,
+    alimentariOnline: document.getElementById('alimentariOnline').value,
     note: document.getElementById('note').value.trim()
   };
 
