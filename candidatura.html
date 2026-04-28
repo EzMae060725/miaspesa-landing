@@ -161,12 +161,17 @@
     <div class="grid2">
       <div class="field" id="f-sesso">
         <label>Sesso *</label>
-        <select id="sesso">
-          <option value="">Seleziona...</option>
-          <option value="F">Femmina</option>
-          <option value="M">Maschio</option>
-          <option value="A">Altro / Preferisco non dire</option>
-        </select>
+        <div style="display:flex;gap:12px;margin-top:4px">
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;font-size:0.92rem">
+            <input type="radio" name="sesso" value="F" style="width:auto;accent-color:var(--viola)"> Femmina
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;font-size:0.92rem">
+            <input type="radio" name="sesso" value="M" style="width:auto;accent-color:var(--viola)"> Maschio
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;font-size:0.92rem">
+            <input type="radio" name="sesso" value="A" style="width:auto;accent-color:var(--viola)"> Altro
+          </label>
+        </div>
         <div class="err">Campo obbligatorio</div>
       </div>
       <div class="field" id="f-anno">
@@ -213,7 +218,7 @@
         <option>Marche</option><option>Molise</option><option>Piemonte</option>
         <option>Puglia</option><option>Sardegna</option><option>Sicilia</option>
         <option>Toscana</option><option>Trentino-Alto Adige</option><option>Umbria</option>
-        <option>Valle d'Aosta</option><option>Veneto</option>
+        <option value="VdA">Valle d'Aosta</option><option>Veneto</option>
       </select>
       <div class="err">Campo obbligatorio</div>
     </div>
@@ -221,7 +226,9 @@
     <div class="grid2">
       <div class="field" id="f-provincia">
         <label>Provincia *</label>
-        <input type="text" id="provincia" placeholder="es. BS" maxlength="2" style="text-transform:uppercase">
+        <select id="provincia">
+          <option value="">Prima seleziona la regione</option>
+        </select>
         <div class="err">Campo obbligatorio</div>
       </div>
       <div class="field" id="f-comune">
@@ -256,27 +263,63 @@
     <div class="step-title">Passo 3 di 3 — <span>La tua spesa</span></div>
 
     <div class="field">
-      <label>Supermercato principale <span class="opt">(opzionale)</span></label>
-      <select id="supermercato">
-        <option value="">Seleziona...</option>
+      <label>Insegna dove fate la spesa più spesso <span class="opt">(opzionale)</span></label>
+      <input type="text" id="supermercato" placeholder="es. Esselunga, Conad, Lidl..." list="insegne-list">
+      <datalist id="insegne-list">
         <option>Esselunga</option><option>Conad</option><option>Coop</option>
         <option>Carrefour</option><option>Lidl</option><option>Eurospin</option>
         <option>Penny Market</option><option>In's Mercato</option><option>Aldi</option>
         <option>Bennet</option><option>Iper</option><option>Pam</option>
-        <option>Sigma</option><option>Despar</option><option>Altro</option>
-      </select>
+        <option>Sigma</option><option>Despar</option><option>MD</option><option>Altro</option>
+      </datalist>
     </div>
 
-    <div class="field">
-      <label>Frequenza della spesa <span class="opt">(opzionale)</span></label>
-      <select id="frequenzaSpesa">
-        <option value="">Seleziona...</option>
-        <option value="ogni_giorno">Ogni giorno</option>
-        <option value="2-3_settimana">2-3 volte a settimana</option>
-        <option value="1_settimana">1 volta a settimana</option>
-        <option value="2_settimana">Ogni 2 settimane</option>
-        <option value="mensile">1 volta al mese</option>
-      </select>
+    <div class="grid2">
+      <div class="field">
+        <label>N. negozi dove fate la spesa abituale <span class="opt">(opz.)</span></label>
+        <select id="nNegozi">
+          <option value="">Seleziona...</option>
+          <option value="1">1 negozio fisso</option>
+          <option value="2">2 negozi</option>
+          <option value="3">3 negozi</option>
+          <option value="4+">4 o più</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Chi fa la spesa più spesso? <span class="opt">(opz.)</span></label>
+        <select id="chiSpesa">
+          <option value="">Seleziona...</option>
+          <option value="io">Io principalmente</option>
+          <option value="partner">Il/la partner</option>
+          <option value="alternato">A turno</option>
+          <option value="altri">Altro familiare</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Importo spesa media settimanale <span class="opt">(opz.)</span></label>
+        <select id="spesaMedia">
+          <option value="">Seleziona...</option>
+          <option value="sotto50">Meno di 50€</option>
+          <option value="50-100">50 – 100€</option>
+          <option value="100-150">100 – 150€</option>
+          <option value="150-200">150 – 200€</option>
+          <option value="sopra200">Oltre 200€</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Frequenza della spesa <span class="opt">(opz.)</span></label>
+        <select id="frequenzaSpesa">
+          <option value="">Seleziona...</option>
+          <option value="ogni_giorno">Ogni giorno</option>
+          <option value="2-3_settimana">2-3 volte a settimana</option>
+          <option value="1_settimana">1 volta a settimana</option>
+          <option value="2_settimana">Ogni 2 settimane</option>
+          <option value="mensile">1 volta al mese</option>
+        </select>
+      </div>
     </div>
 
     <div class="field">
@@ -323,6 +366,42 @@
 </div>
 
 <script>
+var PROVINCE = {
+  'Abruzzo': ['AQ','CH','PE','TE'],
+  'Basilicata': ['MT','PZ'],
+  'Calabria': ['CZ','KR','RC','CS','VV'],
+  'Campania': ['AV','BN','CE','NA','SA'],
+  'Emilia-Romagna': ['BO','FE','FC','MO','PR','PC','RA','RE','RN'],
+  'Friuli-Venezia Giulia': ['GO','PN','TS','UD'],
+  'Lazio': ['FR','LT','RI','RM','VT'],
+  'Liguria': ['GE','IM','SP','SV'],
+  'Lombardia': ['BG','BS','CO','CR','LC','LO','MN','MI','MB','PV','SO','VA'],
+  'Marche': ['AN','AP','FM','MC','PU'],
+  'Molise': ['CB','IS'],
+  'Piemonte': ['AL','AT','BI','CN','NO','TO','VB','VC'],
+  'Puglia': ['BA','BT','BR','FG','LE','TA'],
+  'Sardegna': ['CA','CI','MD','NU','OG','OR','OT','SS','VS'],
+  'Sicilia': ['AG','CL','CT','EN','ME','PA','RG','SR','TP'],
+  'Toscana': ['AR','FI','GR','LI','LU','MS','PI','PT','PO','SI'],
+  'Trentino-Alto Adige': ['BZ','TN'],
+  'Umbria': ['PG','TR'],
+  "VdA": ['AO'],
+  'Veneto': ['BL','FE','PD','RO','TV','VE','VR','VI']
+};
+
+document.getElementById('regione').addEventListener('change', function() {
+  var sel = document.getElementById('provincia');
+  sel.innerHTML = '<option value="">Seleziona...</option>';
+  var prov = PROVINCE[this.value] || [];
+  prov.forEach(function(p) {
+    var opt = document.createElement('option');
+    opt.value = p; opt.textContent = p;
+    sel.appendChild(opt);
+  });
+});
+</script>
+
+<script>
 const API = 'https://panel-scontrini-production.up.railway.app';
 const CODE = 'MIASPESA2026';
 let currentStep = 1;
@@ -362,7 +441,7 @@ function validateStep(s) {
   if (s === 1) {
     var nome = document.getElementById('nome').value.trim();
     var cognome = document.getElementById('cognome').value.trim();
-    var sesso = document.getElementById('sesso').value;
+    var sessoEl = document.querySelector('input[name="sesso"]:checked'); var sesso = sessoEl ? sessoEl.value : '';
     var anno = parseInt(document.getElementById('annoNascita').value);
     var email = document.getElementById('email').value.trim();
     var mobile = document.getElementById('telefonoMobile').value.trim();
@@ -376,7 +455,7 @@ function validateStep(s) {
   }
   if (s === 2) {
     var regione = document.getElementById('regione').value;
-    var provincia = document.getElementById('provincia').value.trim();
+    var provincia = document.getElementById('provincia').value;
     var comune = document.getElementById('comune').value.trim();
     var comp = document.getElementById('componenti').value;
 
@@ -399,23 +478,26 @@ async function invia() {
     inviteCode: CODE,
     nome: document.getElementById('nome').value.trim(),
     cognome: document.getElementById('cognome').value.trim(),
-    sesso: document.getElementById('sesso').value,
+    sesso: (document.querySelector('input[name="sesso"]:checked') || {}).value || '',
     annoNascita: parseInt(document.getElementById('annoNascita').value),
     email: document.getElementById('email').value.trim(),
     telefonoMobile: document.getElementById('telefonoMobile').value.trim(),
     telefonoFisso: document.getElementById('telefonoFisso').value.trim(),
     regione: document.getElementById('regione').value,
-    provincia: document.getElementById('provincia').value.trim().toUpperCase(),
+    provincia: document.getElementById('provincia').value,
     comune: document.getElementById('comune').value.trim(),
     componenti: parseInt(document.getElementById('componenti').value) || document.getElementById('componenti').value,
     supermercato: document.getElementById('supermercato').value,
+    nNegozi: document.getElementById('nNegozi').value,
+    chiSpesa: document.getElementById('chiSpesa').value,
+    spesaMedia: document.getElementById('spesaMedia').value,
     frequenzaSpesa: document.getElementById('frequenzaSpesa').value,
     reddito: document.getElementById('reddito').value,
     note: document.getElementById('note').value.trim()
   };
 
   try {
-    var res = await fetch(API + '/api/join/' + CODE, {
+    var res = await fetch(API + '/api/admin/join/' + CODE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
