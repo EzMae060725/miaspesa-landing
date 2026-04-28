@@ -59,9 +59,46 @@ footer{text-align:center;padding:24px 5%;font-size:0.78rem;color:var(--grigio);b
 
 <div class="steps-wrap">
   <h2 class="steps-title">Come <em>iniziare</em></h2>
-  <div class="step-item">
-    <div class="step-num">1</div>
-    <div class="step-txt"><h3>Aggiungi l'app al telefono</h3><p>Salva l'icona de "Le mie spese" sulla schermata home — come un'app vera, senza scaricare nulla dallo store.</p></div>
+  <div class="step-item" style="flex-direction:column;gap:12px">
+    <div style="display:flex;gap:16px;align-items:flex-start">
+      <div class="step-num">1</div>
+      <div class="step-txt">
+        <h3>Aggiungi l'icona "Le mie spese" al telefono</h3>
+        <p>Salva "Le mie spese" sulla schermata home o nell'elenco delle app — senza scaricare nulla dallo store.<br><span style="font-size:0.78rem;color:#9ca3af">(Non è una app tradizionale ma un link diretto a app.miaspesa.com)</span></p>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap">
+          <button onclick="togglePwa()" id="pwa-btn"
+            style="background:var(--viola);color:white;border:none;border-radius:50px;padding:7px 16px;font-size:0.8rem;font-weight:600;cursor:pointer">
+            Mostra come fare
+          </button>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="width:52px;height:52px;background:#3C3489;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 10px rgba(60,52,137,0.3)">🛒</div>
+            <span style="font-size:0.65rem;color:var(--grigio);text-align:center;line-height:1.2">Le mie<br>spese</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="pwa-guide" style="display:none;background:#f5f3ff;border-radius:12px;padding:16px 18px;font-size:0.82rem;color:#374151;line-height:1.7">
+      <div id="guide-ios" style="display:none">
+        <strong style="color:var(--viola)">iPhone (Safari):</strong><br>
+        1. Apri <strong>app.miaspesa.com</strong> con Safari<br>
+        2. Tocca il tasto <strong>Condividi</strong> (quadrato con freccia in basso)<br>
+        3. Scorri e tocca <strong>"Aggiungi a schermata Home"</strong><br>
+        4. Tocca <strong>Aggiungi</strong> in alto a destra — l'icona apparira' sulla home
+      </div>
+      <div id="guide-android" style="display:none">
+        <strong style="color:var(--viola)">Android (Chrome):</strong><br>
+        1. Apri <strong>app.miaspesa.com</strong> con Chrome<br>
+        2. Tocca i <strong>3 puntini</strong> in alto a destra<br>
+        3. Tocca <strong>"Aggiungi a schermata Home"</strong><br>
+        4. Tocca <strong>Aggiungi</strong> — l'icona apparira' sulla home
+      </div>
+      <div id="guide-other">
+        <strong style="color:var(--viola)">Dal browser del telefono:</strong><br>
+        1. Apri <strong>app.miaspesa.com</strong><br>
+        2. Cerca <strong>"Aggiungi a schermata Home"</strong> nel menu del browser<br>
+        3. Conferma — l'icona apparira' sulla home
+      </div>
+    </div>
   </div>
   <div class="step-item">
     <div class="step-num">2</div>
@@ -130,12 +167,27 @@ function copyCodice() {
 }
 
 var ua = navigator.userAgent;
-if (/iPad|iPhone|iPod/.test(ua)) {
+var isIos = /iPad|iPhone|iPod/.test(ua);
+var isAndroid = /Android/.test(ua);
+
+// Mostra istruzioni PWA in basso (vecchia sezione)
+if (isIos) {
   document.getElementById('pwa-ios').style.display = 'block';
-} else if (/Android/.test(ua)) {
+  document.getElementById('guide-ios').style.display = 'block';
+} else if (isAndroid) {
   document.getElementById('pwa-android').style.display = 'block';
+  document.getElementById('guide-android').style.display = 'block';
 } else {
   document.getElementById('pwa-other').style.display = 'block';
+  document.getElementById('guide-other').style.display = 'block';
+}
+
+function togglePwa() {
+  var guide = document.getElementById('pwa-guide');
+  var btn = document.getElementById('pwa-btn');
+  var visible = guide.style.display === 'block';
+  guide.style.display = visible ? 'none' : 'block';
+  btn.textContent = visible ? 'Mostra come fare' : 'Nascondi istruzioni';
 }
 </script>
 </body>
