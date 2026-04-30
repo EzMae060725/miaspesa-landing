@@ -253,6 +253,44 @@
   .sandbox-txt .section-title { margin-bottom: 20px; }
   .sandbox-txt p { color: var(--grigio); line-height: 1.7; font-size: 0.98rem; margin-bottom: 32px; }
 
+  /* Ez 30.04.26 09:17 - CTA sandbox v2: pill verde solid + live dot + microcopy */
+  .btn-sandbox {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--verde);
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(29,158,117,0.25);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .btn-sandbox:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(29,158,117,0.35);
+  }
+  .sandbox-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #fff;
+    display: inline-block;
+    box-shadow: 0 0 0 0 rgba(255,255,255,0.7);
+    animation: sandbox-pulse 1.6s ease-out infinite;
+  }
+  @keyframes sandbox-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+    70%  { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+  }
+  .sandbox-arrow { transition: transform .2s ease; }
+  .btn-sandbox:hover .sandbox-arrow { transform: translateX(4px); }
+  .sandbox-disclaimer {
+    margin-top: 16px !important;
+    font-size: 0.82rem !important;
+    color: #6B7280 !important;
+    margin-bottom: 0 !important;
+  }
+
   .btn-verde {
     display: inline-block;
     background: var(--verde); color: white;
@@ -426,7 +464,8 @@
     <span style="font-size:0.82em;opacity:0.65">In 15 minuti al mese — senza cambiare nulla della tua routine.</span>
   </p>
   <div class="hero-ctas">
-    <a href="https://panel-scontrini.vercel.app/?demo=true" target="_blank" class="btn-primary">
+    <!-- Ez 30.04.26 09:22 - URL aggiornato a app.miaspesa.com -->
+    <a href="https://app.miaspesa.com/?demo=true" target="_blank" class="btn-primary">
       📱 Prova subito — senza registrarti
     </a>
     <a href="#vantaggi" class="btn-secondary">Scopri i vantaggi ↓</a>
@@ -477,9 +516,13 @@
       <div class="section-label">Prova senza impegno</div>
       <h2 class="section-title">Tocca con mano<br><em>come funziona.</em></h2>
       <p>Abbiamo preparato un ambiente di prova con dati fittizi. Esplora l'app senza registrarti — nessun dato reale, nessun impegno. Puoi tornare qui e iscriverti dopo.</p>
-      <a href="https://panel-scontrini.vercel.app/?demo=true" target="_blank" class="btn-verde">
-        Entra nell'app di prova →
+      <!-- Ez 30.04.26 09:17 - CTA sandbox v2: pill verde solid + live dot + microcopy. URL aggiornato a app.miaspesa.com -->
+      <a href="https://app.miaspesa.com/?demo=true" target="_blank" class="btn-sandbox">
+        <span class="sandbox-dot"></span>
+        Entra nell'app di prova
+        <span class="sandbox-arrow">→</span>
       </a>
+      <p class="sandbox-disclaimer">📱 Funziona da telefono &nbsp;·&nbsp; Nessuna registrazione &nbsp;·&nbsp; Dati fittizi</p>
     </div>
     <div class="sandbox-visual reveal">
       <div class="mock-badge">DEMO</div>
@@ -572,40 +615,40 @@
 
 
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Cosa devo fare?</div>
-      <div class="faq-a" style="display:none">Dopo la registrazione ricevi le credenziali di accesso. Da quel momento fotografi gli scontrini della spesa con il telefono, li carichi nell'app e ogni tanto rispondi a qualche breve questionario sulle tue abitudini di acquisto. Tutto qui.</div>
+      <div class="faq-q">Cosa devo fare?</div>
+      <div class="faq-a">Dopo la registrazione ricevi le credenziali di accesso. Da quel momento fotografi gli scontrini della spesa con il telefono, li carichi nell'app e ogni tanto rispondi a qualche breve questionario sulle tue abitudini di acquisto. Tutto qui.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Cosa ottengo in cambio?</div>
-      <div class="faq-a" style="display:none">Mediamente 1€ per ogni scontrino caricato. Se rispondi anche ai questionari sulla tua spesa e sulle tue preferenze di acquisto, puoi aggiungere fino a 3€ in più. I premi sono buoni acquisto Amazon, buoni carburante o buoni spesa — a tua scelta.</div>
+      <div class="faq-q">Cosa ottengo in cambio?</div>
+      <div class="faq-a">Mediamente 1€ per ogni scontrino caricato. Se rispondi anche ai questionari sulla tua spesa e sulle tue preferenze di acquisto, puoi aggiungere fino a 3€ in più. I premi sono buoni acquisto Amazon, buoni carburante o buoni spesa — a tua scelta.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Quanto posso guadagnare in un mese?</div>
-      <div class="faq-a" style="display:none">Mediamente una famiglia accumula premi tra i 15 e i 50 euro al mese, a seconda del numero di scontrini caricati e dei questionari compilati. Più partecipi, più guadagni — ma anche con il minimo indispensabile il risultato è significativo.</div>
+      <div class="faq-q">Quanto posso guadagnare in un mese?</div>
+      <div class="faq-a">Mediamente una famiglia accumula premi tra i 15 e i 50 euro al mese, a seconda del numero di scontrini caricati e dei questionari compilati. Più partecipi, più guadagni — ma anche con il minimo indispensabile il risultato è significativo.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Posso abbandonare quando voglio?</div>
-      <div class="faq-a" style="display:none">Sì, senza nessun obbligo o limite di permanenza. Puoi uscire dal panel in qualsiasi momento, senza penalizzazioni. I punti già accumulati restano a tua disposizione per il riscatto.</div>
+      <div class="faq-q">Posso abbandonare quando voglio?</div>
+      <div class="faq-a">Sì, senza nessun obbligo o limite di permanenza. Puoi uscire dal panel in qualsiasi momento, senza penalizzazioni. I punti già accumulati restano a tua disposizione per il riscatto.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Quanto tempo ci vuole davvero?</div>
-      <div class="faq-a" style="display:none">In media 10-15 minuti al mese. Caricare uno scontrino richiede meno di 30 secondi — fotografa, carica, aspetti il beep di conferma.</div>
+      <div class="faq-q">Quanto tempo ci vuole davvero?</div>
+      <div class="faq-a">In media 10-15 minuti al mese. Caricare uno scontrino richiede meno di 30 secondi — fotografa, carica, aspetti il beep di conferma.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">I miei dati sono al sicuro?</div>
-      <div class="faq-a" style="display:none">Sì. I tuoi dati sono protetti secondo il GDPR. Non vengono mai venduti né ceduti a terzi. Vengono usati solo in forma aggregata e anonima per la ricerca di mercato.</div>
+      <div class="faq-q">I miei dati sono al sicuro?</div>
+      <div class="faq-a">Sì. I tuoi dati sono protetti secondo il GDPR. Non vengono mai venduti né ceduti a terzi. Vengono usati solo in forma aggregata e anonima per la ricerca di mercato.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Devo caricare ogni scontrino?</div>
-      <div class="faq-a" style="display:none">No. Più carichi, più punti guadagni — ma non c'è un minimo obbligatorio. Carichi quando puoi, come puoi.</div>
+      <div class="faq-q">Devo caricare ogni scontrino?</div>
+      <div class="faq-a">No. Più carichi, più punti guadagni — ma non c'è un minimo obbligatorio. Carichi quando puoi, come puoi.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Chi c'è dietro questo panel?</div>
-      <div class="faq-a" style="display:none">Nomesis, società italiana di ricerca di mercato di Brescia. I dati raccolti vengono usati da aziende del settore alimentare per migliorare prodotti e servizi.</div>
+      <div class="faq-q">Chi c'è dietro questo panel?</div>
+      <div class="faq-a">Nomesis, società italiana di ricerca di mercato di Brescia. I dati raccolti vengono usati da aziende del settore alimentare per migliorare prodotti e servizi.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Cosa succede dopo che mi iscrivo?</div>
-      <div class="faq-a" style="display:none">Ricevi le credenziali di accesso entro 48 ore. Da quel momento puoi iniziare a caricare scontrini e guadagnare punti. Prima di iniziare, ti consigliamo di esplorare l'ambiente di prova qui sopra.</div>
+      <div class="faq-q">Cosa succede dopo che mi iscrivo?</div>
+      <div class="faq-a">Ricevi le credenziali di accesso entro 48 ore. Da quel momento puoi iniziare a caricare scontrini e guadagnare punti. Prima di iniziare, ti consigliamo di esplorare l'ambiente di prova qui sopra.</div>
     </div>
   </div>
 </section>
@@ -647,11 +690,12 @@
     <a href="candidatura.html" class="btn-primary">
       Candidati al panel →
     </a>
-    <a href="https://panel-scontrini.vercel.app/?demo=true" target="_blank" class="btn-secondary">
+    <!-- Ez 30.04.26 09:22 - URL aggiornato a app.miaspesa.com -->
+    <a href="https://app.miaspesa.com/?demo=true" target="_blank" class="btn-secondary">
       Prima prova l'app demo
     </a>
   </div>
-  <span class="cta-login">Hai già le credenziali? <a href="https://panel-scontrini.vercel.app" target="_blank">Accedi all'app →</a></span>
+  <span class="cta-login">Hai già le credenziali? <a href="https://app.miaspesa.com" target="_blank">Accedi all'app →</a></span>
 </section>
 
 <!-- FOOTER -->
@@ -678,6 +722,12 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
+<!-- ============================================================ -->
+<!-- Ez 30.04.26 09:17 - NEUTRALIZZATO script toggleFaq duplicato -->
+<!-- Motivo: collisione con event listener in script sopra (riga ~706). -->
+<!-- Avevamo 2 gestori sullo stesso click: uno usava class .open, -->
+<!-- l'altro style.display inline. Ora gestione unica via class .open. -->
+<!--
 <script>
 function toggleFaq(el) {
   var item = el.parentElement;
@@ -687,10 +737,13 @@ function toggleFaq(el) {
   ans.style.display = isOpen ? 'none' : 'block';
 }
 </script>
+-->
+<!-- ============================================================ -->
 
 <!-- FLOATING CTA MOBILE -->
+<!-- Ez 30.04.26 09:17 - URL aggiornato a app.miaspesa.com -->
 <div id="floatCta" style="position:fixed;bottom:0;left:0;right:0;z-index:200;padding:16px;background:rgba(26,26,46,0.95);backdrop-filter:blur(8px);display:none;border-top:1px solid rgba(255,255,255,0.1)">
-  <a href="https://panel-scontrini.vercel.app/?demo=true"
+  <a href="https://app.miaspesa.com/?demo=true"
     style="display:block;background:var(--oro);color:var(--nero);text-align:center;padding:14px;border-radius:50px;font-weight:700;font-size:0.95rem;text-decoration:none">
     📱 Prova subito — senza registrarti
   </a>
