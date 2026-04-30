@@ -1,0 +1,24 @@
+{
+  "name": "miaspesa-landing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EzMae060725/miaspesa-landing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/EzMae060725/miaspesa-landing/issues"
+  },
+  "homepage": "https://github.com/EzMae060725/miaspesa-landing#readme",
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6"
+  }
+}
