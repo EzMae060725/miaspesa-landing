@@ -176,7 +176,7 @@
       </div>
       <div class="field" id="f-anno">
         <label>Anno di nascita *</label>
-        <input type="number" id="annoNascita" placeholder="es. 1980" min="1924" max="2006">
+        <input type="number" id="annoNascita" placeholder="es. 1980" min="1924" max="2006" onblur="validateAnno()" oninput="clearErr('anno')">
         <div class="err">Anno non valido (1924–2006)</div>
       </div>
     </div>
@@ -453,6 +453,27 @@ function validateNomeCognome(id) {
     return false;
   }
   clearErr(id);
+  return true;
+}
+
+// Ez 05.05.26 - Bug B.2.21 fix: validazione onBlur anno nascita (4 cifre + range 1924-2006)
+function validateAnno() {
+  var raw = document.getElementById('annoNascita').value.trim();
+  if (!raw) {
+    setErr('anno', 'Inserisci anno di nascita');
+    return false;
+  }
+  // Deve essere esattamente 4 cifre
+  if (!/^\d{4}$/.test(raw)) {
+    setErr('anno', 'Anno deve avere 4 cifre (es. 1980)');
+    return false;
+  }
+  var anno = parseInt(raw, 10);
+  if (anno < 1924 || anno > 2006) {
+    setErr('anno', 'Anno non valido (1924-2006)');
+    return false;
+  }
+  clearErr('anno');
   return true;
 }
 
