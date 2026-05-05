@@ -148,12 +148,12 @@
     <div class="grid2">
       <div class="field" id="f-nome">
         <label>Nome *</label>
-        <input type="text" id="nome" placeholder="Mario" autocomplete="given-name">
+        <input type="text" id="nome" placeholder="Mario" autocomplete="given-name" onblur="validateNomeCognome('nome')" oninput="clearErr('nome')">
         <div class="err">Campo obbligatorio</div>
       </div>
       <div class="field" id="f-cognome">
         <label>Cognome *</label>
-        <input type="text" id="cognome" placeholder="Rossi" autocomplete="family-name">
+        <input type="text" id="cognome" placeholder="Rossi" autocomplete="family-name" onblur="validateNomeCognome('cognome')" oninput="clearErr('cognome')">
         <div class="err">Campo obbligatorio</div>
       </div>
     </div>
@@ -436,6 +436,26 @@
 </div>
 
 <script>
+// Ez 05.05.26 - Bug B.2.20 fix: validazione onBlur nome/cognome (stesso pattern email B.2.19)
+function validateNomeCognome(id) {
+  var v = document.getElementById(id).value.trim();
+  var label = (id === 'nome') ? 'nome' : 'cognome';
+  if (!v) {
+    setErr(id, 'Inserisci ' + label);
+    return false;
+  }
+  if (v.length < 2) {
+    setErr(id, 'Inserisci ' + label + ' (min 2 lettere)');
+    return false;
+  }
+  if (!/^[A-Za-z\u00C0-\u00FF\s'\-]{2,50}$/.test(v)) {
+    setErr(id, label.charAt(0).toUpperCase() + label.slice(1) + ' non valido (solo lettere)');
+    return false;
+  }
+  clearErr(id);
+  return true;
+}
+
 var emailConfirmed = false;
 function showEmailConfirm() {
   // Ez 05.05.26 - Bug B.2.19 fix: regex hard PRIMA del nudge di conferma
