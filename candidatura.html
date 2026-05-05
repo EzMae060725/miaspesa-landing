@@ -202,7 +202,8 @@
     <div class="grid2">
       <div class="field" id="f-mobile">
         <label>Tel. mobile *</label>
-        <input type="tel" id="telefonoMobile" placeholder="+39 333 1234567" autocomplete="tel">
+        <!-- Ez 05.05.26 - Bug B.2.7 fix: inputmode tel + maxlength -->
+        <input type="tel" id="telefonoMobile" placeholder="+39 333 1234567" autocomplete="tel" inputmode="tel" maxlength="20">
         <div class="err">Campo obbligatorio</div>
       </div>
       <div class="field">
@@ -565,7 +566,19 @@ function validateStep(s) {
     if (!anno || anno < 1924 || anno > 2006) { setErr('anno'); ok = false; } else clearErr('anno');
     if (!email || !email.includes('@')) { setErr('email', 'Email non valida'); ok = false; } else clearErr('email');
     if (!emailConfirmed) { setErr('email', 'Conferma la tua email prima di procedere'); ok = false; }
-    if (!mobile) { setErr('mobile'); ok = false; } else clearErr('mobile');
+    // Ez 05.05.26 - Bug B.2.7 fix: validazione formato cellulare IT
+    if (!mobile) {
+      setErr('mobile', 'Campo obbligatorio');
+      ok = false;
+    } else {
+      var mobileCleaned = mobile.replace(/[\s\-\.\(\)]/g, '');
+      if (!/^(\+39|0039)?3\d{8,9}$/.test(mobileCleaned)) {
+        setErr('mobile', 'Numero non valido (es. 333 1234567)');
+        ok = false;
+      } else {
+        clearErr('mobile');
+      }
+    }
   }
   if (s === 2) {
     var regione = document.getElementById('regione').value;
