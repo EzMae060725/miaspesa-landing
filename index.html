@@ -380,6 +380,23 @@
     line-height: 1.7; display: none; padding-top: 0;
   }
   .faq-item.open .faq-a { display: block; padding-top: 14px; }
+  /* Ez 05.05.26 - Bug A.5.8 fix: stile link "Scrivici" sotto FAQ */
+  .faq-more {
+    text-align: center;
+    margin-top: 56px;
+    font-size: 0.95rem;
+    color: var(--grigio);
+  }
+  .faq-more a {
+    color: var(--viola);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid var(--viola);
+    padding-bottom: 2px;
+    margin-left: 4px;
+    transition: opacity 0.2s, border-color 0.2s;
+  }
+  .faq-more a:hover { opacity: 0.7; }
 
   /* ── CTA FINALE ── */
   .cta-section {
@@ -654,6 +671,8 @@
       <div class="faq-q">Cosa succede dopo che mi iscrivo?</div>
       <div class="faq-a">Ricevi le credenziali di accesso entro 48 ore. Da quel momento puoi iniziare a caricare scontrini e guadagnare punti. Prima di iniziare, ti consigliamo di esplorare l'ambiente di prova qui sopra.</div>
     </div>
+    <!-- Ez 05.05.26 - Bug A.5.8 fix: link "Scrivici" sotto FAQ, punta a contatti.html (coerente con footer) -->
+    <p class="faq-more reveal">Hai altre domande?<a href="contatti.html">Scrivici</a></p>
   </div>
 </section>
 
