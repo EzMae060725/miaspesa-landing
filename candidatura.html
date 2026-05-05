@@ -246,7 +246,7 @@
       </div>
       <div class="field" id="f-comune">
         <label>Comune *</label>
-        <input type="text" id="comune" placeholder="es. Brescia">
+        <input type="text" id="comune" placeholder="es. Brescia" onblur="validateComune()" oninput="clearErr('comune')">
         <div class="err">Campo obbligatorio</div>
       </div>
     </div>
@@ -474,6 +474,81 @@ function validateAnno() {
     return false;
   }
   clearErr('anno');
+  return true;
+}
+
+// Ez 05.05.26 - Fix B.2.20+21+22: funzioni validate onBlur consolidate
+function validateNomeCognome(id) {
+  var v = document.getElementById(id).value.trim();
+  var label = (id === 'nome') ? 'nome' : 'cognome';
+  if (!v) {
+    setErr(id, 'Inserisci ' + label);
+    return false;
+  }
+  if (v.length < 2) {
+    setErr(id, 'Inserisci ' + label + ' (min 2 lettere)');
+    return false;
+  }
+  if (!/^[A-Za-z\u00C0-\u00FF\s'\-]{2,50}$/.test(v)) {
+    setErr(id, label.charAt(0).toUpperCase() + label.slice(1) + ' non valido (solo lettere)');
+    return false;
+  }
+  clearErr(id);
+  return true;
+}
+
+function validateAnno() {
+  var raw = document.getElementById('annoNascita').value.trim();
+  if (!raw) {
+    setErr('anno', 'Inserisci anno di nascita');
+    return false;
+  }
+  if (!/^\d{4}$/.test(raw)) {
+    setErr('anno', 'Anno deve avere 4 cifre (es. 1980)');
+    return false;
+  }
+  var anno = parseInt(raw, 10);
+  if (anno < 1924 || anno > 2006) {
+    setErr('anno', 'Anno non valido (1924-2006)');
+    return false;
+  }
+  clearErr('anno');
+  return true;
+}
+
+function validateComune() {
+  var v = document.getElementById('comune').value.trim();
+  if (!v) {
+    setErr('comune', 'Inserisci il comune');
+    return false;
+  }
+  if (v.length < 3) {
+    setErr('comune', 'Comune troppo corto (min 3 lettere)');
+    return false;
+  }
+  if (!/^[A-Za-z\u00C0-\u00FF\s'\-\.]{3,60}$/.test(v)) {
+    setErr('comune', 'Comune non valido (solo lettere)');
+    return false;
+  }
+  clearErr('comune');
+  return true;
+}
+
+function validateInsegna() {
+  var v = document.getElementById('supermercato').value.trim();
+  if (!v) {
+    clearErr('supermercato');
+    return true;
+  }
+  if (v.length < 3) {
+    setErr('supermercato', 'Insegna troppo corta (min 3 caratteri)');
+    return false;
+  }
+  if (!/^[A-Za-z0-9\u00C0-\u00FF\s'\-\&\.]{3,60}$/.test(v)) {
+    setErr('supermercato', 'Insegna non valida');
+    return false;
+  }
+  clearErr('supermercato');
   return true;
 }
 
