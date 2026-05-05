@@ -560,11 +560,38 @@ function validateStep(s) {
     var email = document.getElementById('email').value.trim();
     var mobile = document.getElementById('telefonoMobile').value.trim();
 
-    if (!nome) { setErr('nome'); ok = false; } else clearErr('nome');
-    if (!cognome) { setErr('cognome'); ok = false; } else clearErr('cognome');
+    // Ez 05.05.26 - Bug B.2.18 fix: validazione nome (min 2 char, lettere/spazi/apostrofi/trattini)
+    if (!nome || nome.length < 2) {
+      setErr('nome', 'Inserisci nome (min 2 lettere)');
+      ok = false;
+    } else if (!/^[A-Za-z\u00C0-\u00FF\s'\-]{2,50}$/.test(nome)) {
+      setErr('nome', 'Nome non valido (solo lettere)');
+      ok = false;
+    } else {
+      clearErr('nome');
+    }
+    // Ez 05.05.26 - Bug B.2.18 fix: validazione cognome (min 2 char, stesse regole nome)
+    if (!cognome || cognome.length < 2) {
+      setErr('cognome', 'Inserisci cognome (min 2 lettere)');
+      ok = false;
+    } else if (!/^[A-Za-z\u00C0-\u00FF\s'\-]{2,50}$/.test(cognome)) {
+      setErr('cognome', 'Cognome non valido (solo lettere)');
+      ok = false;
+    } else {
+      clearErr('cognome');
+    }
     if (!sesso) { setErr('sesso'); ok = false; } else clearErr('sesso');
     if (!anno || anno < 1924 || anno > 2006) { setErr('anno'); ok = false; } else clearErr('anno');
-    if (!email || !email.includes('@')) { setErr('email', 'Email non valida'); ok = false; } else clearErr('email');
+    // Ez 05.05.26 - Bug B.2.18 fix: regex email con TLD min 2 char (blocca nome@dominio.i)
+    if (!email) {
+      setErr('email', 'Inserisci email');
+      ok = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(email)) {
+      setErr('email', 'Email non valida (es. nome@dominio.it)');
+      ok = false;
+    } else {
+      clearErr('email');
+    }
     if (!emailConfirmed) { setErr('email', 'Conferma la tua email prima di procedere'); ok = false; }
     // Ez 05.05.26 - Bug B.2.7 fix: validazione formato cellulare IT
     if (!mobile) {
