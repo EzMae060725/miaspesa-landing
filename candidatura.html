@@ -438,8 +438,22 @@
 <script>
 var emailConfirmed = false;
 function showEmailConfirm() {
+  // Ez 05.05.26 - Bug B.2.19 fix: regex hard PRIMA del nudge di conferma
   var email = document.getElementById('email').value.trim();
-  if (!email || !email.includes('@')) return;
+  if (!email) {
+    document.getElementById('email-confirm').style.display = 'none';
+    return;
+  }
+  // Regex con TLD min 2 char (coerente con validateStep)
+  if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(email)) {
+    setErr('email', 'Email non valida (es. nome@dominio.it)');
+    document.getElementById('email-confirm').style.display = 'none';
+    document.getElementById('email-ok').style.display = 'none';
+    emailConfirmed = false;
+    return;
+  }
+  // Email sintatticamente valida: pulisce errore e mostra nudge semantico
+  clearErr('email');
   if (emailConfirmed) return;
   document.getElementById('email-preview').textContent = email;
   document.getElementById('email-confirm').style.display = 'block';
