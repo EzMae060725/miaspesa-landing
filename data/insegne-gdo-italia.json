@@ -1,0 +1,118 @@
+[
+  {"nome": "Esselunga", "gruppo": "Esselunga", "tipo": ["super", "iper", "online"], "regioni": ["Lombardia", "Emilia-Romagna", "Veneto", "Piemonte", "Toscana", "Lazio", "Liguria"]},
+  {"nome": "Esselunga a casa", "gruppo": "Esselunga", "tipo": ["online"], "regioni": ["Lombardia", "Emilia-Romagna", "Veneto", "Piemonte", "Toscana", "Lazio", "Liguria"]},
+  {"nome": "Conad", "gruppo": "Conad", "tipo": ["super", "convenience"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Conad City", "gruppo": "Conad", "tipo": ["convenience"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Conad Superstore", "gruppo": "Conad", "tipo": ["super", "iper"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Spazio Conad", "gruppo": "Conad", "tipo": ["iper"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Lazio","Lombardia","Marche","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Umbria","Veneto"]},
+  {"nome": "Sapori & Dintorni Conad", "gruppo": "Conad", "tipo": ["convenience"], "regioni": ["Emilia-Romagna","Lazio","Lombardia","Toscana","Veneto"]},
+  {"nome": "MyAuchan / Auchan ex", "gruppo": "Conad", "tipo": ["iper"], "regioni": ["Lombardia","Piemonte","Veneto","Emilia-Romagna","Toscana","Marche","Lazio","Campania","Sicilia"], "note": "ex Auchan IT, riconvertita Conad 2020"},
+  {"nome": "Conad iCi", "gruppo": "Conad", "tipo": ["online"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+
+  {"nome": "Coop", "gruppo": "Coop Italia", "tipo": ["super", "iper", "online"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Ipercoop", "gruppo": "Coop Italia", "tipo": ["iper"], "regioni": ["Abruzzo","Calabria","Campania","Emilia-Romagna","Lazio","Liguria","Lombardia","Marche","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Umbria","Veneto"]},
+  {"nome": "Coop Online", "gruppo": "Coop Italia", "tipo": ["online"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Nova Coop", "gruppo": "Coop Italia", "tipo": ["super","iper"], "regioni": ["Piemonte","Lombardia","Liguria","Valle d'Aosta"]},
+  {"nome": "Unicoop Firenze", "gruppo": "Coop Italia", "tipo": ["super","iper"], "regioni": ["Toscana"]},
+  {"nome": "Unicoop Tirreno", "gruppo": "Coop Italia", "tipo": ["super","iper"], "regioni": ["Toscana","Lazio","Umbria","Campania"]},
+  {"nome": "Coop Alleanza 3.0", "gruppo": "Coop Italia", "tipo": ["super","iper"], "regioni": ["Emilia-Romagna","Veneto","Friuli-Venezia Giulia","Marche","Abruzzo","Molise","Puglia","Basilicata","Sicilia"]},
+
+  {"nome": "Carrefour", "gruppo": "Carrefour", "tipo": ["super", "iper", "online"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Carrefour Express", "gruppo": "Carrefour", "tipo": ["convenience"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Carrefour Market", "gruppo": "Carrefour", "tipo": ["super"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Bio c'Bon", "gruppo": "Carrefour", "tipo": ["super"], "regioni": ["Lazio","Lombardia"], "note": "bio specializzato"},
+
+  {"nome": "Lidl", "gruppo": "Schwarz", "tipo": ["discount"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Eurospin", "gruppo": "Eurospin", "tipo": ["discount"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "MD", "gruppo": "MD", "tipo": ["discount"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Veneto"]},
+  {"nome": "Penny Market", "gruppo": "REWE", "tipo": ["discount"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Veneto"]},
+  {"nome": "Aldi", "gruppo": "Aldi", "tipo": ["discount"], "regioni": ["Lombardia","Veneto","Emilia-Romagna","Piemonte","Trentino-Alto Adige","Friuli-Venezia Giulia","Liguria","Toscana","Marche","Lazio"]},
+  {"nome": "In's Mercato", "gruppo": "Pam Panorama", "tipo": ["discount"], "regioni": ["Abruzzo","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Piemonte","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Todis", "gruppo": "Todis", "tipo": ["discount"], "regioni": ["Lazio","Campania","Abruzzo","Toscana","Umbria","Molise","Puglia","Marche"]},
+  {"nome": "Risparmio Casa", "gruppo": "Risparmio Casa", "tipo": ["discount"], "regioni": ["Lazio","Abruzzo","Marche","Umbria","Toscana","Molise","Campania"]},
+  {"nome": "Prix Quality", "gruppo": "Prix", "tipo": ["discount"], "regioni": ["Lombardia","Veneto","Emilia-Romagna","Friuli-Venezia Giulia","Trentino-Alto Adige"]},
+  {"nome": "Tuodì", "gruppo": "Tuodì", "tipo": ["super","discount"], "regioni": ["Lazio"]},
+
+  {"nome": "Pam", "gruppo": "Pam Panorama", "tipo": ["super"], "regioni": ["Emilia-Romagna","Lazio","Liguria","Lombardia","Marche","Piemonte","Toscana","Veneto"]},
+  {"nome": "Panorama", "gruppo": "Pam Panorama", "tipo": ["iper"], "regioni": ["Emilia-Romagna","Lazio","Liguria","Lombardia","Marche","Piemonte","Toscana","Veneto","Friuli-Venezia Giulia"]},
+  {"nome": "Pam Local", "gruppo": "Pam Panorama", "tipo": ["convenience"], "regioni": ["Emilia-Romagna","Lazio","Lombardia","Toscana","Veneto"]},
+
+  {"nome": "Bennet", "gruppo": "Bennet", "tipo": ["iper"], "regioni": ["Lombardia","Piemonte","Veneto","Emilia-Romagna","Liguria"]},
+  {"nome": "Iper La Grande I", "gruppo": "Finiper Canova", "tipo": ["iper"], "regioni": ["Lombardia","Piemonte","Emilia-Romagna","Veneto"]},
+  {"nome": "Italmark", "gruppo": "Italmark", "tipo": ["super","iper"], "regioni": ["Lombardia"], "note": "catena bresciana storica, copre BS+confinanti"},
+  {"nome": "Unes", "gruppo": "Unes", "tipo": ["super"], "regioni": ["Lombardia","Piemonte","Emilia-Romagna"]},
+  {"nome": "U2 Supermercato", "gruppo": "Unes", "tipo": ["super"], "regioni": ["Lombardia","Piemonte","Emilia-Romagna"]},
+  {"nome": "Il Gigante", "gruppo": "Il Gigante", "tipo": ["super","iper"], "regioni": ["Lombardia","Piemonte","Emilia-Romagna"]},
+  {"nome": "Tigros", "gruppo": "Tigros", "tipo": ["super"], "regioni": ["Lombardia","Piemonte"]},
+  {"nome": "Iperal", "gruppo": "Iperal", "tipo": ["super","iper"], "regioni": ["Lombardia"]},
+  {"nome": "Mercatò", "gruppo": "Selex", "tipo": ["super"], "regioni": ["Piemonte","Liguria","Lombardia","Valle d'Aosta"]},
+
+  {"nome": "Despar", "gruppo": "Despar", "tipo": ["super","convenience"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+  {"nome": "Eurospar", "gruppo": "Despar", "tipo": ["super"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Veneto"]},
+  {"nome": "Interspar", "gruppo": "Despar", "tipo": ["iper"], "regioni": ["Veneto","Friuli-Venezia Giulia","Trentino-Alto Adige","Lombardia","Emilia-Romagna","Marche","Abruzzo","Calabria","Sicilia"]},
+  {"nome": "Despar Aspiag", "gruppo": "Despar", "tipo": ["super","iper"], "regioni": ["Veneto","Friuli-Venezia Giulia","Emilia-Romagna","Trentino-Alto Adige"]},
+
+  {"nome": "Sigma", "gruppo": "Sigma", "tipo": ["super","convenience"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Veneto"]},
+
+  {"nome": "Crai", "gruppo": "Crai", "tipo": ["super","convenience"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"]},
+
+  {"nome": "Famila", "gruppo": "Selex", "tipo": ["super"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Veneto"]},
+  {"nome": "Famila Superstore", "gruppo": "Selex", "tipo": ["iper"], "regioni": ["Emilia-Romagna","Lombardia","Marche","Piemonte","Toscana","Veneto","Friuli-Venezia Giulia"]},
+  {"nome": "A&O", "gruppo": "Selex", "tipo": ["super","convenience"], "regioni": ["Abruzzo","Calabria","Campania","Emilia-Romagna","Lazio","Liguria","Lombardia","Marche","Piemonte","Puglia","Sicilia","Toscana","Veneto"]},
+  {"nome": "C+C Cash and Carry", "gruppo": "Selex", "tipo": ["cashcarry"], "regioni": ["Emilia-Romagna","Lombardia","Marche","Piemonte","Toscana","Veneto","Friuli-Venezia Giulia"]},
+  {"nome": "Galassia", "gruppo": "Selex", "tipo": ["iper"], "regioni": ["Friuli-Venezia Giulia","Veneto"]},
+  {"nome": "Iperfamila", "gruppo": "Selex", "tipo": ["iper"], "regioni": ["Veneto","Lombardia","Friuli-Venezia Giulia","Trentino-Alto Adige"]},
+  {"nome": "Mega", "gruppo": "Selex", "tipo": ["iper"], "regioni": ["Friuli-Venezia Giulia","Veneto"]},
+
+  {"nome": "Emisfero", "gruppo": "Unicomm", "tipo": ["iper"], "regioni": ["Veneto","Friuli-Venezia Giulia","Trentino-Alto Adige","Emilia-Romagna"]},
+  {"nome": "Cadoro", "gruppo": "Unicomm", "tipo": ["super"], "regioni": ["Veneto","Friuli-Venezia Giulia"]},
+  {"nome": "MaxiSuper", "gruppo": "Unicomm", "tipo": ["super","iper"], "regioni": ["Veneto","Friuli-Venezia Giulia"]},
+  {"nome": "Hurrà", "gruppo": "Unicomm", "tipo": ["super","convenience"], "regioni": ["Veneto","Friuli-Venezia Giulia","Trentino-Alto Adige"]},
+
+  {"nome": "Alì", "gruppo": "Alì", "tipo": ["super","iper"], "regioni": ["Veneto","Emilia-Romagna"]},
+  {"nome": "AlìPer", "gruppo": "Alì", "tipo": ["iper"], "regioni": ["Veneto","Emilia-Romagna"]},
+  {"nome": "Iper Tosano", "gruppo": "Tosano", "tipo": ["iper"], "regioni": ["Veneto","Lombardia","Trentino-Alto Adige"]},
+  {"nome": "Rossetto", "gruppo": "Rossetto", "tipo": ["super"], "regioni": ["Veneto","Trentino-Alto Adige"]},
+  {"nome": "Conv", "gruppo": "Conv", "tipo": ["super","convenience"], "regioni": ["Veneto","Friuli-Venezia Giulia"]},
+
+  {"nome": "Poli Supermercati", "gruppo": "Poli", "tipo": ["super","iper"], "regioni": ["Trentino-Alto Adige","Veneto"]},
+  {"nome": "Famiglia Cooperativa SAIT", "gruppo": "SAIT", "tipo": ["super","convenience"], "regioni": ["Trentino-Alto Adige"], "note": "Cooperative consorziate Trentino"},
+  {"nome": "Coop Trentino", "gruppo": "SAIT", "tipo": ["super","iper"], "regioni": ["Trentino-Alto Adige"]},
+
+  {"nome": "Coal", "gruppo": "Coal", "tipo": ["super","convenience"], "regioni": ["Marche","Abruzzo","Umbria","Lazio","Molise","Emilia-Romagna"]},
+  {"nome": "Tigre", "gruppo": "Magazzini Gabrielli", "tipo": ["super","iper"], "regioni": ["Marche","Abruzzo","Lazio","Umbria","Molise"]},
+  {"nome": "Tigre Amico", "gruppo": "Magazzini Gabrielli", "tipo": ["super","convenience"], "regioni": ["Marche","Abruzzo","Lazio","Umbria","Molise"]},
+  {"nome": "Oasi", "gruppo": "Magazzini Gabrielli", "tipo": ["iper"], "regioni": ["Marche","Abruzzo","Lazio","Umbria","Molise"]},
+  {"nome": "Si con Te", "gruppo": "Si con Te", "tipo": ["super","convenience"], "regioni": ["Marche","Abruzzo","Umbria"]},
+
+  {"nome": "Doro Supermercati", "gruppo": "Doro", "tipo": ["super"], "regioni": ["Lazio","Campania"]},
+  {"nome": "DOK", "gruppo": "Megamark", "tipo": ["super","iper"], "regioni": ["Puglia","Basilicata","Campania","Calabria","Molise"]},
+  {"nome": "Sole 365", "gruppo": "Multicedi", "tipo": ["super","iper"], "regioni": ["Campania","Lazio","Calabria","Basilicata","Molise"]},
+  {"nome": "Decò", "gruppo": "Multicedi/Arena", "tipo": ["super","iper"], "regioni": ["Sicilia","Calabria","Campania","Puglia","Basilicata","Molise","Sardegna","Lazio","Abruzzo"]},
+  {"nome": "Sigma Decò", "gruppo": "Multicedi/Arena", "tipo": ["super"], "regioni": ["Campania","Calabria","Basilicata","Puglia","Sicilia"]},
+  {"nome": "Maxi Sma", "gruppo": "Sma", "tipo": ["super"], "regioni": ["Sardegna","Lazio","Toscana","Lombardia"]},
+  {"nome": "MegaMark", "gruppo": "Megamark", "tipo": ["iper"], "regioni": ["Puglia","Basilicata","Campania","Molise"]},
+  {"nome": "A2 Supermercati", "gruppo": "Megamark", "tipo": ["super"], "regioni": ["Puglia","Basilicata"]},
+  {"nome": "Famila Sud", "gruppo": "Selex", "tipo": ["super","iper"], "regioni": ["Calabria","Sicilia","Basilicata","Puglia"]},
+
+  {"nome": "GDM Sicilia", "gruppo": "GDM", "tipo": ["super","iper"], "regioni": ["Sicilia"]},
+  {"nome": "SISA", "gruppo": "SISA", "tipo": ["super","convenience"], "regioni": ["Sicilia","Calabria","Sardegna","Campania","Lazio","Puglia","Basilicata","Marche"]},
+  {"nome": "Spar", "gruppo": "Despar", "tipo": ["super","convenience"], "regioni": ["Sicilia","Calabria","Campania","Puglia","Basilicata"]},
+  {"nome": "Crai Sardegna", "gruppo": "Crai", "tipo": ["super"], "regioni": ["Sardegna"]},
+  {"nome": "Cosmos", "gruppo": "Coralis", "tipo": ["super"], "regioni": ["Lazio","Toscana","Umbria","Campania","Marche","Abruzzo","Molise"]},
+  {"nome": "Maxi Sidis", "gruppo": "Sidis", "tipo": ["super","convenience"], "regioni": ["Lazio","Toscana","Umbria","Marche","Abruzzo","Campania","Molise","Puglia","Basilicata"]},
+
+  {"nome": "Costco", "gruppo": "Costco", "tipo": ["cashcarry","iper"], "regioni": ["Lombardia"], "note": "ingrosso a iscrizione"},
+  {"nome": "Metro", "gruppo": "Metro AG", "tipo": ["cashcarry"], "regioni": ["Abruzzo","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Veneto"], "note": "ingrosso B2B"},
+
+  {"nome": "Naturasì", "gruppo": "EcorNaturaSì", "tipo": ["super","online"], "regioni": ["Abruzzo","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Piemonte","Puglia","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Veneto"], "note": "bio specializzato"},
+  {"nome": "Cuorebio", "gruppo": "Naturasì", "tipo": ["super"], "regioni": ["Emilia-Romagna","Lazio","Lombardia","Toscana","Veneto","Marche"], "note": "bio specializzato"},
+
+  {"nome": "Cortilia", "gruppo": "Cortilia", "tipo": ["online"], "regioni": ["Lombardia","Piemonte","Emilia-Romagna","Veneto","Liguria","Toscana","Lazio","Friuli-Venezia Giulia"], "note": "online food box"},
+  {"nome": "Everli", "gruppo": "Everli", "tipo": ["online"], "regioni": ["Abruzzo","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Piemonte","Puglia","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Veneto"], "note": "online aggregator (ex Supermercato24)"},
+  {"nome": "Amazon Fresh", "gruppo": "Amazon", "tipo": ["online"], "regioni": ["Lazio","Lombardia","Emilia-Romagna"], "note": "online"},
+  {"nome": "Glovo Market", "gruppo": "Glovo", "tipo": ["online"], "regioni": ["Abruzzo","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Piemonte","Puglia","Sicilia","Toscana","Trentino-Alto Adige","Veneto"], "note": "online aggregator"},
+  {"nome": "Deliveroo Hop", "gruppo": "Deliveroo", "tipo": ["online"], "regioni": ["Lombardia","Lazio","Emilia-Romagna","Piemonte","Veneto","Toscana"], "note": "online aggregator città"},
+
+  {"nome": "Altro", "gruppo": "Altro", "tipo": ["super","iper","discount","convenience","online","superette","cashcarry"], "regioni": ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"], "note": "fallback edge cases - mostra campo libero specifica"}
+]

@@ -69,6 +69,13 @@
   .field.has-err .err { display: block; }
 
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  /* Ez 05.05.26 - Bug B.2.24+25: layout 3 colonne con CAP piu' stretto */
+  .grid3geo { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .grid3geo { grid-template-columns: 1fr; } }
+  #cap { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 1px; text-align: center; }
+  #cap:disabled, #comune:disabled { background: #f7fafc; cursor: not-allowed; }
+  #f-cap.has-err input { border-color: #dc2626; }
+  .comuni-loading { font-size: 0.78rem; color: #6b7280; padding: 6px 0; }
   @media (max-width: 480px) { .grid2 { grid-template-columns: 1fr; } }
 
   .btn-nav {
@@ -236,7 +243,8 @@
       <div class="err">Campo obbligatorio</div>
     </div>
 
-    <div class="grid2">
+    <!-- Ez 05.05.26 - Bug B.2.24+25 fix: 3 col Provincia/Comune/CAP -->
+    <div class="grid3geo">
       <div class="field" id="f-provincia">
         <label>Provincia *</label>
         <select id="provincia">
@@ -246,7 +254,14 @@
       </div>
       <div class="field" id="f-comune">
         <label>Comune *</label>
-        <input type="text" id="comune" placeholder="es. Brescia" onblur="validateComune()" oninput="clearErr('comune')">
+        <input type="text" id="comune" placeholder="es. Brescia" list="comuni-list" autocomplete="off" disabled>
+        <datalist id="comuni-list"></datalist>
+        <div class="err">Campo obbligatorio</div>
+      </div>
+      <div class="field" id="f-cap">
+        <label>CAP *</label>
+        <input type="text" id="cap" placeholder="es. 25100" inputmode="numeric" maxlength="5" autocomplete="off" list="cap-list" disabled>
+        <datalist id="cap-list"></datalist>
         <div class="err">Campo obbligatorio</div>
       </div>
     </div>
@@ -275,16 +290,36 @@
   <div class="step-panel" id="step3">
     <div class="step-title">Passo 3 di 3 — <span>La tua spesa</span></div>
 
-    <div class="field">
-      <label>Insegna dove fate la spesa più spesso <span class="opt">(opzionale)</span></label>
-      <input type="text" id="supermercato" placeholder="es. Esselunga, Conad, Lidl..." list="insegne-list">
-      <datalist id="insegne-list">
-        <option>Esselunga</option><option>Conad</option><option>Coop</option>
-        <option>Carrefour</option><option>Lidl</option><option>Eurospin</option>
-        <option>Penny Market</option><option>In's Mercato</option><option>Aldi</option>
-        <option>Bennet</option><option>Iper</option><option>Pam</option>
-        <option>Sigma</option><option>Despar</option><option>MD</option><option>Altro</option>
-      </datalist>
+    <!-- Ez 06.05.26 - Bug B.2.30 fix: tipologia + insegna lista chiusa per regione -->
+    <div class="field" id="f-tipologia">
+      <label>Tipologia di negozio dove fate la spesa più spesso *</label>
+      <select id="tipologia" onchange="onTipologiaChange()">
+        <option value="">Seleziona...</option>
+        <option value="iper">Ipermercato (oltre 2500 mq)</option>
+        <option value="super">Supermercato (1000-2500 mq)</option>
+        <option value="superette">Superette (400-1000 mq)</option>
+        <option value="convenience">Convenience / piccolo formato (sotto 400 mq)</option>
+        <option value="discount">Discount</option>
+        <option value="online">Online / e-commerce</option>
+        <option value="cashcarry">Cash & Carry / Ingrosso</option>
+        <option value="mercato">Mercato (farmer market / ambulanti)</option>
+        <option value="tradizionale">Negozio tradizionale / sotto casa</option>
+        <option value="altro">Altro</option>
+      </select>
+      <div class="err">Seleziona una tipologia</div>
+    </div>
+
+    <div class="field" id="f-supermercato" style="display:none">
+      <label id="lbl-insegna">Insegna dove fate la spesa più spesso *</label>
+      <input type="text" id="supermercato" placeholder="Inizia a digitare..." list="insegne-list" autocomplete="off" onblur="validateInsegna()" oninput="onInsegnaInput()">
+      <datalist id="insegne-list"></datalist>
+      <div class="err">Insegna non valida</div>
+    </div>
+
+    <div class="field" id="f-insegnaSpec" style="display:none">
+      <label>Specifica nome insegna *</label>
+      <input type="text" id="insegnaSpec" placeholder="es. nome insegna locale" maxlength="80" onblur="validateInsegnaSpec()" oninput="clearErr('insegnaSpec')">
+      <div class="err">Specifica obbligatoria (min 3 caratteri)</div>
     </div>
 
     <div class="grid2">
@@ -534,21 +569,194 @@ function validateComune() {
   return true;
 }
 
-function validateInsegna() {
+// Ez 06.05.26 - validateInsegna v1 sostituita da B.2.30 (vedi sotto blocco refactor)
+
+
+// =============================================================
+// Ez 06.05.26 - Bug B.2.30 fix: gestione tipologia + insegna lista chiusa per regione
+// =============================================================
+var INSEGNE_DATA = null;
+var INSEGNE_LOADING = false;
+var SELECTED_INSEGNA = null;
+
+function loadInsegneData() {
+  if (INSEGNE_DATA || INSEGNE_LOADING) return Promise.resolve(INSEGNE_DATA);
+  INSEGNE_LOADING = true;
+  return fetch('data/insegne-gdo-italia.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      INSEGNE_DATA = data;
+      INSEGNE_LOADING = false;
+      return data;
+    })
+    .catch(function(err) {
+      INSEGNE_LOADING = false;
+      console.error('Errore caricamento insegne:', err);
+      throw err;
+    });
+}
+
+function onTipologiaChange() {
+  var t = document.getElementById('tipologia').value;
+  var fInsegna = document.getElementById('f-supermercato');
+  var fSpec = document.getElementById('f-insegnaSpec');
+  var ins = document.getElementById('supermercato');
+  var spec = document.getElementById('insegnaSpec');
+
+  // Reset campi insegna a ogni cambio tipologia
+  ins.value = '';
+  spec.value = '';
+  SELECTED_INSEGNA = null;
+  clearErr('tipologia'); clearErr('supermercato'); clearErr('insegnaSpec');
+
+  if (!t) {
+    fInsegna.style.display = 'none';
+    fSpec.style.display = 'none';
+    return;
+  }
+
+  // Tipologie senza insegna (mercato, tradizionale)
+  if (t === 'mercato' || t === 'tradizionale') {
+    fInsegna.style.display = 'none';
+    fSpec.style.display = 'none';
+    return;
+  }
+
+  // Tipologia "altro": campo libero direttamente nello spec
+  if (t === 'altro') {
+    fInsegna.style.display = 'none';
+    fSpec.style.display = 'block';
+    document.querySelector('#f-insegnaSpec label').textContent = 'Specifica dove fai la spesa (opzionale)';
+    document.getElementById('insegnaSpec').placeholder = 'es. specifica luogo';
+    return;
+  }
+
+  // Tipologie GDO (1-7): mostra datalist filtrata per tipo + regione
+  fInsegna.style.display = 'block';
+  fSpec.style.display = 'none';
+  document.querySelector('#f-insegnaSpec label').textContent = 'Specifica nome insegna *';
+  document.getElementById('insegnaSpec').placeholder = 'es. nome insegna locale';
+
+  loadInsegneData().then(function(data) {
+    var regione = document.getElementById('regione').value;
+    // Edge case: regione select value 'VdA' nel form ma "Valle d'Aosta" nel JSON
+    var regioneCanonica = (regione === 'VdA') ? "Valle d'Aosta" : regione;
+
+    // Mappa Superette su "super" (sottoinsieme): mostra tutti i super
+    var tipoFiltro = (t === 'superette') ? 'super' : t;
+
+    var filtered = data.filter(function(ins) {
+      if (ins.tipo.indexOf(tipoFiltro) < 0) return false;
+      if (!regione) return true;  // se regione non scelta, mostra tutto
+      return ins.regioni.indexOf(regioneCanonica) >= 0;
+    });
+
+    // Sposto "Altro" in fondo
+    filtered.sort(function(a, b) {
+      if (a.nome === 'Altro') return 1;
+      if (b.nome === 'Altro') return -1;
+      return a.nome.localeCompare(b.nome);
+    });
+
+    var dl = document.getElementById('insegne-list');
+    dl.innerHTML = '';
+    filtered.forEach(function(ins) {
+      var opt = document.createElement('option');
+      opt.value = ins.nome;
+      dl.appendChild(opt);
+    });
+  });
+}
+
+function onInsegnaInput() {
   var v = document.getElementById('supermercato').value.trim();
-  if (!v) {
+  clearErr('supermercato');
+  var fSpec = document.getElementById('f-insegnaSpec');
+  // Se utente sceglie "Altro" mostra campo specifica
+  if (v.toLowerCase() === 'altro') {
+    SELECTED_INSEGNA = { nome: 'Altro' };
+    fSpec.style.display = 'block';
+    document.querySelector('#f-insegnaSpec label').textContent = 'Specifica nome insegna *';
+    document.getElementById('insegnaSpec').focus();
+  } else {
+    // Match esatto in lista
+    if (INSEGNE_DATA) {
+      var match = INSEGNE_DATA.find(function(ins) {
+        return ins.nome.toLowerCase() === v.toLowerCase();
+      });
+      if (match) {
+        SELECTED_INSEGNA = match;
+        if (document.getElementById('supermercato').value !== match.nome) {
+          document.getElementById('supermercato').value = match.nome;
+        }
+        fSpec.style.display = 'none';
+        document.getElementById('insegnaSpec').value = '';
+      } else {
+        SELECTED_INSEGNA = null;
+        fSpec.style.display = 'none';
+      }
+    }
+  }
+}
+
+function validateInsegna() {
+  var t = document.getElementById('tipologia').value;
+  // Tipologie senza insegna: skip validazione
+  if (t === 'mercato' || t === 'tradizionale' || t === 'altro' || !t) {
     clearErr('supermercato');
     return true;
   }
-  if (v.length < 3) {
-    setErr('supermercato', 'Insegna troppo corta (min 3 caratteri)');
+  var v = document.getElementById('supermercato').value.trim();
+  if (!v) {
+    setErr('supermercato', 'Seleziona un\'insegna');
     return false;
   }
-  if (!/^[A-Za-z0-9\u00C0-\u00FF\s'\-\&\.]{3,60}$/.test(v)) {
-    setErr('supermercato', 'Insegna non valida');
+  if (!SELECTED_INSEGNA) {
+    setErr('supermercato', 'Seleziona un\'insegna dalla lista');
     return false;
   }
   clearErr('supermercato');
+  return true;
+}
+
+function validateInsegnaSpec() {
+  var v = document.getElementById('insegnaSpec').value.trim();
+  var fSpec = document.getElementById('f-insegnaSpec');
+  // Se campo nascosto, skip
+  if (fSpec.style.display === 'none') {
+    clearErr('insegnaSpec');
+    return true;
+  }
+  var t = document.getElementById('tipologia').value;
+  // "altro" tipologia: campo opzionale
+  if (t === 'altro') {
+    if (v && v.length < 3) {
+      setErr('insegnaSpec', 'Min 3 caratteri se compilato');
+      return false;
+    }
+    clearErr('insegnaSpec');
+    return true;
+  }
+  // Insegna "Altro" scelta in datalist GDO: obbligatorio
+  if (!v || v.length < 3) {
+    setErr('insegnaSpec', 'Specifica obbligatoria (min 3 caratteri)');
+    return false;
+  }
+  if (!/^[A-Za-z0-9\u00C0-\u00FF\s'\-\&\.]{3,80}$/.test(v)) {
+    setErr('insegnaSpec', 'Caratteri non validi');
+    return false;
+  }
+  clearErr('insegnaSpec');
+  return true;
+}
+
+function validateTipologia() {
+  var t = document.getElementById('tipologia').value;
+  if (!t) {
+    setErr('tipologia', 'Seleziona una tipologia');
+    return false;
+  }
+  clearErr('tipologia');
   return true;
 }
 
@@ -642,7 +850,174 @@ document.getElementById('regione').addEventListener('change', function() {
     opt.value = p; opt.textContent = p;
     sel.appendChild(opt);
   });
+  // Reset comune e CAP se cambia regione
+  resetComuneCap();
 });
+
+// =============================================================
+// Ez 05.05.26 - Bug B.2.24+25: Comuni autocomplete + CAP coerente
+// =============================================================
+var COMUNI_DATA = null;       // cache JSON intero
+var COMUNI_LOADING = false;
+var SELECTED_COMUNE = null;   // ref oggetto comune scelto
+
+function resetComuneCap() {
+  var c = document.getElementById('comune');
+  var cap = document.getElementById('cap');
+  c.value = ''; c.disabled = true;
+  cap.value = ''; cap.disabled = true;
+  document.getElementById('comuni-list').innerHTML = '';
+  document.getElementById('cap-list').innerHTML = '';
+  SELECTED_COMUNE = null;
+  clearErr('comune'); clearErr('cap');
+}
+
+function loadComuniData() {
+  if (COMUNI_DATA || COMUNI_LOADING) return Promise.resolve(COMUNI_DATA);
+  COMUNI_LOADING = true;
+  return fetch('data/comuni-italiani.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      COMUNI_DATA = data;
+      COMUNI_LOADING = false;
+      return data;
+    })
+    .catch(function(err) {
+      COMUNI_LOADING = false;
+      console.error('Errore caricamento comuni:', err);
+      throw err;
+    });
+}
+
+document.getElementById('provincia').addEventListener('change', function() {
+  var sigla = this.value;
+  resetComuneCap();
+  if (!sigla) return;
+  loadComuniData().then(function(data) {
+    var filtered = data.filter(function(c) { return c.sigla === sigla; });
+    var dl = document.getElementById('comuni-list');
+    dl.innerHTML = '';
+    filtered.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = c.nome;
+      dl.appendChild(opt);
+    });
+    document.getElementById('comune').disabled = false;
+    document.getElementById('comune').focus();
+  });
+});
+
+document.getElementById('comune').addEventListener('input', function() {
+  var v = this.value.trim();
+  if (!COMUNI_DATA) return;
+  var sigla = document.getElementById('provincia').value;
+  // Match esatto case-insensitive nei comuni della provincia
+  var match = COMUNI_DATA.find(function(c) {
+    return c.sigla === sigla && c.nome.toLowerCase() === v.toLowerCase();
+  });
+  var capInput = document.getElementById('cap');
+  if (match) {
+    SELECTED_COMUNE = match;
+    // Normalizza nome canonico (es. "brescia" -> "Brescia")
+    if (this.value !== match.nome) this.value = match.nome;
+    clearErr('comune');
+    capInput.disabled = false;
+    // Ez 05.05.26 - Bug B.2.26 fix: popola datalist CAP per scelta visibile
+    var capList = document.getElementById('cap-list');
+    capList.innerHTML = '';
+    match.cap.forEach(function(cap) {
+      var opt = document.createElement('option');
+      opt.value = cap;
+      capList.appendChild(opt);
+    });
+    if (match.cap.length === 1) {
+      capInput.value = match.cap[0];
+      capInput.placeholder = 'es. 25100';
+      clearErr('cap');
+    } else {
+      capInput.value = '';
+      capInput.placeholder = 'es. ' + match.cap[0] + ' (' + match.cap.length + ' opzioni)';
+    }
+  } else {
+    // Reset solo se l'utente sta editando dopo aver scelto
+    if (SELECTED_COMUNE) {
+      SELECTED_COMUNE = null;
+      capInput.value = '';
+      capInput.disabled = true;
+      capInput.placeholder = 'es. 25100';
+    }
+  }
+});
+
+document.getElementById('comune').addEventListener('blur', function() {
+  validateComune();
+});
+
+document.getElementById('cap').addEventListener('blur', function() {
+  validateCAP();
+});
+
+document.getElementById('cap').addEventListener('input', function() {
+  // Solo cifre, max 5
+  this.value = this.value.replace(/\D/g, '').slice(0, 5);
+  clearErr('cap');
+});
+
+function validateComune() {
+  var v = document.getElementById('comune').value.trim();
+  if (!v) {
+    setErr('comune', 'Inserisci il comune');
+    return false;
+  }
+  if (!SELECTED_COMUNE || SELECTED_COMUNE.nome.toLowerCase() !== v.toLowerCase()) {
+    setErr('comune', 'Seleziona un comune dalla lista');
+    return false;
+  }
+  // Coerenza regione/provincia
+  var sigla = document.getElementById('provincia').value;
+  var regione = document.getElementById('regione').value;
+  if (SELECTED_COMUNE.sigla !== sigla) {
+    setErr('comune', 'Comune non appartiene alla provincia selezionata');
+    return false;
+  }
+  // VdA edge case: regione select value e' 'VdA' ma JSON ha "Valle d'Aosta"
+  var regioneJson = SELECTED_COMUNE.regione.nome;
+  var regioneAttesa = (regione === 'VdA') ? "Valle d'Aosta" : regione;
+  if (regioneJson !== regioneAttesa) {
+    setErr('comune', 'Comune non appartiene alla regione selezionata');
+    return false;
+  }
+  clearErr('comune');
+  return true;
+}
+
+function validateCAP() {
+  var v = document.getElementById('cap').value.trim();
+  if (!v) {
+    setErr('cap', 'Inserisci il CAP');
+    return false;
+  }
+  if (!/^\d{5}$/.test(v)) {
+    setErr('cap', 'CAP deve essere 5 cifre');
+    return false;
+  }
+  if (!SELECTED_COMUNE) {
+    setErr('cap', 'Seleziona prima il comune');
+    return false;
+  }
+  if (SELECTED_COMUNE.cap.indexOf(v) < 0) {
+    var hint = SELECTED_COMUNE.cap.length === 1
+      ? 'CAP per ' + SELECTED_COMUNE.nome + ': ' + SELECTED_COMUNE.cap[0]
+      : 'CAP non valido per ' + SELECTED_COMUNE.nome + ' (es. ' + SELECTED_COMUNE.cap[0] + ')';
+    setErr('cap', hint);
+    return false;
+  }
+  clearErr('cap');
+  return true;
+}
+
+// Preload JSON al primo arrivo allo step 2 (UX migliore)
+var _origGoStep = window.goStep;
 </script>
 
 <script>
@@ -745,8 +1120,15 @@ function validateStep(s) {
 
     if (!regione) { setErr('regione'); ok = false; } else clearErr('regione');
     if (!provincia) { setErr('provincia'); ok = false; } else clearErr('provincia');
-    if (!comune) { setErr('comune'); ok = false; } else clearErr('comune');
+    if (!validateComune()) { ok = false; }
+    if (!validateCAP()) { ok = false; }
     if (!comp) { setErr('componenti'); ok = false; } else clearErr('componenti');
+  }
+  // Ez 06.05.26 - Bug B.2.30 fix: validazione step 3 (tipologia + insegna lista chiusa)
+  if (s === 3) {
+    if (!validateTipologia()) { ok = false; }
+    if (!validateInsegna()) { ok = false; }
+    if (!validateInsegnaSpec()) { ok = false; }
   }
   return ok;
 }
@@ -775,7 +1157,9 @@ async function invia() {
     provincia: document.getElementById('provincia').value,
     comune: document.getElementById('comune').value.trim(),
     componenti: parseInt(document.getElementById('componenti').value) || document.getElementById('componenti').value,
-    supermercato: document.getElementById('supermercato').value,
+    tipologia: document.getElementById('tipologia').value,
+    supermercato: (document.getElementById('supermercato').value || document.getElementById('insegnaSpec').value || '').trim(),
+    insegnaSpec: document.getElementById('insegnaSpec').value.trim() || null,
     nNegozi: document.getElementById('nNegozi').value,
     chiSpesa: document.getElementById('chiSpesa').value,
     spesaMedia: document.getElementById('spesaMedia').value,
