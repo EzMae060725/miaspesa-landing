@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P22 (Ez 05.11.26): nome "Le mie spese", logo unico, risposta entro 2-3 giorni lavorativi
+<!-- candidatura.html - P25 (Ez 05.11.26): domanda "Con quale telefono userai l'app?" (Android / iPhone / Non so / Non ho uno
+     smartphone, che non fa proseguire); invio di telefonoTipo e CAP (backend P24, migrazione 27)
+     P22 (Ez 05.11.26): nome "Le mie spese", logo unico, risposta entro 2-3 giorni lavorativi
      (come nell'email), proposta di correzione dei domini email scritti male (gamil.com, hotmial.it...) -->
 <html lang="it">
 <head>
@@ -228,6 +230,29 @@
       <div class="field">
         <label>Tel. fisso <span class="opt">(opzionale)</span></label>
         <input type="tel" id="telefonoFisso" placeholder="02 1234567">
+      </div>
+    </div>
+
+    <!-- Ez 05.11.26 P25 - telefono con cui la famiglia userà l'app (requisito + istruzioni giuste) -->
+    <div class="field" id="f-telefonoTipo">
+      <label>Con quale telefono userai l'app? *</label>
+      <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+          <label id="rt-android" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border-radius:50px;border:1.5px solid #E5E7EB;font-size:0.9rem;font-weight:500;transition:all 0.15s;background:white">
+            <input type="radio" name="telefonoTipo" value="android" style="display:none" onchange="onTelefonoTipo()"> Android
+          </label>
+          <label id="rt-iphone" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border-radius:50px;border:1.5px solid #E5E7EB;font-size:0.9rem;font-weight:500;transition:all 0.15s;background:white">
+            <input type="radio" name="telefonoTipo" value="iphone" style="display:none" onchange="onTelefonoTipo()"> iPhone
+          </label>
+          <label id="rt-nonso" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border-radius:50px;border:1.5px solid #E5E7EB;font-size:0.9rem;font-weight:500;transition:all 0.15s;background:white">
+            <input type="radio" name="telefonoTipo" value="nonso" style="display:none" onchange="onTelefonoTipo()"> Non so
+          </label>
+          <label id="rt-nessuno" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border-radius:50px;border:1.5px solid #E5E7EB;font-size:0.9rem;font-weight:500;transition:all 0.15s;background:white">
+            <input type="radio" name="telefonoTipo" value="nessuno" style="display:none" onchange="onTelefonoTipo()"> Non ho uno smartphone
+          </label>
+      </div>
+      <div class="err">Indica il telefono con cui userai l'app</div>
+      <div id="tel-nessuno" style="display:none;margin-top:10px;background:#FFF7E6;border:1.5px solid #FAC775;border-radius:10px;padding:12px 14px;font-size:0.84rem;color:#633806;line-height:1.55">
+        Per partecipare serve uno smartphone con fotocamera: l'app si usa fotografando gli scontrini della spesa. Grazie comunque per l'interesse!
       </div>
     </div>
 
@@ -865,6 +890,20 @@ function confirmEmail(ok) {
   }
 }
 
+// Ez 05.11.26 P25 - scelta del telefono: evidenzia la scelta e ferma chi non ha uno smartphone
+function onTelefonoTipo() {
+  var scelto = (document.querySelector('input[name="telefonoTipo"]:checked') || {}).value || '';
+  ['android','iphone','nonso','nessuno'].forEach(function(v) {
+    var lbl = document.getElementById('rt-' + v);
+    var on = (v === scelto);
+    lbl.style.borderColor = on ? 'var(--viola)' : '#E5E7EB';
+    lbl.style.background = on ? 'rgba(60,52,137,0.08)' : 'white';
+    lbl.style.color = on ? 'var(--viola)' : 'var(--nero)';
+  });
+  document.getElementById('tel-nessuno').style.display = scelto === 'nessuno' ? 'block' : 'none';
+  if (scelto) clearErr('telefonoTipo');
+}
+
 function styleRadio() {
   ['F','M','A'].forEach(function(v) {
     var lbl = document.getElementById('r-' + v);
@@ -1149,6 +1188,11 @@ function validateStep(s) {
       clearErr('cognome');
     }
     if (!sesso) { setErr('sesso'); ok = false; } else clearErr('sesso');
+    // Ez 05.11.26 P25 - telefono obbligatorio; "Non ho uno smartphone" non fa proseguire
+    var telTipo = (document.querySelector('input[name="telefonoTipo"]:checked') || {}).value || '';
+    if (!telTipo) { setErr('telefonoTipo'); ok = false; }
+    else if (telTipo === 'nessuno') { document.getElementById('tel-nessuno').style.display = 'block'; ok = false; }
+    else clearErr('telefonoTipo');
     if (!anno || anno < 1924 || anno > 2006) { setErr('anno'); ok = false; } else clearErr('anno');
     // Ez 05.05.26 - Bug B.2.18 fix: regex email con TLD min 2 char (blocca nome@dominio.i)
     if (!email) {
@@ -1232,7 +1276,9 @@ async function invia() {
     posizioneNegozio: document.getElementById('posizioneNegozio').value,
     acquistiOnline: document.getElementById('acquistiOnline').value,
     alimentariOnline: document.getElementById('alimentariOnline').value,
-    note: document.getElementById('note').value.trim()
+    note: document.getElementById('note').value.trim(),
+    telefonoTipo: (document.querySelector('input[name="telefonoTipo"]:checked') || {}).value || '', // Ez 05.11.26 P25
+    cap: document.getElementById('cap').value.trim()
   };
 
   try {
