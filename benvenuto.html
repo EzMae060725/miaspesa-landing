@@ -1,9 +1,13 @@
 <!DOCTYPE html>
+<!-- benvenuto.html v2.0 - P19 (Ez 05.11.26): nome unico "Le mie spese", euro al posto dei punti, solo buoni Amazon,
+     passo "Entra" con codice + PIN temporaneo (vale quello dell'ultima email), pulsante principale subito sotto il codice
+     con ?code= (l'app precompila il codice), QR code sul computer per aprire l'app sul telefono, istruzioni per iPhone /
+     Android in un solo punto, riquadro demo tolto, assistenza panel@miaspesa.com -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Benvenuto - Panel Scontrini Italia</title>
+<title>Benvenuto - Le mie spese</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%233C3489'/><text y='.9em' font-size='70' x='50%25' text-anchor='middle' dy='0.1em'>&#x1F6D2;</text></svg>">
@@ -11,191 +15,186 @@
 :root { --viola:#3C3489;--oro:#F59E0B;--oro-light:#FDE68A;--verde:#1D9E75;--bianco:#FAFAF8;--grigio:#6B7280;--nero:#1A1A2E; }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--bianco);color:var(--nero);min-height:100vh;}
-.hero{background:linear-gradient(135deg,#2a2460 0%,#3C3489 100%);padding:48px 5% 48px;text-align:center;}
+.hero{background:linear-gradient(135deg,#2a2460 0%,#3C3489 100%);padding:44px 5% 52px;text-align:center;}
 .hero-label{font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--oro-light);margin-bottom:12px;}
-.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;color:white;margin-bottom:8px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;color:white;margin-bottom:8px;line-height:1.15;}
 .hero h1 span{color:var(--oro);}
-.hero p{color:rgba(255,255,255,0.7);font-size:0.95rem;max-width:460px;margin:0 auto;line-height:1.6;}
-.codice-wrap{padding:0 5%;margin-top:-24px;position:relative;z-index:10;}
-.codice-box{max-width:500px;margin:0 auto;background:white;border-radius:20px;box-shadow:0 8px 32px rgba(60,52,137,0.15);padding:28px 32px;text-align:center;}
+.hero p{color:rgba(255,255,255,0.78);font-size:0.95rem;max-width:460px;margin:0 auto;line-height:1.6;}
+.codice-wrap{padding:0 5%;margin-top:-28px;position:relative;z-index:10;}
+.codice-box{max-width:500px;margin:0 auto;background:white;border-radius:20px;box-shadow:0 8px 32px rgba(60,52,137,0.15);padding:26px 28px;text-align:center;}
 .codice-label{font-size:0.78rem;font-weight:600;color:var(--grigio);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
-.codice-value{font-family:monospace;font-size:2rem;font-weight:700;color:white;background:var(--viola);padding:10px 28px;border-radius:12px;display:inline-block;letter-spacing:3px;margin-bottom:8px;}
-.codice-copy{display:block;font-size:0.78rem;color:var(--grigio);cursor:pointer;margin-top:4px;}
+.codice-value{font-family:monospace;font-size:2rem;font-weight:700;color:white;background:var(--viola);padding:10px 28px;border-radius:12px;display:inline-block;letter-spacing:3px;margin-bottom:6px;}
+.codice-copy{display:block;font-size:0.78rem;color:var(--grigio);cursor:pointer;margin-top:4px;background:none;border:none;width:100%;font-family:inherit;}
 .codice-copy:hover{color:var(--viola);}
-.steps-wrap{max-width:600px;margin:40px auto;padding:0 20px;}
+.pin-note{background:#FFF7E6;border:1.5px dashed #FAC775;border-radius:12px;padding:12px 14px;margin:18px 0 18px;font-size:0.84rem;color:#633806;line-height:1.55;text-align:left;}
+.pin-note strong{color:#854F0B;}
+.btn-accedi{display:block;width:100%;background:var(--verde);color:white;padding:16px 24px;border-radius:50px;font-size:1.05rem;font-weight:700;text-decoration:none;box-shadow:0 8px 24px rgba(29,158,117,0.35);text-align:center;}
+.cta-note{font-size:0.78rem;color:var(--grigio);margin-top:10px;}
+.qr-box{display:none;margin-top:20px;padding-top:18px;border-top:1px solid #E5E7EB;}
+.qr-box p{font-size:0.84rem;color:#374151;line-height:1.5;margin-bottom:12px;}
+#qr{display:inline-block;padding:10px;background:white;border:1px solid #E5E7EB;border-radius:12px;}
+.steps-wrap{max-width:600px;margin:40px auto 24px;padding:0 20px;}
 .steps-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;margin-bottom:24px;text-align:center;}
 .steps-title em{font-style:normal;color:var(--viola);}
 .step-item{display:flex;gap:16px;align-items:flex-start;background:white;border-radius:16px;padding:20px 22px;margin-bottom:12px;border:1px solid rgba(60,52,137,0.08);box-shadow:0 2px 8px rgba(0,0,0,0.04);}
 .step-num{width:36px;height:36px;border-radius:50%;background:var(--viola);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;}
 .step-txt h3{font-size:0.95rem;font-weight:700;margin-bottom:4px;}
-.step-txt p{font-size:0.82rem;color:var(--grigio);line-height:1.55;}
-.pwa-box{max-width:600px;margin:0 auto 32px;padding:0 20px;}
-.pwa-card{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid rgba(60,52,137,0.15);border-radius:16px;padding:22px 24px;}
-.pwa-title{font-weight:700;font-size:0.95rem;margin-bottom:14px;color:var(--viola);}
-.pwa-steps{list-style:none;}
-.pwa-steps li{font-size:0.82rem;color:#374151;padding:5px 0;display:flex;align-items:center;gap:8px;}
-.pwa-steps li::before{content:">";color:var(--viola);font-weight:700;}
-.cta-wrap{max-width:600px;margin:0 auto 48px;padding:0 20px;text-align:center;}
-.btn-accedi{display:inline-block;width:100%;background:var(--verde);color:white;padding:16px 32px;border-radius:50px;font-size:1.05rem;font-weight:700;text-decoration:none;box-shadow:0 8px 24px rgba(29,158,117,0.35);}
-.cta-note{font-size:0.78rem;color:var(--grigio);margin-top:12px;}
+.step-txt p{font-size:0.84rem;color:var(--grigio);line-height:1.55;}
+.step-txt p + p{margin-top:6px;}
+.guida{background:#f5f3ff;border-radius:12px;padding:14px 16px;font-size:0.82rem;color:#374151;line-height:1.7;margin-top:12px;}
+.guida strong.os{color:var(--viola);}
+.guida-alt{display:inline-block;margin-top:8px;font-size:0.78rem;color:var(--viola);background:none;border:none;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0;}
+.aiuto{max-width:600px;margin:0 auto 40px;padding:0 20px;}
+.aiuto-card{background:white;border:1px solid rgba(60,52,137,0.12);border-radius:16px;padding:18px 22px;font-size:0.84rem;color:#374151;line-height:1.6;}
+.aiuto-card a{color:var(--viola);font-weight:600;text-decoration:none;}
 footer{text-align:center;padding:24px 5%;font-size:0.78rem;color:var(--grigio);border-top:1px solid #E5E7EB;}
+@media (max-width:420px){ .codice-box{padding:22px 18px;} .codice-value{font-size:1.6rem;padding:10px 18px;letter-spacing:2px;} .step-item{padding:18px 16px;gap:12px;} }
 </style>
 </head>
 <body>
 <div class="hero">
-  <div class="hero-label">Panel Scontrini Italia &middot; Nomesis</div>
-  <h1>Benvenuto<br><span>nel panel! &#x1F389;</span></h1>
-  <p>Sei ufficialmente parte del panel. Segui i passi qui sotto per iniziare a guadagnare punti.</p>
+  <div class="hero-label">Il panel della spesa delle famiglie italiane &middot; Nomesis</div>
+  <h1>Benvenuto<br><span>in Le mie spese! &#x1F389;</span></h1>
+  <p>La tua famiglia fa parte del panel. Entra con il codice qui sotto e il PIN che trovi nell'email: bastano due minuti.</p>
 </div>
 
 <div class="codice-wrap">
   <div class="codice-box">
     <div class="codice-label">Il tuo codice famiglia</div>
     <div class="codice-value" id="codiceDisplay">&mdash;</div>
-    <span class="codice-copy" onclick="copyCodice()">Tocca per copiare</span>
+    <button type="button" class="codice-copy" id="btnCopia" onclick="copyCodice()">Tocca per copiare</button>
     <div id="copy-ok" style="font-size:0.78rem;color:var(--verde);margin-top:4px;display:none">Copiato!</div>
+
+    <div class="pin-note">
+      <strong>Il PIN temporaneo (6 cifre)</strong> &egrave; nell'email &ldquo;Benvenuto in Le mie spese&rdquo;.
+      Al primo accesso scegli il tuo PIN personale. Se hai ricevuto pi&ugrave; email, vale il PIN dell'<strong>ultima</strong>.
+    </div>
+
+    <a href="https://app.miaspesa.com" class="btn-accedi" id="btnAccedi">Entra in Le mie spese</a>
+    <p class="cta-note">Oppure apri <strong>app.miaspesa.com</strong> dal browser del telefono</p>
+
+    <div class="qr-box" id="qrBox">
+      <p>Sei al computer? <strong>Inquadra il codice QR con la fotocamera del telefono</strong>: l'app si apre gi&agrave; con il tuo codice famiglia.</p>
+      <div id="qr"></div>
+    </div>
   </div>
 </div>
 
 <div class="steps-wrap">
-  <div style="background:#FFF7ED;border:1px solid #FDE68A;border-radius:14px;padding:16px 18px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start">
-  <span style="font-size:18px;flex-shrink:0">&#x1F9EA;</span>
-  <div>
-    <div style="font-weight:700;font-size:0.9rem;color:#854F0B;margin-bottom:4px">Prima di iniziare &mdash; vuoi fare una prova?</div>
-    <div style="font-size:0.8rem;color:#633806;line-height:1.6;margin-bottom:10px">Esplora l'app con dati fittizi, senza rischi. Zero impegno, zero dati reali.</div>
-    <a href="https://app.miaspesa.com/?demo=true" style="font-size:0.8rem;font-weight:600;color:#3C3489;text-decoration:none;background:white;border:1.5px solid #3C3489;border-radius:50px;padding:6px 16px;display:inline-block">Entra nell'ambiente demo</a>
-  </div>
-</div>
-<h2 class="steps-title">Come <em>iniziare</em></h2>
-  <div class="step-item" style="flex-direction:column;gap:12px">
-    <div style="display:flex;gap:16px;align-items:flex-start">
-      <div class="step-num">1</div>
-      <div class="step-txt">
-        <h3>Aggiungi l'icona "Le mie spese" al telefono</h3>
-        <p>Salva "Le mie spese" sulla schermata home o nell'elenco delle app &mdash; senza scaricare nulla dallo store.<br><span style="font-size:0.78rem;color:#9ca3af">(Non &egrave; una app tradizionale ma un link diretto a app.miaspesa.com)</span></p>
-        <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap">
-          <button onclick="togglePwa()" id="pwa-btn"
-            style="background:var(--viola);color:white;border:none;border-radius:50px;padding:7px 16px;font-size:0.8rem;font-weight:600;cursor:pointer">
-            Mostra come fare
-          </button>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-            <div style="width:52px;height:52px;background:#3C3489;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 10px rgba(60,52,137,0.3)">&#x1F6D2;</div>
-            <span style="font-size:0.65rem;color:var(--grigio);text-align:center;line-height:1.2">Le mie<br>spese</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="pwa-guide" style="display:none;background:#f5f3ff;border-radius:12px;padding:16px 18px;font-size:0.82rem;color:#374151;line-height:1.7">
-      <div id="guide-ios" style="display:none">
-        <strong style="color:var(--viola)">iPhone (Safari):</strong><br>
-        1. Apri <strong>app.miaspesa.com</strong> con Safari<br>
-        2. Tocca il tasto <strong>Condividi</strong> (quadrato con freccia in basso)<br>
-        3. Scorri e tocca <strong>"Aggiungi a schermata Home"</strong><br>
-        4. Tocca <strong>Aggiungi</strong> in alto a destra &mdash; l'icona apparir&agrave; sulla home
-      </div>
-      <div id="guide-android" style="display:none">
-        <strong style="color:var(--viola)">Android (Chrome):</strong><br>
-        1. Apri <strong>app.miaspesa.com</strong> con Chrome<br>
-        2. Tocca i <strong>3 puntini</strong> in alto a destra<br>
-        3. Tocca <strong>"Aggiungi a schermata Home"</strong><br>
-        4. Tocca <strong>Aggiungi</strong> &mdash; l'icona apparir&agrave; sulla home
-      </div>
-      <div id="guide-other">
-        <strong style="color:var(--viola)">Dal browser del telefono:</strong><br>
-        1. Apri <strong>app.miaspesa.com</strong><br>
-        2. Cerca <strong>"Aggiungi a schermata Home"</strong> nel menu del browser<br>
-        3. Conferma &mdash; l'icona apparir&agrave; sulla home
-      </div>
+  <h2 class="steps-title">Come <em>iniziare</em></h2>
+
+  <div class="step-item">
+    <div class="step-num">1</div>
+    <div class="step-txt">
+      <h3>Entra con codice e PIN</h3>
+      <p>Tocca &ldquo;Entra in Le mie spese&rdquo;, inserisci il PIN temporaneo dell'email e scegli il tuo PIN personale di 6 cifre. Da quel momento entri con il codice famiglia e il tuo PIN.</p>
     </div>
   </div>
+
   <div class="step-item">
     <div class="step-num">2</div>
-    <div class="step-txt"><h3>Accedi con il tuo codice</h3><p>Apri l'app e inserisci il codice famiglia qui sopra. Conservalo &mdash; ti serve ogni volta che accedi.</p></div>
+    <div class="step-txt">
+      <h3>Aggiungi l'icona al telefono</h3>
+      <p>Cos&igrave; &ldquo;Le mie spese&rdquo; si apre con un tocco, come un'app, senza scaricare nulla dallo store.</p>
+      <div class="guida">
+        <div id="guide-ios" style="display:none">
+          <strong class="os">iPhone (con Safari):</strong><br>
+          1. Apri <strong>app.miaspesa.com</strong> con Safari<br>
+          2. Tocca il tasto <strong>Condividi</strong> (il quadrato con la freccia verso l'alto)<br>
+          3. Scorri e tocca <strong>&ldquo;Aggiungi alla schermata Home&rdquo;</strong><br>
+          4. Tocca <strong>Aggiungi</strong> in alto a destra
+        </div>
+        <div id="guide-android" style="display:none">
+          <strong class="os">Android (con Chrome):</strong><br>
+          1. Apri <strong>app.miaspesa.com</strong> con Chrome<br>
+          2. Tocca i <strong>3 puntini</strong> in alto a destra<br>
+          3. Tocca <strong>&ldquo;Aggiungi a schermata Home&rdquo;</strong> (o &ldquo;Installa app&rdquo;)<br>
+          4. Tocca <strong>Aggiungi</strong> per confermare
+        </div>
+        <button type="button" class="guida-alt" id="btnAltro" onclick="mostraAltro()">Hai l'altro tipo di telefono? Mostra le istruzioni</button>
+      </div>
+    </div>
   </div>
+
   <div class="step-item">
     <div class="step-num">3</div>
-    <div class="step-txt"><h3>Fotografa il primo scontrino</h3><p>Dopo la prossima spesa, apri l'app e fotografa lo scontrino. In pochi secondi senti il beep &mdash; e i punti sono tuoi!</p></div>
+    <div class="step-txt">
+      <h3>Fotografa il primo scontrino</h3>
+      <p>Dopo la spesa apri l'app e fotografa lo scontrino: in pochi secondi &egrave; registrato e il tuo saldo cresce.</p>
+      <p>Ogni scontrino vale fino a 2 &euro; se lo carichi entro un'ora dall'acquisto, con foto nitida e scontrino completo.</p>
+    </div>
   </div>
+
   <div class="step-item">
     <div class="step-num">4</div>
-    <div class="step-txt"><h3>Accumula e riscatta i premi</h3><p>Ogni scontrino vale punti. Quando raggiungi la soglia, riscatta buoni Amazon, carburante o spesa a tua scelta.</p></div>
-  </div>
-</div>
-
-<div class="pwa-box">
-  <div class="pwa-card">
-    <div class="pwa-title">Come aggiungere l'app alla schermata home</div>
-    <div id="pwa-ios" style="display:none">
-      <ul class="pwa-steps">
-        <li>Apri il link qui sotto con <strong>Safari</strong></li>
-        <li>Tocca il tasto <strong>Condividi</strong> (quadrato con freccia)</li>
-        <li>Scorri e tocca <strong>"Aggiungi a schermata Home"</strong></li>
-        <li>Tocca <strong>Aggiungi</strong> in alto a destra</li>
-      </ul>
-    </div>
-    <div id="pwa-android" style="display:none">
-      <ul class="pwa-steps">
-        <li>Apri il link qui sotto con <strong>Chrome</strong></li>
-        <li>Tocca i <strong>3 puntini</strong> in alto a destra</li>
-        <li>Tocca <strong>"Aggiungi a schermata Home"</strong></li>
-        <li>Tocca <strong>Aggiungi</strong> per confermare</li>
-      </ul>
-    </div>
-    <div id="pwa-other">
-      <ul class="pwa-steps">
-        <li>Apri <strong>app.miaspesa.com</strong> nel browser del telefono</li>
-        <li>Cerca <strong>"Aggiungi a schermata Home"</strong> nel menu del browser</li>
-      </ul>
+    <div class="step-txt">
+      <h3>Il saldo diventa buoni Amazon</h3>
+      <p>Arrivato a 10 &euro; chiedi il tuo primo buono Amazon, poi ogni 15 &euro;. Il saldo maturato non scade e non si perde.</p>
     </div>
   </div>
 </div>
 
-<div class="cta-wrap">
-  <a href="https://app.miaspesa.com" class="btn-accedi" id="btnAccedi">Apri Le mie spese</a>
-  <p class="cta-note">Oppure vai su <strong>app.miaspesa.com</strong> dal browser del telefono</p>
-<p style="margin-top:10px;font-size:0.78rem;color:var(--grigio)">Vuoi prima esplorare senza dati reali? <a href="https://app.miaspesa.com/?demo=true" style="color:var(--viola);font-weight:600;text-decoration:none">Entra nel demo</a></p>
+<div class="aiuto">
+  <div class="aiuto-card">
+    <strong>Non riesci a entrare?</strong> Controlla di usare il PIN dell'ultima email ricevuta.
+    Se non funziona ancora, scrivici a <a href="mailto:panel@miaspesa.com">panel@miaspesa.com</a> indicando il tuo codice famiglia.
+  </div>
 </div>
 
 <footer>
-  2026 Nomesis S.a.s. &middot; Panel Scontrini Italia &middot; <a href="contatti.html" style="color:var(--viola)">Contatti</a> &middot; <a href="mailto:panel@miaspesa.com" style="color:var(--viola)">panel@miaspesa.com</a>
+  2026 Nomesis S.a.s. &middot; Le mie spese &middot; <a href="contatti.html" style="color:var(--viola)">Contatti</a> &middot; <a href="mailto:panel@miaspesa.com" style="color:var(--viola)">panel@miaspesa.com</a>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
+// Codice dal link dell'email (?codice=FAM-K7X3P2). Accettato solo se ha la forma di un codice famiglia.
 var params = new URLSearchParams(window.location.search);
-var codice = params.get('codice') || '-';
-document.getElementById('codiceDisplay').textContent = codice;
-document.getElementById('btnAccedi').href = 'https://app.miaspesa.com?code=' + codice;
+var grezzo = (params.get('codice') || '').trim().toUpperCase();
+var codice = /^[A-Z0-9_-]{2,30}$/.test(grezzo) ? grezzo : '';
+var linkApp = codice ? 'https://app.miaspesa.com/?code=' + encodeURIComponent(codice) : 'https://app.miaspesa.com';
+document.getElementById('codiceDisplay').textContent = codice || '\u2014';
+document.getElementById('btnAccedi').href = linkApp;
+if (!codice) {
+  document.getElementById('btnCopia').style.display = 'none';
+}
 
 function copyCodice() {
-  if (navigator.clipboard && codice !== '-') {
-    navigator.clipboard.writeText(codice).then(function() {
-      document.getElementById('copy-ok').style.display = 'block';
-      setTimeout(function() { document.getElementById('copy-ok').style.display = 'none'; }, 2000);
-    });
-  }
+  if (!codice || !navigator.clipboard) return;
+  navigator.clipboard.writeText(codice).then(function() {
+    var ok = document.getElementById('copy-ok');
+    ok.style.display = 'block';
+    setTimeout(function() { ok.style.display = 'none'; }, 2000);
+  });
 }
 
+// Istruzioni per il telefono che si sta usando; sul computer si vedono entrambe
 var ua = navigator.userAgent;
-var isIos = /iPad|iPhone|iPod/.test(ua);
+var isIos = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 var isAndroid = /Android/.test(ua);
-
+var isTelefono = isIos || isAndroid;
 if (isIos) {
-  document.getElementById('pwa-ios').style.display = 'block';
   document.getElementById('guide-ios').style.display = 'block';
 } else if (isAndroid) {
-  document.getElementById('pwa-android').style.display = 'block';
   document.getElementById('guide-android').style.display = 'block';
 } else {
-  document.getElementById('pwa-other').style.display = 'block';
-  document.getElementById('guide-other').style.display = 'block';
+  document.getElementById('guide-ios').style.display = 'block';
+  document.getElementById('guide-android').style.display = 'block';
+  document.getElementById('guide-android').style.marginTop = '10px';
+  document.getElementById('btnAltro').style.display = 'none';
+}
+function mostraAltro() {
+  document.getElementById('guide-ios').style.display = 'block';
+  document.getElementById('guide-android').style.display = 'block';
+  document.getElementById(isIos ? 'guide-android' : 'guide-ios').style.marginTop = '10px';
+  document.getElementById('btnAltro').style.display = 'none';
 }
 
-function togglePwa() {
-  var guide = document.getElementById('pwa-guide');
-  var btn = document.getElementById('pwa-btn');
-  var visible = guide.style.display === 'block';
-  guide.style.display = visible ? 'none' : 'block';
-  btn.textContent = visible ? 'Mostra come fare' : 'Nascondi istruzioni';
+// Sul computer: codice QR che apre l'app sul telefono con il codice gia' inserito (se la libreria non si carica, niente QR)
+if (!isTelefono && typeof QRCode === 'function') {
+  try {
+    new QRCode(document.getElementById('qr'), { text: linkApp, width: 148, height: 148, colorDark: '#3C3489', colorLight: '#ffffff' });
+    document.getElementById('qrBox').style.display = 'block';
+  } catch (e) { /* niente QR */ }
 }
 </script>
 </body>
