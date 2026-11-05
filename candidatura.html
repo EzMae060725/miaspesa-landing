@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P25 (Ez 05.11.26): domanda "Con quale telefono userai l'app?" (Android / iPhone / Non so / Non ho uno
+<!-- candidatura.html - P26 (Ez 06.11.26): "Candidatura ricevuta!" solo se il backend conferma (success), errori (doppione,
+     smartphone, connessione) in un riquadro rosso sopra i pulsanti
+     P25 (Ez 05.11.26): domanda "Con quale telefono userai l'app?" (Android / iPhone / Non so / Non ho uno
      smartphone, che non fa proseguire); invio di telefonoTipo e CAP (backend P24, migrazione 27)
      P22 (Ez 05.11.26): nome "Le mie spese", logo unico, risposta entro 2-3 giorni lavorativi
      (come nell'email), proposta di correzione dei domini email scritti male (gamil.com, hotmial.it...) -->
@@ -486,6 +488,8 @@
       </label>
       <div id="err-privacy" style="font-size:0.75rem;color:#ef4444;margin-top:6px;display:none">Devi accettare la privacy policy per procedere</div>
     </div>
+
+    <div id="err-invio" role="alert" style="display:none;margin-top:16px;background:#fef2f2;border:1.5px solid rgba(220,38,38,0.35);border-radius:10px;padding:12px 14px;font-size:0.86rem;color:#991b1b;line-height:1.55"></div>
 
     <div class="btn-nav">
       <button class="btn-indietro" onclick="goStep(2)">← Indietro</button>
@@ -1240,7 +1244,16 @@ function validateStep(s) {
   return ok;
 }
 
+// Ez 06.11.26 P26 - errore dell'invio in un riquadro sopra i pulsanti, non in una finestra del browser
+function mostraErroreInvio(msg) {
+  var box = document.getElementById('err-invio');
+  box.textContent = msg;
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 async function invia() {
+  document.getElementById('err-invio').style.display = 'none';
   if (!validateStep(3)) return;
   var privacyOk = document.getElementById('privacyOk').checked;
   var errPrivacy = document.getElementById('err-privacy');
@@ -1289,19 +1302,21 @@ async function invia() {
     });
     var data = await res.json();
 
-    if (res.ok || data.success) {
+    // Ez 06.11.26 P26 - il backend risponde sempre con HTTP 200: conta solo data.success (prima un rifiuto, per esempio
+    // la candidatura doppia, mostrava comunque "Candidatura ricevuta!")
+    if (data && data.success === true) {
       // Mostra successo
       document.querySelectorAll('.step-panel').forEach(function(p) { p.style.display = 'none'; });
       document.getElementById('successBox').style.display = 'block';
       document.querySelector('.progress-wrap').style.display = 'none';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      alert(data.error || 'Errore durante l\'invio. Riprova.');
+      mostraErroreInvio((data && data.error) || 'Errore durante l\'invio. Riprova.');
       btn.classList.remove('loading');
       btn.disabled = false;
     }
   } catch (e) {
-    alert('Errore di connessione. Controlla la connessione e riprova.');
+    mostraErroreInvio('Errore di connessione. Controlla la connessione e riprova.');
     btn.classList.remove('loading');
     btn.disabled = false;
   }
