@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <!-- Logo master "Le mie spese" (Ez 05.11.26 P22): carrello con scontrino e riga oro, come nel login dell'app -->
+  <rect x="0" y="0" width="80" height="80" rx="18" fill="#3C3489"/>
+  <path d="M 14 22 L 22 22 L 26 30" stroke="#ffffff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="26" y="30" width="36" height="22" rx="2" fill="#ffffff"/>
+  <line x1="32" y1="36" x2="56" y2="36" stroke="#3C3489" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="32" y1="41" x2="50" y2="41" stroke="#3C3489" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="32" y1="46" x2="56" y2="46" stroke="#FAC775" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="34" cy="62" r="3.5" fill="#ffffff"/>
+  <circle cx="54" cy="62" r="3.5" fill="#ffffff"/>
+  <line x1="34" y1="58" x2="54" y2="58" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,12 +1,16 @@
 <!DOCTYPE html>
+<!-- candidatura.html - P22 (Ez 05.11.26): nome "Le mie spese", logo unico, risposta entro 2-3 giorni lavorativi
+     (come nell'email), proposta di correzione dei domini email scritti male (gamil.com, hotmial.it...) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Candidati al panel — La Spesa che Conta</title>
+<title>Candidati — Le mie spese</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%233C3489'/><text y='.9em' font-size='70' x='50%' text-anchor='middle' dy='0.1em'>🛒</text></svg>">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
   :root {
     --viola: #3C3489; --viola-dark: #2a2460; --viola-light: #5a4fc4;
@@ -121,14 +125,14 @@
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">La Spesa<span>.</span>che Conta</a>
+  <a href="index.html" class="nav-logo">Le mie spese</a>
   <a href="index.html" class="nav-back">← Torna al sito</a>
 </nav>
 
 <div class="hero-mini">
   <div class="label">Candidatura al panel</div>
-  <h1>Entra nel panel scontrini</h1>
-  <p>Compila il form in 2 minuti. Riceverai una risposta entro 48 ore.</p>
+  <h1>Candidati a Le mie spese</h1>
+  <p>Il panel della spesa delle famiglie italiane. Compila il modulo in 2 minuti: ti rispondiamo entro 2-3 giorni lavorativi.</p>
 </div>
 
 <!-- PROGRESS -->
@@ -204,6 +208,14 @@
         </div>
       </div>
       <div id="email-ok" style="display:none;margin-top:6px;font-size:0.8rem;color:var(--verde);font-weight:600">✅ Email confermata</div>
+      <!-- Ez 05.11.26 P22 - dominio scritto male (gamil.com, hotmial.it...): proposta di correzione -->
+      <div id="email-sugg" style="display:none;margin-top:8px;background:#FFF7E6;border:1.5px solid #FAC775;border-radius:10px;padding:12px 14px;font-size:0.82rem;color:#633806">
+        <span>Forse intendevi <strong id="email-sugg-txt"></strong>?</span>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="button" onclick="usaSuggerimento(true)" style="flex:1;background:var(--viola);color:white;border:none;border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">Sì, correggi</button>
+          <button type="button" onclick="usaSuggerimento(false)" style="flex:1;background:white;color:var(--viola);border:1.5px solid var(--viola);border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">No, è giusta</button>
+        </div>
+      </div>
     </div>
 
     <div class="grid2">
@@ -463,7 +475,8 @@
     <p>
       Grazie per aver compilato il modulo.<br>
       Riceverai una email di conferma a breve.<br>
-      La risposta sulla tua candidatura arriverà entro 48 ore.
+      La risposta sulla tua candidatura arriverà entro 2-3 giorni lavorativi.<br>
+      Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni.
     </p>
     <a href="index.html">← Torna alla home</a>
   </div>
@@ -779,11 +792,61 @@ function showEmailConfirm() {
   // Email sintatticamente valida: pulisce errore e mostra nudge semantico
   clearErr('email');
   if (emailConfirmed) return;
+  // Ez 05.11.26 P22 - prima della conferma, se il dominio sembra scritto male propone la correzione
+  var sugg = suggerisciEmail(email);
+  if (sugg && !suggerimentoRifiutato[email.toLowerCase()]) {
+    document.getElementById('email-sugg-txt').textContent = sugg;
+    document.getElementById('email-sugg').style.display = 'block';
+    document.getElementById('email-confirm').style.display = 'none';
+    document.getElementById('email-ok').style.display = 'none';
+    return;
+  }
   document.getElementById('email-preview').textContent = email;
   document.getElementById('email-confirm').style.display = 'block';
   document.getElementById('email-ok').style.display = 'none';
 }
+// Ez 05.11.26 P22 - domini piu' usati in Italia e confronto per distanza di battitura (al massimo 2 lettere diverse)
+var DOMINI_NOTI = ['gmail.com','hotmail.it','hotmail.com','libero.it','yahoo.it','yahoo.com','outlook.it','outlook.com','icloud.com','live.it','live.com','alice.it','virgilio.it','tiscali.it','tim.it','fastwebnet.it','email.it','inwind.it','me.com','msn.com'];
+var suggerimentoRifiutato = {};
+function distanzaBattitura(a, b) {
+  var m = a.length, n = b.length, d = [], i, j;
+  for (i = 0; i <= m; i++) { d[i] = [i]; }
+  for (j = 0; j <= n; j++) { d[0][j] = j; }
+  for (i = 1; i <= m; i++) {
+    for (j = 1; j <= n; j++) {
+      var c = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + c);
+      if (i > 1 && j > 1 && a.charAt(i - 1) === b.charAt(j - 2) && a.charAt(i - 2) === b.charAt(j - 1)) {
+        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1); // lettere invertite (gmial)
+      }
+    }
+  }
+  return d[m][n];
+}
+function suggerisciEmail(email) {
+  var at = email.lastIndexOf('@');
+  if (at < 1) return null;
+  var utente = email.slice(0, at), dominio = email.slice(at + 1).toLowerCase();
+  if (DOMINI_NOTI.indexOf(dominio) >= 0) return null;
+  var migliore = null, dist = 3;
+  DOMINI_NOTI.forEach(function(d) {
+    var x = distanzaBattitura(dominio, d);
+    if (x < dist) { dist = x; migliore = d; }
+  });
+  return migliore && dist <= 2 ? utente + '@' + migliore : null;
+}
+function usaSuggerimento(si) {
+  var inp = document.getElementById('email');
+  document.getElementById('email-sugg').style.display = 'none';
+  if (si) {
+    inp.value = document.getElementById('email-sugg-txt').textContent;
+  } else {
+    suggerimentoRifiutato[inp.value.trim().toLowerCase()] = true;
+  }
+  showEmailConfirm();
+}
 function hideEmailConfirm() {
+  document.getElementById('email-sugg').style.display = 'none';
   emailConfirmed = false;
   document.getElementById('email-confirm').style.display = 'none';
   document.getElementById('email-ok').style.display = 'none';
