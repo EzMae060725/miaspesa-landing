@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P34 (Ez 06.11.26): uscendo da un campo vuoto non compare piu' l'errore rosso (nome, cognome, anno,
+<!-- candidatura.html - P36 (Ez 07.11.26): caselle "accetto i Termini e Condizioni" e "approvo specificamente il punto 8-bis"
+     (artt. 1341-1342 c.c.), obbligatorie, inviate al backend (P35, migrazione 28)
+     P34 (Ez 06.11.26): uscendo da un campo vuoto non compare piu' l'errore rosso (nome, cognome, anno,
      comune, CAP, insegna): i campi obbligatori vuoti si segnalano solo premendo Avanti
      P29 (Ez 06.11.26): email come primo campo del passo 1, verificata appena confermata ("Si', e' corretta"),
      prima di compilare il resto; resta anche la verifica su Avanti e quella all'invio
@@ -497,6 +499,26 @@
         </span>
       </label>
       <div id="err-privacy" style="font-size:0.75rem;color:#ef4444;margin-top:6px;display:none">Devi accettare la privacy policy per procedere</div>
+    </div>
+
+    <!-- Ez 07.11.26 P36 - accettazione dei Termini e approvazione specifica del punto 8-bis (artt. 1341-1342 c.c.) -->
+    <div style="background:var(--grigio-light);border-radius:12px;padding:16px 18px;margin-top:8px">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+        <input type="checkbox" id="terminiOk" style="width:auto;margin-top:3px;accent-color:var(--viola);flex-shrink:0" onchange="document.getElementById('err-termini').style.display='none'">
+        <span style="font-size:0.8rem;color:var(--grigio);line-height:1.65">
+          Ho letto e accetto i <a href="termini.html" target="_blank" style="color:var(--viola);font-weight:600;text-decoration:none">Termini e Condizioni</a> del panel Le mie spese. *
+        </span>
+      </label>
+      <div id="err-termini" style="font-size:0.75rem;color:#ef4444;margin-top:6px;display:none">Devi accettare i Termini e Condizioni per procedere</div>
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-top:12px">
+        <input type="checkbox" id="clausoleOk" style="width:auto;margin-top:3px;accent-color:var(--viola);flex-shrink:0" onchange="document.getElementById('err-clausole').style.display='none'">
+        <span style="font-size:0.8rem;color:var(--grigio);line-height:1.65">
+          Ai sensi degli artt. 1341 e 1342 del Codice Civile approvo specificamente il punto
+          <a href="termini.html" target="_blank" style="color:var(--viola);font-weight:600;text-decoration:none">8-bis dei Termini</a>
+          (cessazione o sospensione della partecipazione su iniziativa di Nomesis, con preavviso di 15 giorni e saldo maturato garantito). *
+        </span>
+      </label>
+      <div id="err-clausole" style="font-size:0.75rem;color:#ef4444;margin-top:6px;display:none">Serve l'approvazione specifica del punto 8-bis per procedere</div>
     </div>
 
     <div id="err-invio" role="alert" style="display:none;margin-top:16px;background:#fef2f2;border:1.5px solid rgba(220,38,38,0.35);border-radius:10px;padding:12px 14px;font-size:0.86rem;color:#991b1b;line-height:1.55"></div>
@@ -1323,6 +1345,9 @@ async function invia() {
   var errPrivacy = document.getElementById('err-privacy');
   if (!privacyOk) { errPrivacy.style.display = 'block'; return; }
   errPrivacy.style.display = 'none';
+  // Ez 07.11.26 P36 - Termini e approvazione specifica del punto 8-bis
+  if (!document.getElementById('terminiOk').checked) { document.getElementById('err-termini').style.display = 'block'; return; }
+  if (!document.getElementById('clausoleOk').checked) { document.getElementById('err-clausole').style.display = 'block'; return; }
 
   var btn = document.getElementById('btnInvia');
   btn.classList.add('loading');
@@ -1355,7 +1380,10 @@ async function invia() {
     alimentariOnline: document.getElementById('alimentariOnline').value,
     note: document.getElementById('note').value.trim(),
     telefonoTipo: (document.querySelector('input[name="telefonoTipo"]:checked') || {}).value || '', // Ez 05.11.26 P25
-    cap: document.getElementById('cap').value.trim()
+    cap: document.getElementById('cap').value.trim(),
+    terminiOk: document.getElementById('terminiOk').checked === true, // Ez 07.11.26 P36 (backend P35)
+    terminiVersione: '1.1',
+    clausoleOk: document.getElementById('clausoleOk').checked === true
   };
 
   try {
