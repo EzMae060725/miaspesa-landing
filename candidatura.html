@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P29 (Ez 06.11.26): email come primo campo del passo 1, verificata appena confermata ("Si', e' corretta"),
+<!-- candidatura.html - P34 (Ez 06.11.26): uscendo da un campo vuoto non compare piu' l'errore rosso (nome, cognome, anno,
+     comune, CAP, insegna): i campi obbligatori vuoti si segnalano solo premendo Avanti
+     P29 (Ez 06.11.26): email come primo campo del passo 1, verificata appena confermata ("Si', e' corretta"),
      prima di compilare il resto; resta anche la verifica su Avanti e quella all'invio
      P28 (Ez 06.11.26): al passo 1 "Avanti" verifica se l'email e' gia' usata per una candidatura
      (POST /join/:code/email-libera, backend P27); se la verifica non risponde si prosegue
@@ -197,12 +199,12 @@
     <div class="grid2">
       <div class="field" id="f-nome">
         <label>Nome *</label>
-        <input type="text" id="nome" placeholder="Mario" autocomplete="given-name" onblur="validateNomeCognome('nome')" oninput="clearErr('nome')">
+        <input type="text" id="nome" placeholder="Mario" autocomplete="given-name" onblur="if (this.value.trim()) validateNomeCognome('nome')" oninput="clearErr('nome')">
         <div class="err">Campo obbligatorio</div>
       </div>
       <div class="field" id="f-cognome">
         <label>Cognome *</label>
-        <input type="text" id="cognome" placeholder="Rossi" autocomplete="family-name" onblur="validateNomeCognome('cognome')" oninput="clearErr('cognome')">
+        <input type="text" id="cognome" placeholder="Rossi" autocomplete="family-name" onblur="if (this.value.trim()) validateNomeCognome('cognome')" oninput="clearErr('cognome')">
         <div class="err">Campo obbligatorio</div>
       </div>
     </div>
@@ -225,7 +227,7 @@
       </div>
       <div class="field" id="f-anno">
         <label>Anno di nascita *</label>
-        <input type="number" id="annoNascita" placeholder="es. 1980" min="1924" max="2006" onblur="validateAnno()" oninput="clearErr('anno')">
+        <input type="number" id="annoNascita" placeholder="es. 1980" min="1924" max="2006" onblur="if (this.value.trim()) validateAnno()" oninput="clearErr('anno')">
         <div class="err">Anno non valido (1924–2006)</div>
       </div>
     </div>
@@ -358,14 +360,14 @@
 
     <div class="field" id="f-supermercato" style="display:none">
       <label id="lbl-insegna">Insegna dove fate la spesa più spesso *</label>
-      <input type="text" id="supermercato" placeholder="Inizia a digitare..." list="insegne-list" autocomplete="off" onblur="validateInsegna()" oninput="onInsegnaInput()">
+      <input type="text" id="supermercato" placeholder="Inizia a digitare..." list="insegne-list" autocomplete="off" onblur="if (this.value.trim()) validateInsegna()" oninput="onInsegnaInput()">
       <datalist id="insegne-list"></datalist>
       <div class="err">Insegna non valida</div>
     </div>
 
     <div class="field" id="f-insegnaSpec" style="display:none">
       <label>Specifica nome insegna *</label>
-      <input type="text" id="insegnaSpec" placeholder="es. nome insegna locale" maxlength="80" onblur="validateInsegnaSpec()" oninput="clearErr('insegnaSpec')">
+      <input type="text" id="insegnaSpec" placeholder="es. nome insegna locale" maxlength="80" onblur="if (this.value.trim()) validateInsegnaSpec()" oninput="clearErr('insegnaSpec')">
       <div class="err">Specifica obbligatoria (min 3 caratteri)</div>
     </div>
 
@@ -1097,11 +1099,11 @@ document.getElementById('comune').addEventListener('input', function() {
 });
 
 document.getElementById('comune').addEventListener('blur', function() {
-  validateComune();
+  if (this.value.trim()) validateComune(); else clearErr('comune'); // Ez 06.11.26 P34 - campo vuoto: errore solo su Avanti
 });
 
 document.getElementById('cap').addEventListener('blur', function() {
-  validateCAP();
+  if (this.value.trim()) validateCAP(); else clearErr('cap'); // Ez 06.11.26 P34
 });
 
 document.getElementById('cap').addEventListener('input', function() {
