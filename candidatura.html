@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P26 (Ez 06.11.26): "Candidatura ricevuta!" solo se il backend conferma (success), errori (doppione,
+<!-- candidatura.html - P28 (Ez 06.11.26): al passo 1 "Avanti" verifica se l'email e' gia' usata per una candidatura
+     (POST /join/:code/email-libera, backend P27); se la verifica non risponde si prosegue
+     P26 (Ez 06.11.26): "Candidatura ricevuta!" solo se il backend conferma (success), errori (doppione,
      smartphone, connessione) in un riquadro rosso sopra i pulsanti
      P25 (Ez 05.11.26): domanda "Con quale telefono userai l'app?" (Android / iPhone / Non so / Non ho uno
      smartphone, che non fa proseguire); invio di telefonoTipo e CAP (backend P24, migrazione 27)
@@ -259,7 +261,7 @@
     </div>
 
     <div class="btn-nav">
-      <button class="btn-avanti" onclick="goStep(2)">Avanti →</button>
+      <button class="btn-avanti" id="btnAvanti1" onclick="avantiDaStep1()">Avanti →</button>
     </div>
   </div>
 
@@ -1148,6 +1150,33 @@ function goStep(n) {
   });
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Ez 06.11.26 P28 - al passo 1 si verifica subito se l'email e' gia' usata per una candidatura (backend P27).
+// Se la verifica non risponde (rete, troppe verifiche) si prosegue: resta il controllo all'invio.
+async function avantiDaStep1() {
+  if (!validateStep(1)) return;
+  var btn = document.getElementById('btnAvanti1');
+  var email = document.getElementById('email').value.trim();
+  btn.classList.add('loading'); btn.disabled = true;
+  try {
+    var ctrl = new AbortController();
+    var timer = setTimeout(function() { ctrl.abort(); }, 6000);
+    var res = await fetch(API + '/api/admin/join/' + CODE + '/email-libera', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email }), signal: ctrl.signal
+    });
+    clearTimeout(timer);
+    var data = await res.json();
+    if (data && data.success === true && data.libera === false) {
+      document.getElementById('email-ok').style.display = 'none';
+      setErr('email', 'Questa email risulta gi\u00e0 usata per una candidatura. Se hai bisogno di aiuto scrivi a panel@miaspesa.com.');
+      document.getElementById('f-email').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+  } catch (e) { /* verifica non disponibile: si prosegue */ }
+  finally { btn.classList.remove('loading'); btn.disabled = false; }
+  goStep(2);
 }
 
 function setErr(id, msg) {
