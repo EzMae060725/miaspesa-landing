@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P28 (Ez 06.11.26): al passo 1 "Avanti" verifica se l'email e' gia' usata per una candidatura
+<!-- candidatura.html - P29 (Ez 06.11.26): email come primo campo del passo 1, verificata appena confermata ("Si', e' corretta"),
+     prima di compilare il resto; resta anche la verifica su Avanti e quella all'invio
+     P28 (Ez 06.11.26): al passo 1 "Avanti" verifica se l'email e' gia' usata per una candidatura
      (POST /join/:code/email-libera, backend P27); se la verifica non risponde si prosegue
      P26 (Ez 06.11.26): "Candidatura ricevuta!" solo se il backend conferma (success), errori (doppione,
      smartphone, connessione) in un riquadro rosso sopra i pulsanti
@@ -162,6 +164,36 @@
   <div class="step-panel visible" id="step1">
     <div class="step-title">Passo 1 di 3 — <span>Chi sei</span></div>
 
+    <!-- Ez 06.11.26 P29 - email per prima: si verifica subito, prima di compilare il resto -->
+    <div class="field" id="f-email">
+      <label>Email *</label>
+      <div style="font-size:0.76rem;color:var(--grigio);margin:-2px 0 6px">La usiamo per risponderti e, se entri nel panel, per mandarti codice e PIN.</div>
+      <div style="position:relative">
+        <input type="email" id="email" placeholder="mario.rossi@email.it" autocomplete="email"
+          onblur="showEmailConfirm()" oninput="hideEmailConfirm()">
+      </div>
+      <div class="err">Email non valida</div>
+      <!-- Confirm box -->
+      <div id="email-verifica" style="display:none;margin-top:6px;font-size:0.8rem;color:var(--grigio)">Verifico l'email...</div>
+      <div id="email-confirm" style="display:none;margin-top:8px;background:#eef2ff;border:1.5px solid rgba(60,52,137,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:#374151">
+        <span>Hai inserito: <strong id="email-preview"></strong> — è corretto?</span>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="button" onclick="confirmEmail(true)" style="flex:1;background:var(--verde);color:white;border:none;border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">✓ Sì, è corretta</button>
+          <button type="button" onclick="confirmEmail(false)" style="flex:1;background:white;color:var(--viola);border:1.5px solid var(--viola);border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">✗ Modifico</button>
+        </div>
+      </div>
+      <div id="email-ok" style="display:none;margin-top:6px;font-size:0.8rem;color:var(--verde);font-weight:600">✅ Email confermata</div>
+      <!-- Ez 05.11.26 P22 - dominio scritto male (gamil.com, hotmial.it...): proposta di correzione -->
+      <div id="email-sugg" style="display:none;margin-top:8px;background:#FFF7E6;border:1.5px solid #FAC775;border-radius:10px;padding:12px 14px;font-size:0.82rem;color:#633806">
+        <span>Forse intendevi <strong id="email-sugg-txt"></strong>?</span>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="button" onclick="usaSuggerimento(true)" style="flex:1;background:var(--viola);color:white;border:none;border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">Sì, correggi</button>
+          <button type="button" onclick="usaSuggerimento(false)" style="flex:1;background:white;color:var(--viola);border:1.5px solid var(--viola);border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">No, è giusta</button>
+        </div>
+      </div>
+    </div>
+
+
     <div class="grid2">
       <div class="field" id="f-nome">
         <label>Nome *</label>
@@ -195,32 +227,6 @@
         <label>Anno di nascita *</label>
         <input type="number" id="annoNascita" placeholder="es. 1980" min="1924" max="2006" onblur="validateAnno()" oninput="clearErr('anno')">
         <div class="err">Anno non valido (1924–2006)</div>
-      </div>
-    </div>
-
-    <div class="field" id="f-email">
-      <label>Email *</label>
-      <div style="position:relative">
-        <input type="email" id="email" placeholder="mario.rossi@email.it" autocomplete="email"
-          onblur="showEmailConfirm()" oninput="hideEmailConfirm()">
-      </div>
-      <div class="err">Email non valida</div>
-      <!-- Confirm box -->
-      <div id="email-confirm" style="display:none;margin-top:8px;background:#eef2ff;border:1.5px solid rgba(60,52,137,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:#374151">
-        <span>Hai inserito: <strong id="email-preview"></strong> — è corretto?</span>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button type="button" onclick="confirmEmail(true)" style="flex:1;background:var(--verde);color:white;border:none;border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">✓ Sì, è corretta</button>
-          <button type="button" onclick="confirmEmail(false)" style="flex:1;background:white;color:var(--viola);border:1.5px solid var(--viola);border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">✗ Modifico</button>
-        </div>
-      </div>
-      <div id="email-ok" style="display:none;margin-top:6px;font-size:0.8rem;color:var(--verde);font-weight:600">✅ Email confermata</div>
-      <!-- Ez 05.11.26 P22 - dominio scritto male (gamil.com, hotmial.it...): proposta di correzione -->
-      <div id="email-sugg" style="display:none;margin-top:8px;background:#FFF7E6;border:1.5px solid #FAC775;border-radius:10px;padding:12px 14px;font-size:0.82rem;color:#633806">
-        <span>Forse intendevi <strong id="email-sugg-txt"></strong>?</span>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button type="button" onclick="usaSuggerimento(true)" style="flex:1;background:var(--viola);color:white;border:none;border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">Sì, correggi</button>
-          <button type="button" onclick="usaSuggerimento(false)" style="flex:1;background:white;color:var(--viola);border:1.5px solid var(--viola);border-radius:50px;padding:7px;font-size:0.82rem;font-weight:600;cursor:pointer">No, è giusta</button>
-        </div>
       </div>
     </div>
 
@@ -877,17 +883,50 @@ function usaSuggerimento(si) {
   showEmailConfirm();
 }
 function hideEmailConfirm() {
+  emailUsata = false; // Ez 06.11.26 P29
   document.getElementById('email-sugg').style.display = 'none';
   emailConfirmed = false;
   document.getElementById('email-confirm').style.display = 'none';
   document.getElementById('email-ok').style.display = 'none';
 }
+// Ez 06.11.26 P29 - verifica dell'email appena confermata (backend P27). Ritorna true = libera, false = gia' usata, null = non verificabile
+var emailUsata = false;
+var MSG_EMAIL_USATA = 'Questa email risulta gi\u00e0 usata per una candidatura. Se hai bisogno di aiuto scrivi a panel@miaspesa.com.';
+async function verificaEmailLibera(email) {
+  try {
+    var ctrl = new AbortController();
+    var timer = setTimeout(function() { ctrl.abort(); }, 6000);
+    var res = await fetch(API + '/api/admin/join/' + CODE + '/email-libera', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email }), signal: ctrl.signal
+    });
+    clearTimeout(timer);
+    var data = await res.json();
+    if (data && data.success === true) return data.libera === true;
+  } catch (e) { /* non verificabile */ }
+  return null;
+}
+async function controllaEmailConfermata() {
+  var email = document.getElementById('email').value.trim();
+  var info = document.getElementById('email-verifica');
+  info.style.display = 'block';
+  var libera = await verificaEmailLibera(email);
+  info.style.display = 'none';
+  if (document.getElementById('email').value.trim() !== email) return; // l'email e' cambiata nel frattempo
+  if (libera === false) {
+    emailUsata = true;
+    document.getElementById('email-ok').style.display = 'none';
+    setErr('email', MSG_EMAIL_USATA);
+  }
+}
+
 function confirmEmail(ok) {
   document.getElementById('email-confirm').style.display = 'none';
   if (ok) {
     emailConfirmed = true;
     document.getElementById('email-ok').style.display = 'block';
     document.getElementById('f-email').classList.remove('has-err');
+    controllaEmailConfermata(); // Ez 06.11.26 P29
   } else {
     emailConfirmed = false;
     var inp = document.getElementById('email');
@@ -1160,22 +1199,15 @@ async function avantiDaStep1() {
   var email = document.getElementById('email').value.trim();
   btn.classList.add('loading'); btn.disabled = true;
   try {
-    var ctrl = new AbortController();
-    var timer = setTimeout(function() { ctrl.abort(); }, 6000);
-    var res = await fetch(API + '/api/admin/join/' + CODE + '/email-libera', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email }), signal: ctrl.signal
-    });
-    clearTimeout(timer);
-    var data = await res.json();
-    if (data && data.success === true && data.libera === false) {
+    var libera = await verificaEmailLibera(email); // Ez 06.11.26 P29 - stessa verifica della conferma
+    if (libera === false) {
+      emailUsata = true;
       document.getElementById('email-ok').style.display = 'none';
-      setErr('email', 'Questa email risulta gi\u00e0 usata per una candidatura. Se hai bisogno di aiuto scrivi a panel@miaspesa.com.');
+      setErr('email', MSG_EMAIL_USATA);
       document.getElementById('f-email').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-  } catch (e) { /* verifica non disponibile: si prosegue */ }
-  finally { btn.classList.remove('loading'); btn.disabled = false; }
+  } finally { btn.classList.remove('loading'); btn.disabled = false; }
   goStep(2);
 }
 
@@ -1238,6 +1270,7 @@ function validateStep(s) {
       clearErr('email');
     }
     if (!emailConfirmed) { setErr('email', 'Conferma la tua email prima di procedere'); ok = false; }
+    else if (emailUsata) { setErr('email', MSG_EMAIL_USATA); ok = false; } // Ez 06.11.26 P29
     // Ez 05.05.26 - Bug B.2.7 fix: validazione formato cellulare IT
     if (!mobile) {
       setErr('mobile', 'Campo obbligatorio');
