@@ -466,120 +466,86 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body>
+<!-- index.html v2.0 - P38 (Ez 07.11.26): home riscritta per "Le mie spese". Tolti: "La Spesa che Conta", "247 famiglie",
+     "15-50 euro al mese", livelli Bronze-Platinum, punti, buoni carburante e spesa, demo con "+100 pt". Numeri solo dal
+     regolamento in vigore: scontrino fino a 2 euro, questionario fino a 2 euro, primo buono a 10 euro poi ogni 15,
+     premi per la regolarita' fino a 20 euro, limite 500 euro all'anno per famiglia, solo buoni Amazon -->
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">La Spesa<span>.</span>che Conta</div>
+  <div class="nav-logo">Le mie spese</div>
   <a href="candidatura.html" class="nav-cta">Candidati →</a>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">La spesa delle famiglie italiane<br>Panel scontrini</div>
-  <h1>La Spesa<em>che Conta.</em></h1>
-  <p style="font-family:'Playfair Display',serif;font-size:clamp(1rem,2.2vw,1.4rem);font-style:italic;color:#FDE68A;margin:0 0 12px;letter-spacing:0.2px;animation:fadeUp 0.7s ease 0.15s both">Con una foto allo scontrino e un clic</p>
+  <div class="hero-tag">Il panel della spesa delle famiglie italiane · Nomesis</div>
+  <h1>Le mie<em>spese.</em></h1>
+  <p style="font-family:'Playfair Display',serif;font-size:clamp(1rem,2.2vw,1.4rem);font-style:italic;color:#FDE68A;margin:0 0 12px;letter-spacing:0.2px;animation:fadeUp 0.7s ease 0.15s both">Controlla · Confronta · Guadagna</p>
   <p class="hero-sub">
-    La tua spesa influenza le aziende.<br>I premi arrivano a te.
-  </p>
-  <p class="hero-sub" style="margin-top:-8px">
-    <span style="font-size:0.82em;opacity:0.65">In 15 minuti al mese — senza cambiare nulla della tua routine.</span>
+    Fotografa gli scontrini della spesa: ogni scontrino fa crescere il tuo saldo e il saldo diventa buoni Amazon.
   </p>
   <div class="hero-ctas">
-    <!-- Ez 30.04.26 09:22 - URL aggiornato a app.miaspesa.com -->
-    <a href="https://app.miaspesa.com/?demo=true" target="_blank" class="btn-primary">
-      📱 Prova subito — senza registrarti
-    </a>
-    <a href="#vantaggi" class="btn-secondary">Scopri i vantaggi ↓</a>
+    <a href="candidatura.html" class="btn-primary">Candidati: bastano 2 minuti →</a>
     <a href="#come-funziona" class="btn-secondary">Come funziona ↓</a>
   </div>
   <div class="hero-nums">
-    <div class="hero-num"><strong>15'</strong><span>al mese</span></div>
-    <div class="hero-num"><strong>15–50€</strong><span>premi mensili</span></div>
-    <div class="hero-num"><strong>1€</strong><span>per scontrino</span></div>
-    <div class="hero-num"><strong>100%</strong><span>dati al sicuro</span></div>
+    <div class="hero-num"><strong>fino a 2 €</strong><span>per ogni scontrino</span></div>
+    <div class="hero-num"><strong>10 €</strong><span>il primo buono Amazon</span></div>
+    <div class="hero-num"><strong>fino a 500 €</strong><span>all'anno per famiglia</span></div>
+    <div class="hero-num"><strong>gratis</strong><span>e senza impegno</span></div>
   </div>
-  <p style="margin-top:32px;font-size:0.88rem;color:rgba(255,255,255,0.6);animation:fadeUp 0.7s ease 0.5s both;background:rgba(255,255,255,0.08);display:inline-block;padding:8px 20px;border-radius:50px;border:1px solid rgba(255,255,255,0.15)">
-    🟢 <strong style="color:white">247 famiglie</strong> <span style="color:rgba(255,255,255,0.7)">già nel panel · Posti ancora disponibili</span>
-  </p>
 </section>
-<!-- Ez 30.04.26 11:30 - Aggiunto </section> di chiusura hero mancante. Senza, hero conteneva tutta la pagina e il suo ::before bloccava i click su FAQ + CTA finali. -->
-<!-- POTRAI -->
+
+<!-- CONTROLLA · CONFRONTA · GUADAGNA -->
 <section id="vantaggi" style="padding:80px 5%; background:white;">
   <div style="max-width:1100px;margin:0 auto;">
-    <div class="section-label" style="text-align:center">I tuoi vantaggi</div>
-    <h2 class="section-title" style="text-align:center;margin-bottom:48px">Potrai fare<br><em>molto di più.</em></h2>
+    <div class="section-label" style="text-align:center">Perché partecipare</div>
+    <h2 class="section-title" style="text-align:center;margin-bottom:48px">La tua spesa,<br><em>finalmente in ordine.</em></h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;">
 
-      <div class="reveal" style="background:linear-gradient(135deg,#fdf6ec,#fff8f0);border:1px solid rgba(245,158,11,0.2);border-radius:20px;padding:36px 32px;">
-        <div style="font-size:2.8rem;margin-bottom:18px">🎁</div>
-        <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:12px;color:#1A1A2E">Ricevere premi veri</h3>
-        <p style="font-size:0.92rem;color:#6B7280;line-height:1.7">Buoni Amazon, buoni carburante o buoni spesa a tua scelta. Fino a 50€ al mese, a seconda di quanto partecipi.</p>
-      </div>
-
-      <div class="reveal" style="background:linear-gradient(135deg,#eef2ff,#f0f4ff);border:1px solid rgba(60,52,137,0.15);border-radius:20px;padding:36px 32px;transition-delay:0.1s">
+      <div class="reveal" style="background:linear-gradient(135deg,#eef2ff,#f0f4ff);border:1px solid rgba(60,52,137,0.15);border-radius:20px;padding:36px 32px;">
         <div style="font-size:2.8rem;margin-bottom:18px">📊</div>
-        <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:12px;color:#1A1A2E">Monitorare le tue spese</h3>
-        <p style="font-size:0.92rem;color:#6B7280;line-height:1.7">Vedi quanto spendi ogni mese, dove e per quali categorie. Ritrovi in foto tutti gli scontrini caricati — un archivio della tua spesa sempre disponibile.</p>
+        <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:12px;color:#1A1A2E">Controlla</h3>
+        <p style="font-size:0.92rem;color:#6B7280;line-height:1.7">Ritrovi in un solo posto tutti gli scontrini che carichi, con negozio, data e importo. Sai sempre quanto e dove spendi.</p>
       </div>
 
-      <div class="reveal" style="background:linear-gradient(135deg,#ecfdf5,#f0faf6);border:1px solid rgba(29,158,117,0.2);border-radius:20px;padding:36px 32px;transition-delay:0.2s">
+      <div class="reveal" style="background:linear-gradient(135deg,#ecfdf5,#f0faf6);border:1px solid rgba(29,158,117,0.2);border-radius:20px;padding:36px 32px;transition-delay:0.1s">
         <div style="font-size:2.8rem;margin-bottom:18px">🔍</div>
-        <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:12px;color:#1A1A2E">Confrontarti con famiglie simili</h3>
-        <p style="font-size:0.92rem;color:#6B7280;line-height:1.7">Scopri come si comportano famiglie con le stesse caratteristiche della tua. Una finestra inedita sulle abitudini di spesa degli italiani.</p>
+        <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:12px;color:#1A1A2E">Confronta</h3>
+        <p style="font-size:0.92rem;color:#6B7280;line-height:1.7">Metti a confronto la tua spesa tra negozi diversi e tra un periodo e l'altro. E presto anche con famiglie simili alla tua.</p>
+      </div>
+
+      <div class="reveal" style="background:linear-gradient(135deg,#fdf6ec,#fff8f0);border:1px solid rgba(245,158,11,0.2);border-radius:20px;padding:36px 32px;transition-delay:0.2s">
+        <div style="font-size:2.8rem;margin-bottom:18px">🎁</div>
+        <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:12px;color:#1A1A2E">Guadagna</h3>
+        <p style="font-size:0.92rem;color:#6B7280;line-height:1.7">Ogni scontrino fa crescere il tuo saldo in euro. Arrivato a 10 € chiedi il tuo primo buono Amazon, poi ogni 15 €.</p>
       </div>
 
     </div>
   </div>
 </section>
-
-<!-- SANDBOX -->
-<section class="sandbox-section">
-  <div class="sandbox-inner">
-    <div class="sandbox-txt">
-      <div class="section-label">Prova senza impegno</div>
-      <h2 class="section-title">Tocca con mano<br><em>come funziona.</em></h2>
-      <p>Abbiamo preparato un ambiente di prova con dati fittizi. Esplora l'app senza registrarti — nessun dato reale, nessun impegno. Puoi tornare qui e iscriverti dopo.</p>
-      <!-- Ez 30.04.26 09:17 - CTA sandbox v2: pill verde solid + live dot + microcopy. URL aggiornato a app.miaspesa.com -->
-      <a href="https://app.miaspesa.com/?demo=true" target="_blank" class="btn-sandbox">
-        <span class="sandbox-dot"></span>
-        Entra nell'app di prova
-        <span class="sandbox-arrow">→</span>
-      </a>
-      <p class="sandbox-disclaimer">📱 Funziona da telefono &nbsp;·&nbsp; Nessuna registrazione &nbsp;·&nbsp; Dati fittizi</p>
-    </div>
-    <div class="sandbox-visual reveal">
-      <div class="mock-badge">DEMO</div>
-      <div class="mock-header">🎁 Le mie spese — Demo</div>
-      <div class="mock-card">📸 Carica scontrino di prova <span class="mock-pill">+100 pt</span></div>
-      <div class="mock-card">✅ Spesa martedì — CONAD €48,35 <span class="mock-pill">+100 pt</span></div>
-      <div class="mock-card">✅ Spesa sabato — Esselunga €73,20 <span class="mock-pill">+100 pt</span></div>
-      <div class="mock-card">💬 Questionario disponibile — 2 minuti <span class="mock-pill">+30 pt</span></div>
-      <div class="mock-card" style="opacity:0.6">🏆 Premio vicino: buono Amazon €10 — mancano 120 pt</div>
-    </div>
-  </div>
-</section>
-
 
 <!-- COME FUNZIONA -->
 <section id="come-funziona" style="padding:100px 5%;">
   <div class="section" style="padding:0;">
     <div class="section-label">Come funziona</div>
-    <h2 class="section-title" style="color:white">Tre gesti.<br><em style="color:var(--oro)">Quindici minuti al mese.</em></h2>
+    <h2 class="section-title">Tre passi.<br><em>Una foto dopo la spesa.</em></h2>
     <div class="steps">
       <div class="step reveal" data-num="1">
-        <div class="step-icon">📸</div>
-        <h3>Fotografa lo scontrino</h3>
-        <p>Dopo ogni spesa, apri l'app e scatta una foto. In pochi secondi senti il beep di conferma — e i punti sono tuoi.</p>
+        <div class="step-icon">✍️</div>
+        <h3>Candidati</h3>
+        <p>Compili il modulo in 2 minuti. Ti rispondiamo entro 2-3 giorni lavorativi: se entri nel panel ricevi via email il tuo codice famiglia e il PIN.</p>
       </div>
       <div class="step reveal" data-num="2" style="transition-delay:0.1s">
-        <div class="step-icon">💬</div>
-        <h3>Ogni tanto rispondi</h3>
-        <p>Qualche domanda sulla tua spesa. Due minuti, quando vuoi. Non sempre — solo quando c'è qualcosa che vale la pena chiederti.</p>
+        <div class="step-icon">📸</div>
+        <h3>Fotografa lo scontrino</h3>
+        <p>Dopo la spesa apri l'app e scatta una foto. Ogni scontrino vale fino a 2 € se lo carichi entro un'ora dall'acquisto, con foto nitida e scontrino completo.</p>
       </div>
       <div class="step reveal" data-num="3" style="transition-delay:0.2s">
         <div class="step-icon">🎁</div>
-        <h3>Guadagni premi veri</h3>
-        <p>Buoni acquisto Amazon, buoni carburante o buoni spesa. Non punti che scadono — valore reale, perché il tuo tempo ha valore reale.</p>
+        <h3>Ricevi buoni Amazon</h3>
+        <p>Il saldo cresce scontrino dopo scontrino. Arrivato a 10 € chiedi il tuo primo buono Amazon, poi ogni 15 €. Il saldo maturato non scade.</p>
       </div>
     </div>
   </div>
@@ -589,42 +555,42 @@
 <section class="premi-section">
   <div class="premi-inner">
     <div class="section-label">I premi</div>
-    <h2 class="section-title">Il tuo tempo vale.<br>Lo riconosciamo.</h2>
-    <p class="premi-tagline">Più partecipi, più sali di livello. Più sali, più valgono i tuoi punti.</p>
+    <h2 class="section-title">Il tuo tempo vale.<br>In euro, non in punti.</h2>
+    <p class="premi-tagline">Vedi sempre il tuo saldo in euro e sai subito quanto vale ogni scontrino.</p>
 
     <div class="livelli">
       <div class="livello reveal">
-        <div class="livello-icon">🥉</div>
-        <h4>Bronze</h4>
-        <span>0 – 2.000 pt</span>
-        <strong>x1.0</strong>
+        <div class="livello-icon">🧾</div>
+        <h4>Scontrino</h4>
+        <span>entro un'ora, foto nitida</span>
+        <strong>fino a 2 €</strong>
       </div>
       <div class="livello reveal" style="transition-delay:0.1s">
-        <div class="livello-icon">🥈</div>
-        <h4>Silver</h4>
-        <span>2.001 – 8.000 pt</span>
-        <strong>x1.1</strong>
+        <div class="livello-icon">📝</div>
+        <h4>Questionario</h4>
+        <span>sulla spesa, circa 2 minuti</span>
+        <strong>fino a 2 €</strong>
       </div>
       <div class="livello reveal" style="transition-delay:0.2s">
-        <div class="livello-icon">🥇</div>
-        <h4>Gold</h4>
-        <span>8.001 – 20.000 pt</span>
-        <strong>x1.2</strong>
+        <div class="livello-icon">🏅</div>
+        <h4>Regolarità</h4>
+        <span>premi extra per chi carica con costanza</span>
+        <strong>fino a 20 €</strong>
       </div>
       <div class="livello reveal" style="transition-delay:0.3s">
-        <div class="livello-icon">💎</div>
-        <h4>Platinum</h4>
-        <span>20.001+ pt</span>
-        <strong>x1.3</strong>
+        <div class="livello-icon">🎁</div>
+        <h4>Buoni Amazon</h4>
+        <span>il primo a 10 €, poi ogni 15 €</span>
+        <strong>fino a 500 € l'anno</strong>
       </div>
     </div>
 
     <div class="guadagno-box reveal">
-      <div class="guadagno-num">15–50€</div>
+      <div class="guadagno-num">€</div>
       <div class="guadagno-txt">
-        <strong>Mediamente al mese</strong><br>
-        A seconda del numero di scontrini caricati e dei questionari compilati.<br>
-        Mediamente <strong>1€ per scontrino</strong> + fino a <strong>3€ extra</strong> per ogni questionario completato.
+        <strong>Quanto ricevi dipende da te.</strong><br>
+        Più spese fotografi e più questionari compili, più cresce il saldo. Il limite è di 500 € all'anno per famiglia.
+        Il saldo maturato non scade e non si perde. Tutti i dettagli nel <a href="termini.html" style="color:#FDE68A">Regolamento e nei Termini</a>.
       </div>
     </div>
   </div>
@@ -636,44 +602,42 @@
     <div class="section-label" style="text-align:center">Domande frequenti</div>
     <h2 class="section-title" style="text-align:center;margin-bottom:48px">Tutto quello che<br><em>vuoi sapere.</em></h2>
 
-
     <div class="faq-item">
       <div class="faq-q">Cosa devo fare?</div>
-      <div class="faq-a">Dopo la registrazione ricevi le credenziali di accesso. Da quel momento fotografi gli scontrini della spesa con il telefono, li carichi nell'app e ogni tanto rispondi a qualche breve questionario sulle tue abitudini di acquisto. Tutto qui.</div>
+      <div class="faq-a">Dopo la spesa fotografi lo scontrino con l'app Le mie spese. Ogni tanto puoi rispondere a un breve questionario su quella spesa. Tutto qui.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Cosa ottengo in cambio?</div>
-      <div class="faq-a">Mediamente 1€ per ogni scontrino caricato. Se rispondi anche ai questionari sulla tua spesa e sulle tue preferenze di acquisto, puoi aggiungere fino a 3€ in più. I premi sono buoni acquisto Amazon, buoni carburante o buoni spesa — a tua scelta.</div>
+      <div class="faq-q">Cosa ricevo in cambio?</div>
+      <div class="faq-a">Ogni scontrino vale fino a 2 € e ogni questionario sulla spesa fino a 2 €, più premi extra per la regolarità fino a 20 €. Il saldo è sempre in euro: arrivato a 10 € chiedi il primo buono Amazon, poi ogni 15 €, fino a 500 € all'anno per famiglia.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Quanto posso guadagnare in un mese?</div>
-      <div class="faq-a">Mediamente una famiglia accumula premi tra i 15 e i 50 euro al mese, a seconda del numero di scontrini caricati e dei questionari compilati. Più partecipi, più guadagni — ma anche con il minimo indispensabile il risultato è significativo.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Posso abbandonare quando voglio?</div>
-      <div class="faq-a">Sì, senza nessun obbligo o limite di permanenza. Puoi uscire dal panel in qualsiasi momento, senza penalizzazioni. I punti già accumulati restano a tua disposizione per il riscatto.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Quanto tempo ci vuole davvero?</div>
-      <div class="faq-a">In media 10-15 minuti al mese. Caricare uno scontrino richiede meno di 30 secondi — fotografa, carica, aspetti il beep di conferma.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">I miei dati sono al sicuro?</div>
-      <div class="faq-a">Sì. I tuoi dati sono protetti secondo il GDPR. Non vengono mai venduti né ceduti a terzi. Vengono usati solo in forma aggregata e anonima per la ricerca di mercato.</div>
+      <div class="faq-q">Quanto tempo ci vuole?</div>
+      <div class="faq-a">Fotografare uno scontrino richiede meno di un minuto. Il questionario sulla spesa è facoltativo e dura circa 2 minuti.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Devo caricare ogni scontrino?</div>
-      <div class="faq-a">No. Più carichi, più punti guadagni — ma non c'è un minimo obbligatorio. Carichi quando puoi, come puoi.</div>
+      <div class="faq-a">Non c'è un minimo obbligatorio. Più spese fotografi, più cresce il saldo.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Chi c'è dietro questo panel?</div>
-      <div class="faq-a">Nomesis, società italiana di ricerca di mercato di Brescia. I dati raccolti vengono usati da aziende del settore alimentare per migliorare prodotti e servizi.</div>
+      <div class="faq-q">Serve uno smartphone?</div>
+      <div class="faq-a">Sì, con fotocamera: Android o iPhone. Le mie spese si usa dal browser del telefono e si aggiunge alla schermata Home come un'app, senza scaricare nulla dallo store.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Cosa succede dopo che mi iscrivo?</div>
-      <div class="faq-a">Ricevi le credenziali di accesso entro 48 ore. Da quel momento puoi iniziare a caricare scontrini e guadagnare punti. Prima di iniziare, ti consigliamo di esplorare l'ambiente di prova qui sopra.</div>
+      <div class="faq-q">Posso uscire quando voglio?</div>
+      <div class="faq-a">Sì, senza obblighi di permanenza e senza penali. Basta scrivere a panel@miaspesa.com.</div>
     </div>
-    <!-- Ez 05.05.26 - Bug A.5.8 fix: link "Scrivici" sotto FAQ, punta a contatti.html (coerente con footer) -->
+    <div class="faq-item">
+      <div class="faq-q">I miei dati sono al sicuro?</div>
+      <div class="faq-a">Sì. I dati sono trattati secondo il GDPR, non vengono mai venduti e sono usati per la ricerca solo in forma aggregata e anonima. I dettagli sono nella <a href="privacy.html">Privacy Policy</a>.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Chi c'è dietro Le mie spese?</div>
+      <div class="faq-a">Nomesis, società italiana di ricerche di mercato di Brescia, fondata nel 1989. I dati aggregati aiutano le aziende a capire come cambia la spesa degli italiani e a fare prodotti più vicini ai bisogni reali.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Cosa succede dopo che mi candido?</div>
+      <div class="faq-a">Ti rispondiamo entro 2-3 giorni lavorativi. Se la tua famiglia entra nel panel ricevi via email il codice famiglia e il PIN per entrare nell'app.</div>
+    </div>
     <p class="faq-more reveal">Hai altre domande?<a href="contatti.html">Scrivici</a></p>
   </div>
 </section>
@@ -686,23 +650,22 @@
     <div class="trust-card reveal">
       <div class="trust-icon">🔒</div>
       <h4>Privacy garantita</h4>
-      <p>I tuoi dati non vengono mai venduti a terzi. Usiamo solo dati aggregati e anonimi per la ricerca, nel pieno rispetto del GDPR.</p>
+      <p>I tuoi dati non vengono mai venduti. Per la ricerca usiamo solo dati aggregati e anonimi, nel pieno rispetto del GDPR.</p>
     </div>
     <div class="trust-card reveal" style="transition-delay:0.1s">
       <div class="trust-icon">⏱</div>
-      <h4>Solo 15 minuti al mese</h4>
-      <p>Nessun impegno fisso. Carichi quando puoi, rispondi quando vuoi. Non c'è un minimo obbligatorio.</p>
+      <h4>Una foto dopo la spesa</h4>
+      <p>Nessun impegno fisso: carichi quando puoi, il questionario lo compili se vuoi.</p>
     </div>
     <div class="trust-card reveal" style="transition-delay:0.2s">
       <div class="trust-icon">🏢</div>
-      <!-- Ez 30.04.26 12:19 - Copy aggiornato: titolo + body riformulato per evocare utilita' bidirezionale -->
       <h4>Ricerca seria, utilità concreta</h4>
-      <p>Il panel è un progetto di Nomesis, società di ricerca di Brescia fondata nel 1989. Premia le famiglie che aiutano le aziende a fare prodotti più vicini ai bisogni reali.</p>
+      <p>Le mie spese è un progetto di Nomesis, società di ricerca di Brescia fondata nel 1989. Insieme alle altre famiglie del panel ci aiuti a capire come cambia la spesa degli italiani.</p>
     </div>
     <div class="trust-card reveal" style="transition-delay:0.3s">
       <div class="trust-icon">🚪</div>
       <h4>Esci quando vuoi</h4>
-      <p>Nessun contratto, nessuna penale. Se non fa per te, esci dal panel in qualsiasi momento. I punti accumulati restano a tua disposizione.</p>
+      <p>Nessuna penale e nessun obbligo di permanenza: se non fa per te, esci dal panel in qualsiasi momento.</p>
     </div>
   </div>
 </section>
@@ -711,21 +674,14 @@
 <section class="cta-section" id="iscriviti">
   <div class="section-label">Candidati ora</div>
   <h2>Pronti a iniziare?</h2>
-  <p>I posti sono limitati — il panel seleziona famiglie rappresentative del territorio italiano. Candidati ora: è gratis, senza impegno, e puoi smettere quando vuoi.</p>
+  <p>I posti sono limitati: il panel seleziona famiglie rappresentative del territorio italiano. Candidarsi è gratis e senza impegno.</p>
   <div class="cta-buttons">
-    <a href="candidatura.html" class="btn-primary">
-      Candidati al panel →
-    </a>
-    <!-- Ez 30.04.26 09:22 - URL aggiornato a app.miaspesa.com -->
-    <a href="https://app.miaspesa.com/?demo=true" target="_blank" class="btn-secondary">
-      Prima prova l'app demo
-    </a>
+    <a href="candidatura.html" class="btn-primary">Candidati al panel →</a>
   </div>
-  <span class="cta-login">Hai già le credenziali? <a href="https://app.miaspesa.com" target="_blank">Accedi all'app →</a></span>
+  <span class="cta-login">Hai già codice famiglia e PIN? <a href="https://app.miaspesa.com" target="_blank">Entra in Le mie spese →</a></span>
 </section>
 
 <!-- FOOTER -->
-<!-- Ez 09.05.26 00:02 - P4 v2: footer riorganizzato in 3 righe + email visibile + link Termini + "Fondata nel 1989" -->
 <footer style="line-height:1.8;padding:36px 5%;">
   <p style="margin-bottom:6px;">© 2026 <strong style="color:rgba(255,255,255,0.6)">Nomesis S.a.s.</strong> · Fondata nel 1989 · Via Papa Giovanni XXIII, 74 — 25086 Rezzato (BS)</p>
   <p style="margin-bottom:6px;">P.IVA e C.F. 03107170171 · <a href="mailto:info@miaspesa.com">info@miaspesa.com</a> · <a href="https://www.nomesis.it" target="_blank">nomesis.it</a></p>
@@ -742,41 +698,21 @@
       if (!isOpen) item.classList.add('open');
     });
   });
-
   // Scroll reveal
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
-<!-- ============================================================ -->
-<!-- Ez 30.04.26 09:17 - NEUTRALIZZATO script toggleFaq duplicato -->
-<!-- Motivo: collisione con event listener in script sopra (riga ~706). -->
-<!-- Avevamo 2 gestori sullo stesso click: uno usava class .open, -->
-<!-- l'altro style.display inline. Ora gestione unica via class .open. -->
-<!--
-<script>
-function toggleFaq(el) {
-  var item = el.parentElement;
-  var ans = item.querySelector('.faq-a');
-  var isOpen = ans.style.display === 'block';
-  document.querySelectorAll('.faq-a').forEach(function(a) { a.style.display = 'none'; });
-  ans.style.display = isOpen ? 'none' : 'block';
-}
-</script>
--->
-<!-- ============================================================ -->
 
 <!-- FLOATING CTA MOBILE -->
-<!-- Ez 30.04.26 09:17 - URL aggiornato a app.miaspesa.com -->
 <div id="floatCta" style="position:fixed;bottom:0;left:0;right:0;z-index:200;padding:16px;background:rgba(26,26,46,0.95);backdrop-filter:blur(8px);display:none;border-top:1px solid rgba(255,255,255,0.1)">
-  <a href="https://app.miaspesa.com/?demo=true"
+  <a href="candidatura.html"
     style="display:block;background:var(--oro);color:var(--nero);text-align:center;padding:14px;border-radius:50px;font-weight:700;font-size:0.95rem;text-decoration:none">
-    📱 Prova subito — senza registrarti
+    Candidati: bastano 2 minuti →
   </a>
 </div>
 <script>
-  // Mostra floating CTA su mobile dopo scroll
   if (window.innerWidth < 768) {
     const floatCta = document.getElementById('floatCta');
     window.addEventListener('scroll', () => {
