@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regolamento - Le mie spese</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --viola: #3C3489; --grigio: #6B7280; --nero: #1A1A2E; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; color:var(--nero); background:#FAFAF8; }
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:16px 5%; display:flex; align-items:center; justify-content:space-between;
+    background:rgba(250,250,248,0.95); backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(60,52,137,0.08);
+  }
+  .nav-logo { font-size:1.1rem; font-weight:700; color:var(--viola); text-decoration:none; }
+  .container { max-width:760px; margin:0 auto; padding:120px 5% 80px; }
+  .label { font-size:0.75rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--viola); margin-bottom:12px; }
+  h1 { font-size:2.2rem; font-weight:700; margin-bottom:8px; line-height:1.2; }
+  .meta { font-size:0.85rem; color:var(--grigio); margin-bottom:48px; }
+  h2 { font-size:1.15rem; font-weight:700; margin:36px 0 12px; color:var(--nero); }
+  p { font-size:0.95rem; color:#374151; line-height:1.75; margin-bottom:14px; }
+  ul { padding-left:20px; margin-bottom:14px; }
+  li { font-size:0.95rem; color:#374151; line-height:1.75; margin-bottom:6px; }
+  .box {
+    background:rgba(60,52,137,0.04); border:1px solid rgba(60,52,137,0.1);
+    border-radius:12px; padding:24px 28px; margin:32px 0;
+  }
+  .box p { margin:0; }
+  footer { text-align:center; padding:32px 5%; font-size:0.8rem; color:var(--grigio); border-top:1px solid #E5E7EB; }
+  footer a { color:var(--viola); text-decoration:none; }
+  table { width:100%; border-collapse:collapse; margin:8px 0 18px; font-size:0.92rem; }
+  th, td { text-align:left; padding:9px 10px; border-bottom:1px solid #E5E7EB; vertical-align:top; }
+  th { color:var(--viola); font-weight:700; background:rgba(60,52,137,0.04); }
+  td.v { white-space:nowrap; font-weight:700; color:#1A1A2E; }
+</style>
+</head>
+<body>
+<!-- regolamento.html v1.0 - P39 (Ez 07.11.26): regolamento breve per le famiglie, dai valori della config di regia v2.22
+     (PBASE-2026). Da aggiornare a ogni nuova versione della config che cambia valori visibili alle famiglie. -->
+
+<nav>
+  <a href="index.html" class="nav-logo">&larr; Le mie spese</a>
+</nav>
+
+<div class="container">
+  <div class="label">Le regole in breve</div>
+  <h1>Regolamento premi</h1>
+  <p class="meta">In vigore dal 7 novembre 2026 &middot; Panel Base 2026</p>
+
+  <div class="box">
+    <p>Qui trovi in breve come funzionano i premi di <strong>Le mie spese</strong>. Il saldo &egrave; sempre in euro: ogni scontrino e ogni questionario lo fanno crescere, e il saldo diventa buoni Amazon. Per gli aspetti contrattuali fanno fede i <a href="termini.html">Termini e Condizioni</a>.</p>
+  </div>
+
+  <h2>1. Quanto vale uno scontrino</h2>
+  <p>Ogni scontrino vale <strong>1 &euro;</strong> di base e <strong>fino a 2 &euro;</strong> se lo carichi subito, con una foto nitida e uno scontrino completo. Appena lo carichi ricevi <strong>0,20 &euro;</strong> di acconto; il resto arriva dopo il controllo, di solito entro 3 giorni.</p>
+  <table>
+    <tr><th>Cosa conta</th><th>Quando</th><th>Effetto</th></tr>
+    <tr><td>Rapidit&agrave;</td><td>caricato entro un&rsquo;ora dall&rsquo;acquisto</td><td class="v">+0,55 &euro;</td></tr>
+    <tr><td></td><td>caricato in giornata</td><td class="v">+0,25 &euro;</td></tr>
+    <tr><td></td><td>giorno dopo</td><td class="v">0</td></tr>
+    <tr><td></td><td>dopo 2-15 giorni</td><td class="v">da &minus;0,10 a &minus;0,50 &euro;</td></tr>
+    <tr><td>Qualit&agrave; della foto</td><td>foto perfetta</td><td class="v">+0,20 &euro;</td></tr>
+    <tr><td></td><td>foto sfocata o parziale</td><td class="v">&minus;0,30 &euro;</td></tr>
+    <tr><td>Lunghezza dello scontrino</td><td>oltre 20 articoli</td><td class="v">+0,25 &euro;</td></tr>
+    <tr><td></td><td>16-20 articoli</td><td class="v">+0,15 &euro;</td></tr>
+    <tr><td></td><td>fino a 4 articoli</td><td class="v">&minus;0,20 &euro;</td></tr>
+  </table>
+  <p>Uno scontrino vale sempre almeno 0,20 &euro; e al massimo 2 &euro;. Per il bonus &ldquo;entro un&rsquo;ora&rdquo; l&rsquo;orario deve essere leggibile sullo scontrino.</p>
+
+  <h2>2. Quali scontrini valgono</h2>
+  <ul>
+    <li><strong>Valgono</strong> gli scontrini della spesa di supermercati, ipermercati, discount, superette, negozi di alimentari, drugstore, spesa online e bazar.</li>
+    <li><strong>Non valgono</strong> farmacie, bar e ristoranti, carburante, abbigliamento, elettronica e altri acquisti non legati alla spesa.</li>
+    <li>Uno scontrino caricato dopo pi&ugrave; di 15 giorni, o simile a uno gi&agrave; caricato, viene controllato a mano prima di essere valorizzato.</li>
+    <li>Se la foto non si legge, ti chiediamo di ricaricarla pi&ugrave; nitida.</li>
+  </ul>
+
+  <h2>3. Il questionario sulla spesa</h2>
+  <p>Dopo uno scontrino puoi compilare un breve questionario su quella spesa (circa 2 minuti). Vale di pi&ugrave; se lo compili subito:</p>
+  <table>
+    <tr><th>Quando lo compili (dalla spesa)</th><th>Vale fino a</th></tr>
+    <tr><td>entro 2 ore</td><td class="v">2,00 &euro;</td></tr>
+    <tr><td>entro 24 ore</td><td class="v">1,25 &euro;</td></tr>
+    <tr><td>il secondo giorno</td><td class="v">0,85 &euro;</td></tr>
+    <tr><td>il terzo giorno</td><td class="v">0,65 &euro;</td></tr>
+    <tr><td>dal quarto al settimo giorno</td><td class="v">0,40 &euro;</td></tr>
+    <tr><td>dopo 7 giorni</td><td class="v">non si pu&ograve; pi&ugrave; compilare</td></tr>
+  </table>
+  <p>Nell&rsquo;app vedi sempre quanto vale adesso e quando scende. Ogni tanto potremo proporti altri brevi questionari: il loro valore &egrave; indicato prima di iniziare.</p>
+
+  <h2>4. Premi per la regolarit&agrave;</h2>
+  <p>Premiamo chi carica con costanza, una volta sola per ogni traguardo, fino a 20 &euro; in tutto:</p>
+  <table>
+    <tr><th>Traguardo</th><th>Premio</th></tr>
+    <tr><td>5 scontrini</td><td class="v">3 &euro;</td></tr>
+    <tr><td>10 scontrini in almeno 3 settimane diverse</td><td class="v">5 &euro;</td></tr>
+    <tr><td>30 scontrini in almeno 8 settimane diverse</td><td class="v">12 &euro;</td></tr>
+  </table>
+  <p>Contano gli scontrini validi di almeno 5 &euro;, al massimo uno al giorno, caricati dall&rsquo;avvio del panel.</p>
+
+  <h2>5. I buoni Amazon</h2>
+  <ul>
+    <li>Arrivato a <strong>10 &euro;</strong> chiedi il tuo primo buono, poi ogni <strong>15 &euro;</strong>. Puoi chiederlo quando vuoi.</li>
+    <li>Tagli da 10, 25, 50 e 100 &euro;, anche combinati. Il resto rimane sul saldo.</li>
+    <li>I buoni arrivano via email nella seconda met&agrave; del mese successivo alla richiesta, dopo i controlli. Ogni buono vale 12 mesi.</li>
+    <li>Il limite &egrave; di <strong>500 &euro; all&rsquo;anno per famiglia</strong>. Il saldo che supera il limite resta tuo e lo puoi usare dal 1&deg; gennaio.</li>
+    <li>Il saldo maturato non scade e non si perde.</li>
+  </ul>
+
+  <h2>6. Controlli</h2>
+  <p>Ogni scontrino e ogni questionario vengono controllati, anche per evitare doppioni e abusi. Se un importo non ti torna, scrivici dalla sezione Assistenza dell&rsquo;app o a <strong>panel@miaspesa.com</strong>: una persona ricontrolla e ti risponde.</p>
+
+  <h2>7. Pausa e uscita</h2>
+  <ul>
+    <li><strong>Pausa:</strong> puoi chiedere di sospendere la partecipazione da 1 a 3 mesi. Durante la pausa non maturi premi, ma il saldo resta tuo e alla fine riprendi in automatico.</li>
+    <li><strong>Uscita:</strong> puoi uscire quando vuoi scrivendo a panel@miaspesa.com. Dopo l&rsquo;uscita puoi chiedere il buono anche da 5 &euro; entro 90 giorni; un saldo inferiore a 5 &euro; non richiesto entro 90 giorni si azzera.</li>
+    <li><strong>Su iniziativa di Nomesis:</strong> vedi il punto 9 dei <a href="termini.html">Termini e Condizioni</a> (preavviso di 15 giorni e saldo garantito).</li>
+  </ul>
+
+  <div class="box" style="margin-top:48px">
+    <p>Domande? Scrivi a <strong>panel@miaspesa.com</strong>.<br>
+    Nomesis S.a.s. &middot; Via Papa Giovanni XXIII 74, 25086 Rezzato (BS) &middot; P.IVA 03107170171</p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 Nomesis S.a.s. &middot; P.IVA 03107170171 &middot; Rezzato (BS) &middot; <a href="index.html">Torna al sito</a> &middot; <a href="termini.html">Termini</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="contatti.html">Contatti</a></p>
+</footer>
+
+</body>
+</html>
