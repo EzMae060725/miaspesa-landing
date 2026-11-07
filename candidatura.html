@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P36 (Ez 07.11.26): caselle "accetto i Termini e Condizioni" e "approvo specificamente il punto 8-bis"
+<!-- candidatura.html - P37 (Ez 07.11.26): Termini 1.2, articoli rinumerati (il punto 8-bis diventa 9)
+     P36 (Ez 07.11.26): caselle "accetto i Termini e Condizioni" e "approvo specificamente il punto 8-bis"
      (artt. 1341-1342 c.c.), obbligatorie, inviate al backend (P35, migrazione 28)
      P34 (Ez 06.11.26): uscendo da un campo vuoto non compare piu' l'errore rosso (nome, cognome, anno,
      comune, CAP, insegna): i campi obbligatori vuoti si segnalano solo premendo Avanti
@@ -514,11 +515,11 @@
         <input type="checkbox" id="clausoleOk" style="width:auto;margin-top:3px;accent-color:var(--viola);flex-shrink:0" onchange="document.getElementById('err-clausole').style.display='none'">
         <span style="font-size:0.8rem;color:var(--grigio);line-height:1.65">
           Ai sensi degli artt. 1341 e 1342 del Codice Civile approvo specificamente il punto
-          <a href="termini.html" target="_blank" style="color:var(--viola);font-weight:600;text-decoration:none">8-bis dei Termini</a>
+          <a href="termini.html" target="_blank" style="color:var(--viola);font-weight:600;text-decoration:none">9 dei Termini</a>
           (cessazione o sospensione della partecipazione su iniziativa di Nomesis, con preavviso di 15 giorni e saldo maturato garantito). *
         </span>
       </label>
-      <div id="err-clausole" style="font-size:0.75rem;color:#ef4444;margin-top:6px;display:none">Serve l'approvazione specifica del punto 8-bis per procedere</div>
+      <div id="err-clausole" style="font-size:0.75rem;color:#ef4444;margin-top:6px;display:none">Serve l'approvazione specifica del punto 9 per procedere</div>
     </div>
 
     <div id="err-invio" role="alert" style="display:none;margin-top:16px;background:#fef2f2;border:1.5px solid rgba(220,38,38,0.35);border-radius:10px;padding:12px 14px;font-size:0.86rem;color:#991b1b;line-height:1.55"></div>
@@ -1382,7 +1383,7 @@ async function invia() {
     telefonoTipo: (document.querySelector('input[name="telefonoTipo"]:checked') || {}).value || '', // Ez 05.11.26 P25
     cap: document.getElementById('cap').value.trim(),
     terminiOk: document.getElementById('terminiOk').checked === true, // Ez 07.11.26 P36 (backend P35)
-    terminiVersione: '1.1',
+    terminiVersione: '1.2',
     clausoleOk: document.getElementById('clausoleOk').checked === true
   };
 
