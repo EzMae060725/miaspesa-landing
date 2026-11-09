@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P37 (Ez 07.11.26): Termini 1.2, articoli rinumerati (il punto 8-bis diventa 9)
+<!-- candidatura.html - P45 (Ez 09.11.26): fascia di reddito tolta (si chiede nel questionario completo); componenti 1-7 e "8 o piu'"
+     come nel repertorio domande (stessi codici, inviati cosi' come sono); "ti scriviamo entro 3 giorni lavorativi"
+     P37 (Ez 07.11.26): Termini 1.2, articoli rinumerati (il punto 8-bis diventa 9)
      P36 (Ez 07.11.26): caselle "accetto i Termini e Condizioni" e "approvo specificamente il punto 8-bis"
      (artt. 1341-1342 c.c.), obbligatorie, inviate al backend (P35, migrazione 28)
      P34 (Ez 06.11.26): uscendo da un campo vuoto non compare piu' l'errore rosso (nome, cognome, anno,
@@ -145,7 +147,7 @@
 <div class="hero-mini">
   <div class="label">Candidatura al panel</div>
   <h1>Candidati a Le mie spese</h1>
-  <p>Il panel della spesa delle famiglie italiane. Compila il modulo in 2 minuti: ti rispondiamo entro 2-3 giorni lavorativi.</p>
+  <p>Il panel della spesa delle famiglie italiane. Compila il modulo in 2 minuti: ti scriviamo entro 3 giorni lavorativi.</p>
 </div>
 
 <!-- PROGRESS -->
@@ -327,7 +329,9 @@
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
-        <option value="6+">6 o più</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8+">8 o più</option>
       </select>
       <div class="err">Campo obbligatorio</div>
     </div>
@@ -422,17 +426,6 @@
       </div>
     </div>
 
-    <div class="field">
-      <label>Fascia di reddito familiare annuo <span class="opt">(opzionale)</span></label>
-      <select id="reddito">
-        <option value="">Preferisco non indicare</option>
-        <option value="sotto15">Sotto 15.000€</option>
-        <option value="15-25">15.000 – 25.000€</option>
-        <option value="25-40">25.000 – 40.000€</option>
-        <option value="40-60">40.000 – 60.000€</option>
-        <option value="sopra60">Oltre 60.000€</option>
-      </select>
-    </div>
 
     <div class="grid2">
       <div class="field">
@@ -537,7 +530,7 @@
     <p>
       Grazie per aver compilato il modulo.<br>
       Riceverai una email di conferma a breve.<br>
-      La risposta sulla tua candidatura arriverà entro 2-3 giorni lavorativi.<br>
+      Ti scriviamo entro 3 giorni lavorativi con il prossimo passo.<br>
       Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni.
     </p>
     <a href="index.html">← Torna alla home</a>
@@ -1366,7 +1359,7 @@ async function invia() {
     regione: document.getElementById('regione').value,
     provincia: document.getElementById('provincia').value,
     comune: document.getElementById('comune').value.trim(),
-    componenti: parseInt(document.getElementById('componenti').value) || document.getElementById('componenti').value,
+    componenti: document.getElementById('componenti').value, // Ez 09.11.26 P45 - codice del repertorio (1..7, 8+)
     tipologia: document.getElementById('tipologia').value,
     supermercato: (document.getElementById('supermercato').value || document.getElementById('insegnaSpec').value || '').trim(),
     insegnaSpec: document.getElementById('insegnaSpec').value.trim() || null,
@@ -1374,7 +1367,6 @@ async function invia() {
     chiSpesa: document.getElementById('chiSpesa').value,
     spesaMedia: document.getElementById('spesaMedia').value,
     frequenzaSpesa: document.getElementById('frequenzaSpesa').value,
-    reddito: document.getElementById('reddito').value,
     tipoNegozio: document.getElementById('tipoNegozio').value,
     posizioneNegozio: document.getElementById('posizioneNegozio').value,
     acquistiOnline: document.getElementById('acquistiOnline').value,

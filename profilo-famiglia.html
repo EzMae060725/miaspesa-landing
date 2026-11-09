@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<!-- profilo-famiglia.html v1.0 - P45 (Ez 09.11.26): questionario completo della candidatura (FULL) con link personale.
+     Domande, risposte e sezioni arrivano dal server (repertorio domande, questionario "candidatura_full" del progetto):
+     qui non c'e' nessuna domanda scritta. Salva a ogni sezione, si riprende dallo stesso link, invio finale con controllo
+     delle domande obbligatorie. Tipi: select, multiselect, text, textarea, likert, anno, righe_persone, insegna, insegne, spunta -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Il profilo della tua famiglia — Le mie spese</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+  :root {
+    --viola: #3C3489; --viola-dark: #2a2460; --viola-light: #5a4fc4;
+    --oro: #F59E0B; --oro-light: #FDE68A; --verde: #1D9E75;
+    --bianco: #FAFAF8; --grigio: #6B7280; --grigio-light: #F3F4F6; --nero: #1A1A2E;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bianco); color: var(--nero); }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 5%; display: flex; align-items: center; justify-content: space-between;
+    background: rgba(250,250,248,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(60,52,137,0.08); }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 900; color: var(--viola); text-decoration: none; }
+  .nav-salvato { font-size: 0.8rem; color: var(--verde); opacity: 0; transition: opacity 0.4s; }
+  .nav-salvato.on { opacity: 1; }
+  .hero-mini { background: linear-gradient(135deg, var(--viola-dark) 0%, var(--viola) 100%); padding: 96px 5% 40px; text-align: center; }
+  .hero-mini .label { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--oro-light); margin-bottom: 12px; }
+  .hero-mini h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.5rem); font-weight: 900; color: white; margin-bottom: 10px; }
+  .hero-mini p { color: rgba(255,255,255,0.7); font-size: 0.95rem; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 28px 20px 80px; }
+  .steps-bar { display: flex; gap: 6px; margin-bottom: 8px; }
+  .step-bar { flex: 1; height: 5px; border-radius: 3px; background: var(--grigio-light); }
+  .step-bar.done { background: var(--verde); } .step-bar.active { background: var(--oro); }
+  .steps-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--grigio); margin-bottom: 22px; }
+  .sez-titolo { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+  .info { font-size: 0.82rem; color: var(--grigio); line-height: 1.55; background: white; border: 1px solid #ECEAF6; border-radius: 12px; padding: 12px 14px; margin-bottom: 18px; }
+  .info a { color: var(--viola); }
+  .q { background: white; border: 1.5px solid #EEE; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  .q.err { border-color: #ef4444; }
+  .q-testo { font-size: 0.95rem; font-weight: 600; margin-bottom: 10px; line-height: 1.4; }
+  .q-testo .opt { font-weight: 400; color: var(--grigio); font-size: 0.8rem; }
+  .q-err { display: none; font-size: 0.78rem; color: #ef4444; margin-top: 8px; }
+  .q.err .q-err { display: block; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 10px 14px; border-radius: 22px; border: 1.5px solid #E5E7EB; background: white; font-size: 0.88rem; cursor: pointer; font-family: inherit; color: var(--nero); text-align: left; line-height: 1.3; }
+  .chip.on { background: var(--viola); border-color: var(--viola); color: white; font-weight: 600; }
+  input[type=text], input[type=number], select, textarea { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid #E5E7EB; font-size: 0.95rem; font-family: inherit; background: white; color: var(--nero); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--viola); box-shadow: 0 0 0 3px rgba(60,52,137,0.08); }
+  .persona { display: grid; grid-template-columns: 70px 1fr 1fr; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .persona span { font-size: 0.82rem; color: var(--grigio); }
+  @media (max-width: 480px) { .persona { grid-template-columns: 1fr 1fr; } .persona span { grid-column: 1 / -1; } }
+  .piccolo { margin-top: 8px; padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; border: 1px solid #E5E7EB; background: var(--grigio-light); cursor: pointer; font-family: inherit; }
+  .spunta { display: flex; gap: 12px; align-items: flex-start; font-size: 0.92rem; line-height: 1.45; cursor: pointer; }
+  .spunta input { width: 22px; height: 22px; margin-top: 1px; flex-shrink: 0; accent-color: var(--viola); }
+  .btn-nav { display: flex; gap: 12px; margin-top: 26px; }
+  .btn-avanti { flex: 1; background: var(--viola); color: white; padding: 14px; border-radius: 50px; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; font-family: inherit; }
+  .btn-avanti:disabled { background: var(--grigio); cursor: wait; }
+  .btn-indietro { background: var(--grigio-light); color: var(--grigio); padding: 14px 22px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; border: none; cursor: pointer; font-family: inherit; }
+  .avviso { display: none; margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: #FEF2F2; color: #991B1B; font-size: 0.88rem; line-height: 1.5; }
+  .box { text-align: center; padding: 44px 24px; background: white; border-radius: 20px; border: 1px solid rgba(29,158,117,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+  .box .icon { font-size: 3rem; margin-bottom: 14px; }
+  .box h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 12px; color: var(--verde); }
+  .box.ko h2 { color: var(--viola); }
+  .box p { color: var(--grigio); line-height: 1.7; font-size: 0.95rem; }
+  .box a { color: var(--viola); font-weight: 600; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Le mie spese</a>
+  <span class="nav-salvato" id="salvato">✓ Risposte salvate</span>
+</nav>
+<div class="hero-mini">
+  <div class="label">Il profilo della tua famiglia</div>
+  <h1 id="titolo">Il profilo della tua famiglia</h1>
+  <p>Circa 10 minuti. Puoi interrompere quando vuoi: le risposte si salvano a ogni sezione e riprendi dallo stesso link.</p>
+</div>
+<div class="wrap" id="app"><p style="text-align:center;color:#6B7280">Caricamento…</p></div>
+
+<script>
+(function () {
+  var API = 'https://panel-scontrini-production.up.railway.app/api/candidatura/full/';
+  var token = new URLSearchParams(location.search).get('t') || '';
+  var app = document.getElementById('app');
+  var S = { dati: null, risposte: {}, sezione: 1, invio: false };
+
+  function el(tag, attr, figli) {
+    var e = document.createElement(tag);
+    if (attr) for (var k in attr) {
+      if (k === 'testo') e.textContent = attr[k];
+      else if (k === 'classe') e.className = attr[k];
+      else if (k.indexOf('on') === 0) e.addEventListener(k.slice(2), attr[k]);
+      else e.setAttribute(k, attr[k]);
+    }
+    (figli || []).forEach(function (f) { if (f) e.appendChild(typeof f === 'string' ? document.createTextNode(f) : f); });
+    return e;
+  }
+  function messaggio(icona, titolo, testo, ko) {
+    app.innerHTML = '';
+    app.appendChild(el('div', { classe: 'box' + (ko ? ' ko' : '') }, [el('div', { classe: 'icon', testo: icona }), el('h2', { testo: titolo }), el('p', { testo: testo }),
+      el('p', null, [el('br'), el('a', { href: 'index.html', testo: '← Torna al sito' })])]));
+  }
+  function salvatoOk() { var s = document.getElementById('salvato'); s.classList.add('on'); setTimeout(function () { s.classList.remove('on'); }, 1800); }
+  function vuota(v) { return v === undefined || v === null || v === false || (typeof v === 'string' && !v.trim()) || (Array.isArray(v) && !v.length); }
+  function domandeSezione(n) { return S.dati.domande.filter(function (d) { return d.sezione === n; }); }
+  function nomeSezione(n) { var m = S.dati.nomiSezioni || {}; return m[n] || m[String(n)] || ('Sezione ' + n); }
+  function numeroComponenti() {
+    var v = String(S.risposte.QP_COMPONENTI || '').replace('+', '');
+    var n = parseInt(v, 10); return n > 0 ? Math.min(n, 12) : 0;
+  }
+
+  // ---------------------------------------------------------------- campi
+  function chips(d, multi) {
+    var box = el('div', { classe: 'chips' });
+    var val = S.risposte[d.codice];
+    (d.risposte || []).forEach(function (r) {
+      var on = multi ? (Array.isArray(val) && val.indexOf(r.v) >= 0) : String(val) === r.v;
+      box.appendChild(el('button', { type: 'button', classe: 'chip' + (on ? ' on' : ''), testo: r.t, onclick: function () {
+        if (multi) {
+          var a = Array.isArray(S.risposte[d.codice]) ? S.risposte[d.codice].slice() : [];
+          var i = a.indexOf(r.v); if (i >= 0) a.splice(i, 1); else a.push(r.v);
+          S.risposte[d.codice] = a;
+        } else S.risposte[d.codice] = r.v;
+        disegna();
+      } }));
+    });
+    return box;
+  }
+  function tendina(d, valori, valore, cambia) {
+    var s = el('select', null, [el('option', { value: '', testo: 'Seleziona…' })]);
+    valori.forEach(function (r) { var o = el('option', { value: r.v, testo: r.t }); if (String(valore) === r.v) o.selected = true; s.appendChild(o); });
+    s.addEventListener('change', function () { cambia(s.value); });
+    return s;
+  }
+  function campoInsegne(d, multi) {
+    var nomi = (S.dati.insegne || []).map(function (n) { return { v: n, t: n }; });
+    var val = S.risposte[d.codice];
+    var box = el('div');
+    if (multi) {
+      var arr = Array.isArray(val) ? val : [];
+      var c = el('div', { classe: 'chips' });
+      nomi.forEach(function (r) {
+        var on = arr.indexOf(r.v) >= 0;
+        c.appendChild(el('button', { type: 'button', classe: 'chip' + (on ? ' on' : ''), testo: r.t, onclick: function () {
+          var a = arr.slice(); var i = a.indexOf(r.v); if (i >= 0) a.splice(i, 1); else a.push(r.v); S.risposte[d.codice] = a; disegna(); } }));
+      });
+      box.appendChild(c);
+      var altri = arr.filter(function (x) { return !nomi.some(function (r) { return r.v === x; }); });
+      var inp = el('input', { type: 'text', placeholder: 'Altre insegne (separate da virgola)', value: altri.join(', ') });
+      inp.style.marginTop = '10px';
+      inp.addEventListener('change', function () {
+        var scelti = (Array.isArray(S.risposte[d.codice]) ? S.risposte[d.codice] : []).filter(function (x) { return nomi.some(function (r) { return r.v === x; }); });
+        inp.value.split(',').map(function (x) { return x.trim(); }).filter(Boolean).forEach(function (x) { if (scelti.indexOf(x) < 0) scelti.push(x); });
+        S.risposte[d.codice] = scelti;
+      });
+      box.appendChild(inp);
+    } else {
+      S.altro = S.altro || {};
+      var nota = nomi.some(function (r) { return r.v === val; });
+      var altro = S.altro[d.codice] || (!!val && !nota);
+      var tend = tendina(d, nomi.concat([{ v: '__altro', t: 'Altro (scrivilo)' }]), altro ? '__altro' : (val || ''), function (v) {
+        if (v === '__altro') { S.altro[d.codice] = true; if (nota) S.risposte[d.codice] = ''; }
+        else { S.altro[d.codice] = false; S.risposte[d.codice] = v; }
+        disegna(); });
+      box.appendChild(tend);
+      if (altro) {
+        var t = el('input', { type: 'text', placeholder: 'Nome del negozio', value: nota ? '' : (val || '') });
+        t.style.marginTop = '10px';
+        t.addEventListener('input', function () { S.risposte[d.codice] = t.value; });
+        box.appendChild(t);
+      }
+    }
+    return box;
+  }
+  function campoPersone(d) {
+    var campi = d.campi || {};
+    var righe = Array.isArray(S.risposte[d.codice]) ? S.risposte[d.codice].slice() : [];
+    var n = numeroComponenti();
+    if (n && righe.length !== n) { while (righe.length < n) righe.push({}); righe = righe.slice(0, n); S.risposte[d.codice] = righe; }
+    if (!righe.length) { righe = [{}]; S.risposte[d.codice] = righe; }
+    var box = el('div');
+    righe.forEach(function (p, i) {
+      var r = el('div', { classe: 'persona' }, [el('span', { testo: i === 0 ? 'Tu' : 'Persona ' + (i + 1) })]);
+      r.appendChild(tendina(d, campi.eta || [], p.eta || '', function (v) { righe[i] = Object.assign({}, righe[i], { eta: v }); S.risposte[d.codice] = righe; }));
+      r.appendChild(tendina(d, campi.genere || [], p.genere || '', function (v) { righe[i] = Object.assign({}, righe[i], { genere: v }); S.risposte[d.codice] = righe; }));
+      box.appendChild(r);
+    });
+    if (!n) {
+      box.appendChild(el('button', { type: 'button', classe: 'piccolo', testo: '+ Aggiungi una persona', onclick: function () { righe.push({}); S.risposte[d.codice] = righe; disegna(); } }));
+      if (righe.length > 1) box.appendChild(el('button', { type: 'button', classe: 'piccolo', testo: '− Togli l\'ultima', onclick: function () { righe.pop(); S.risposte[d.codice] = righe; disegna(); } }));
+    }
+    return box;
+  }
+  function campo(d) {
+    var v = S.risposte[d.codice];
+    switch (d.tipo) {
+      case 'multiselect': return chips(d, true);
+      case 'select': case 'likert':
+        return (d.risposte || []).length > 8 ? tendina(d, d.risposte, v || '', function (x) { S.risposte[d.codice] = x; }) : chips(d, false);
+      case 'anno': {
+        var i = el('input', { type: 'number', inputmode: 'numeric', min: String(S.dati.annoMax - 92), max: String(S.dati.annoMax), placeholder: d.placeholder || 'es. 1975', value: v || '' });
+        i.addEventListener('input', function () { S.risposte[d.codice] = i.value.trim(); });
+        return i;
+      }
+      case 'textarea': { var t = el('textarea', { rows: '3', placeholder: d.placeholder || '' }); t.value = v || ''; t.addEventListener('input', function () { S.risposte[d.codice] = t.value; }); return t; }
+      case 'insegna': return campoInsegne(d, false);
+      case 'insegne': return campoInsegne(d, true);
+      case 'righe_persone': return campoPersone(d);
+      case 'spunta': {
+        var c = el('input', { type: 'checkbox' }); c.checked = v === true;
+        c.addEventListener('change', function () { S.risposte[d.codice] = c.checked; });
+        return el('label', { classe: 'spunta' }, [c, el('span', { testo: d.testo + (d.obbligatorio ? '' : ' (facoltativo)') })]);
+      }
+      default: {
+        if (d.risposte && d.risposte.length) return tendina(d, d.risposte, v || '', function (x) { S.risposte[d.codice] = x; });
+        var x = el('input', { type: 'text', placeholder: d.placeholder || '', value: v || '' });
+        x.addEventListener('input', function () { S.risposte[d.codice] = x.value; });
+        return x;
+      }
+    }
+  }
+  function mancaRisposta(d) {
+    var v = S.risposte[d.codice];
+    if (d.tipo === 'righe_persone') return !Array.isArray(v) || !v.length || v.some(function (p) { return !p || !p.eta || !p.genere; });
+    if (d.tipo === 'anno') { var n = parseInt(v, 10); return !(n >= S.dati.annoMax - 92 && n <= S.dati.annoMax); }
+    return vuota(v);
+  }
+
+  // ---------------------------------------------------------------- pagina
+  function disegna(errori) {
+    var n = S.sezione, tot = S.dati.sezioni;
+    app.innerHTML = '';
+    var barre = el('div', { classe: 'steps-bar' });
+    for (var i = 1; i <= tot; i++) barre.appendChild(el('div', { classe: 'step-bar' + (i < n ? ' done' : i === n ? ' active' : '') }));
+    app.appendChild(barre);
+    app.appendChild(el('div', { classe: 'steps-label' }, [el('span', { testo: 'Sezione ' + n + ' di ' + tot }), el('span', { testo: nomeSezione(n) })]));
+    app.appendChild(el('div', { classe: 'sez-titolo', testo: nomeSezione(n) }));
+    if (n === 1) app.appendChild(el('div', { classe: 'info' }, ['Alcune risposte sono già compilate con i dati della tua candidatura: controllale e correggile se serve. Le risposte servono solo per selezionare le famiglie del panel e per statistiche in forma aggregata e anonima. ',
+      el('a', { href: 'privacy.html', target: '_blank', testo: 'Informativa privacy' })]));
+    domandeSezione(n).forEach(function (d) {
+      var q = el('div', { classe: 'q' + (errori && errori.indexOf(d.codice) >= 0 ? ' err' : ''), id: 'q-' + d.codice });
+      if (d.tipo !== 'spunta') q.appendChild(el('div', { classe: 'q-testo' }, [d.testo, d.obbligatorio ? '' : el('span', { classe: 'opt', testo: /facoltativ/i.test(d.testo) ? '' : ' (facoltativa)' })]));
+      q.appendChild(campo(d));
+      q.appendChild(el('div', { classe: 'q-err', testo: d.tipo === 'anno' ? 'Indica un anno valido' : d.tipo === 'righe_persone' ? 'Indica fascia d\'età e genere di ogni persona' : 'Risposta obbligatoria' }));
+      app.appendChild(q);
+    });
+    var av = el('div', { classe: 'avviso', id: 'avviso' });
+    var nav = el('div', { classe: 'btn-nav' });
+    if (n > 1) nav.appendChild(el('button', { type: 'button', classe: 'btn-indietro', testo: '← Indietro', onclick: function () { salva(n).then(function () { S.sezione = n - 1; disegna(); scrollTo(0, 0); }); } }));
+    nav.appendChild(el('button', { type: 'button', classe: 'btn-avanti', id: 'avanti', testo: n < tot ? 'Avanti →' : 'Invia il profilo', onclick: avanti }));
+    app.appendChild(nav); app.appendChild(av);
+    if (errori && errori.length) { av.style.display = 'block'; av.textContent = 'Mancano alcune risposte: le trovi evidenziate in rosso.'; var p = document.getElementById('q-' + errori[0]); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  }
+
+  function salva(n) {
+    return fetch(API + encodeURIComponent(token) + '/salva', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ risposte: S.risposte, sezione: n }) })
+      .then(function (r) { return r.json(); }).then(function (d) { if (d.success) salvatoOk(); return d; }).catch(function () { return { success: false }; });
+  }
+
+  function avanti() {
+    var n = S.sezione;
+    var err = domandeSezione(n).filter(function (d) { return d.obbligatorio && mancaRisposta(d); }).map(function (d) { return d.codice; });
+    if (err.length) { disegna(err); return; }
+    var b = document.getElementById('avanti'); b.disabled = true;
+    if (n < S.dati.sezioni) {
+      salva(n).then(function (d) {
+        if (!d.success) { b.disabled = false; var a = document.getElementById('avviso'); a.style.display = 'block'; a.textContent = d.error || 'Salvataggio non riuscito: controlla la connessione e riprova.'; return; }
+        S.sezione = n + 1; disegna(); scrollTo(0, 0);
+      });
+      return;
+    }
+    fetch(API + encodeURIComponent(token) + '/invia', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ risposte: S.risposte }) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.success) { messaggio('🎉', 'Grazie, profilo inviato!', 'Abbiamo ricevuto il profilo della tua famiglia. Lo valutiamo e ti scriviamo entro 3 giorni lavorativi: se entri nel panel riceverai il codice famiglia e il PIN per accedere all\'app.'); scrollTo(0, 0); return; }
+        if (d.codice === 'mancanti' && d.mancanti && d.mancanti.length) { S.sezione = d.mancanti[0].sezione; disegna(d.mancanti.filter(function (m) { return m.sezione === S.sezione; }).map(function (m) { return m.codice; })); return; }
+        b.disabled = false; var a = document.getElementById('avviso'); a.style.display = 'block'; a.textContent = d.error || 'Invio non riuscito, riprova.';
+      })
+      .catch(function () { b.disabled = false; var a = document.getElementById('avviso'); a.style.display = 'block'; a.textContent = 'Connessione non riuscita: le risposte sono salvate, riprova fra poco.'; });
+  }
+
+  if (!token) { messaggio('🔗', 'Link incompleto', 'Apri il link esattamente come ti è arrivato nell\'email. Per aiuto scrivi a panel@miaspesa.com.', true); return; }
+  fetch(API + encodeURIComponent(token))
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d.success) { messaggio('⌛', 'Link non attivo', d.error || 'Questo link non è più attivo.', true); return; }
+      if (d.data.completata) { messaggio('✅', 'Profilo già inviato', 'Grazie' + (d.data.nome ? ', ' + d.data.nome : '') + '! Abbiamo già ricevuto il profilo della tua famiglia: ti scriviamo noi.'); return; }
+      S.dati = d.data; S.risposte = d.data.risposte || {};
+      if (d.data.nome) document.getElementById('titolo').textContent = 'Ciao ' + d.data.nome + ', ecco il tuo profilo';
+      S.sezione = Math.min(Math.max(1, (d.data.ultimaSezione || 0) + 1), d.data.sezioni);
+      disegna();
+    })
+    .catch(function () { messaggio('📶', 'Connessione non riuscita', 'Non riusciamo a caricare il questionario. Controlla la connessione e ricarica la pagina.', true); });
+})();
+</script>
+</body>
+</html>
