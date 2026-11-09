@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- profilo-famiglia.html v1.1 - P45b (Ez 09.11.26): tipo "scala_item" (piu' frasi, per ognuna una scala, es. "Per niente ...
+<!-- profilo-famiglia.html v1.2 - P45d (Ez 09.11.26): nelle domande "scala_item" con "casuale": true nel repertorio le
+     frasi escono in ordine casuale, diverso per ogni famiglia ma sempre uguale per lo stesso link (anche quando si riprende)
+     profilo-famiglia.html v1.1 - P45b (Ez 09.11.26): tipo "scala_item" (piu' frasi, per ognuna una scala, es. "Per niente ...
      Del tutto": le frasi e la scala arrivano dal repertorio); pulsante "Salva e riprendi dopo" in ogni sezione (salva anche
      una sezione a meta' e si riparte da quella); "Indietro" non segna piu' come finita la sezione che si lascia
      profilo-famiglia.html v1.0 - P45 (Ez 09.11.26): questionario completo della candidatura (FULL) con link personale.
@@ -207,8 +209,20 @@
     return box;
   }
   // Ez 09.11.26 P45b - piu' frasi, per ognuna un punto della scala: risposta { codiceFrase: valoreScala }
+  // Ez 09.11.26 P45d - ordine casuale stabile: mescolamento con un seme ricavato da link + codice della domanda
+  function ordineCasuale(lista, seme) {
+    var h = 2166136261;
+    for (var i = 0; i < seme.length; i++) { h ^= seme.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    var out = lista.slice();
+    for (var j = out.length - 1; j > 0; j--) {
+      h = (Math.imul(h ^ (h >>> 15), 2246822507) + 3266489909) >>> 0;
+      var k = h % (j + 1), t = out[j]; out[j] = out[k]; out[k] = t;
+    }
+    return out;
+  }
   function campoScala(d) {
     var campi = d.campi || {}, frasi = campi.items || [], scala = campi.scala || [];
+    if (campi.casuale) frasi = ordineCasuale(frasi, token + '|' + d.codice);
     var box = el('div');
     frasi.forEach(function (f) {
       var riga = el('div', { classe: 'scala-item' });
