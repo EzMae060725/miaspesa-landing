@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P45 (Ez 09.11.26): fascia di reddito tolta (si chiede nel questionario completo); componenti 1-7 e "8 o piu'"
+<!-- candidatura.html - P45b (Ez 09.11.26): il comune si controlla con le province della regione scelta (prima col nome della
+     regione nel file dei comuni, che per esempio scrive "Trentino-Alto Adige/Südtirol": "Ala" (TN) veniva rifiutato);
+     "Avanti" e "Invia" restano grigi finche' il passo non e' completo ma si possono premere: mostrano cosa manca e
+     portano al primo campo da sistemare
+     P45 (Ez 09.11.26): fascia di reddito tolta (si chiede nel questionario completo); componenti 1-7 e "8 o piu'"
      come nel repertorio domande (stessi codici, inviati cosi' come sono); "ti scriviamo entro 3 giorni lavorativi"
      P37 (Ez 07.11.26): Termini 1.2, articoli rinumerati (il punto 8-bis diventa 9)
      P36 (Ez 07.11.26): caselle "accetto i Termini e Condizioni" e "approvo specificamente il punto 8-bis"
@@ -107,6 +111,9 @@
   }
   .btn-avanti:hover { background: var(--viola-light); transform: translateY(-1px); }
   .btn-avanti:disabled { background: var(--grigio); cursor: not-allowed; transform: none; }
+  /* Ez 09.11.26 P45b - passo non ancora completo: grigio ma cliccabile (mostra cosa manca) */
+  .btn-avanti.incompleto { background: #A8A3C7; }
+  .btn-avanti.incompleto:hover { background: #9893BE; transform: none; }
   .btn-indietro {
     background: var(--grigio-light); color: var(--grigio);
     padding: 14px 24px; border-radius: 50px; font-size: 0.95rem; font-weight: 600;
@@ -338,7 +345,7 @@
 
     <div class="btn-nav">
       <button class="btn-indietro" onclick="goStep(1)">← Indietro</button>
-      <button class="btn-avanti" onclick="goStep(3)">Avanti →</button>
+      <button class="btn-avanti" id="btnAvanti2" onclick="goStep(3)">Avanti →</button>
     </div>
   </div>
 
@@ -1145,10 +1152,9 @@ function validateComune() {
     setErr('comune', 'Comune non appartiene alla provincia selezionata');
     return false;
   }
-  // VdA edge case: regione select value e' 'VdA' ma JSON ha "Valle d'Aosta"
-  var regioneJson = SELECTED_COMUNE.regione.nome;
-  var regioneAttesa = (regione === 'VdA') ? "Valle d'Aosta" : regione;
-  if (regioneJson !== regioneAttesa) {
+  // Ez 09.11.26 P45b - coerenza con la regione dalle sue province (tabella PROVINCE di questa pagina), non dal nome della
+  // regione nel file dei comuni, che puo' essere scritto diversamente (es. "Trentino-Alto Adige/Südtirol")
+  if ((PROVINCE[regione] || []).indexOf(SELECTED_COMUNE.sigla) < 0) {
     setErr('comune', 'Comune non appartiene alla regione selezionata');
     return false;
   }
@@ -1191,8 +1197,9 @@ const CODE = 'MIASPESA2026';
 let currentStep = 1;
 
 function goStep(n) {
-  if (n > currentStep && !validateStep(currentStep)) return;
+  if (n > currentStep && !validateStep(currentStep)) { vaiAlPrimoErrore(); return; }
   currentStep = n;
+  setTimeout(aggiornaPulsanti, 0); // Ez 09.11.26 P45b
 
   document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('visible'));
   var panel = document.getElementById('step' + n);
@@ -1212,7 +1219,7 @@ function goStep(n) {
 // Ez 06.11.26 P28 - al passo 1 si verifica subito se l'email e' gia' usata per una candidatura (backend P27).
 // Se la verifica non risponde (rete, troppe verifiche) si prosegue: resta il controllo all'invio.
 async function avantiDaStep1() {
-  if (!validateStep(1)) return;
+  if (!validateStep(1)) { vaiAlPrimoErrore(); return; }
   var btn = document.getElementById('btnAvanti1');
   var email = document.getElementById('email').value.trim();
   btn.classList.add('loading'); btn.disabled = true;
@@ -1229,13 +1236,40 @@ async function avantiDaStep1() {
   goStep(2);
 }
 
+// Ez 09.11.26 P45b - controllo "silenzioso" (nessun messaggio rosso) per sapere se il passo e' completo: colora i pulsanti
+var SILENZIOSO = false;
+function passoCompleto(s) {
+  SILENZIOSO = true;
+  var ok = false;
+  try {
+    ok = validateStep(s);
+    if (ok && s === 3) ok = ['privacyOk', 'terminiOk', 'clausoleOk'].every(function (id) { var c = document.getElementById(id); return !c || c.checked; });
+  } catch (e) { ok = true; } finally { SILENZIOSO = false; }
+  return ok;
+}
+function aggiornaPulsanti() {
+  [[1, 'btnAvanti1'], [2, 'btnAvanti2'], [3, 'btnInvia']].forEach(function (x) {
+    var b = document.getElementById(x[1]);
+    if (b) b.classList.toggle('incompleto', !passoCompleto(x[0]));
+  });
+}
+function vaiAlPrimoErrore() {
+  var panel = document.getElementById('step' + currentStep);
+  var f = panel ? panel.querySelector('.has-err') : null;
+  if (f) f.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+['input', 'change', 'click'].forEach(function (ev) { document.addEventListener(ev, function () { setTimeout(aggiornaPulsanti, 0); }); });
+document.addEventListener('DOMContentLoaded', aggiornaPulsanti);
+
 function setErr(id, msg) {
+  if (SILENZIOSO) return;
   var f = document.getElementById('f-' + id);
   if (!f) return;
   f.classList.add('has-err');
   if (msg) f.querySelector('.err').textContent = msg;
 }
 function clearErr(id) {
+  if (SILENZIOSO) return;
   var f = document.getElementById('f-' + id);
   if (f) f.classList.remove('has-err');
 }
@@ -1274,7 +1308,7 @@ function validateStep(s) {
     // Ez 05.11.26 P25 - telefono obbligatorio; "Non ho uno smartphone" non fa proseguire
     var telTipo = (document.querySelector('input[name="telefonoTipo"]:checked') || {}).value || '';
     if (!telTipo) { setErr('telefonoTipo'); ok = false; }
-    else if (telTipo === 'nessuno') { document.getElementById('tel-nessuno').style.display = 'block'; ok = false; }
+    else if (telTipo === 'nessuno') { if (!SILENZIOSO) document.getElementById('tel-nessuno').style.display = 'block'; ok = false; }
     else clearErr('telefonoTipo');
     if (!anno || anno < 1924 || anno > 2006) { setErr('anno'); ok = false; } else clearErr('anno');
     // Ez 05.05.26 - Bug B.2.18 fix: regex email con TLD min 2 char (blocca nome@dominio.i)
@@ -1334,7 +1368,7 @@ function mostraErroreInvio(msg) {
 
 async function invia() {
   document.getElementById('err-invio').style.display = 'none';
-  if (!validateStep(3)) return;
+  if (!validateStep(3)) { vaiAlPrimoErrore(); return; }
   var privacyOk = document.getElementById('privacyOk').checked;
   var errPrivacy = document.getElementById('err-privacy');
   if (!privacyOk) { errPrivacy.style.display = 'block'; return; }

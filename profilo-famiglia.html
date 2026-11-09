@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<!-- profilo-famiglia.html v1.0 - P45 (Ez 09.11.26): questionario completo della candidatura (FULL) con link personale.
+<!-- profilo-famiglia.html v1.1 - P45b (Ez 09.11.26): tipo "scala_item" (piu' frasi, per ognuna una scala, es. "Per niente ...
+     Del tutto": le frasi e la scala arrivano dal repertorio); pulsante "Salva e riprendi dopo" in ogni sezione (salva anche
+     una sezione a meta' e si riparte da quella); "Indietro" non segna piu' come finita la sezione che si lascia
+     profilo-famiglia.html v1.0 - P45 (Ez 09.11.26): questionario completo della candidatura (FULL) con link personale.
      Domande, risposte e sezioni arrivano dal server (repertorio domande, questionario "candidatura_full" del progetto):
      qui non c'e' nessuna domanda scritta. Salva a ogni sezione, si riprende dallo stesso link, invio finale con controllo
-     delle domande obbligatorie. Tipi: select, multiselect, text, textarea, likert, anno, righe_persone, insegna, insegne, spunta -->
+     delle domande obbligatorie. Tipi: select, multiselect, text, textarea, likert, anno, righe_persone, insegna, insegne, spunta, scala_item -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -54,6 +57,14 @@
   .persona span { font-size: 0.82rem; color: var(--grigio); }
   @media (max-width: 480px) { .persona { grid-template-columns: 1fr 1fr; } .persona span { grid-column: 1 / -1; } }
   .piccolo { margin-top: 8px; padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; border: 1px solid #E5E7EB; background: var(--grigio-light); cursor: pointer; font-family: inherit; }
+  .scala-item { border-top: 1px solid #F1F0F7; padding: 12px 0 4px; }
+  .scala-item:first-child { border-top: none; padding-top: 2px; }
+  .scala-frase { font-size: 0.9rem; line-height: 1.4; margin-bottom: 8px; }
+  .scala-frase.manca { color: #ef4444; }
+  .scala-punti { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .scala-punti button { padding: 9px 2px; border-radius: 10px; border: 1.5px solid #E5E7EB; background: white; font-size: 0.72rem; line-height: 1.2; cursor: pointer; font-family: inherit; color: var(--nero); }
+  .scala-punti button.on { background: var(--viola); border-color: var(--viola); color: white; font-weight: 700; }
+  .btn-dopo { display: block; width: 100%; margin-top: 12px; padding: 11px; border-radius: 50px; border: 1.5px dashed #C9C5E3; background: transparent; color: var(--viola); font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit; }
   .spunta { display: flex; gap: 12px; align-items: flex-start; font-size: 0.92rem; line-height: 1.45; cursor: pointer; }
   .spunta input { width: 22px; height: 22px; margin-top: 1px; flex-shrink: 0; accent-color: var(--viola); }
   .btn-nav { display: flex; gap: 12px; margin-top: 26px; }
@@ -195,6 +206,32 @@
     }
     return box;
   }
+  // Ez 09.11.26 P45b - piu' frasi, per ognuna un punto della scala: risposta { codiceFrase: valoreScala }
+  function campoScala(d) {
+    var campi = d.campi || {}, frasi = campi.items || [], scala = campi.scala || [];
+    var box = el('div');
+    frasi.forEach(function (f) {
+      var riga = el('div', { classe: 'scala-item' });
+      riga.appendChild(el('div', { classe: 'scala-frase', id: 'sf-' + d.codice + '-' + f.v, testo: f.t }));
+      var punti = el('div', { classe: 'scala-punti' });
+      scala.forEach(function (p) {
+        var cur = (S.risposte[d.codice] || {})[f.v];
+        punti.appendChild(el('button', { type: 'button', classe: String(cur) === p.v ? 'on' : '', testo: p.t, onclick: function () {
+          var r = Object.assign({}, S.risposte[d.codice] || {}); r[f.v] = p.v; S.risposte[d.codice] = r;
+          Array.prototype.forEach.call(punti.children, function (b) { b.classList.remove('on'); }); this.classList.add('on');
+          var fr = document.getElementById('sf-' + d.codice + '-' + f.v); if (fr) fr.classList.remove('manca');
+        } }));
+      });
+      riga.appendChild(punti);
+      box.appendChild(riga);
+    });
+    return box;
+  }
+  function scalaIncompleta(d) {
+    var v = S.risposte[d.codice] || {};
+    return ((d.campi || {}).items || []).some(function (f) { return v[f.v] === undefined || v[f.v] === null || v[f.v] === ''; });
+  }
+
   function campo(d) {
     var v = S.risposte[d.codice];
     switch (d.tipo) {
@@ -210,6 +247,7 @@
       case 'insegna': return campoInsegne(d, false);
       case 'insegne': return campoInsegne(d, true);
       case 'righe_persone': return campoPersone(d);
+      case 'scala_item': return campoScala(d);
       case 'spunta': {
         var c = el('input', { type: 'checkbox' }); c.checked = v === true;
         c.addEventListener('change', function () { S.risposte[d.codice] = c.checked; });
@@ -227,6 +265,7 @@
     var v = S.risposte[d.codice];
     if (d.tipo === 'righe_persone') return !Array.isArray(v) || !v.length || v.some(function (p) { return !p || !p.eta || !p.genere; });
     if (d.tipo === 'anno') { var n = parseInt(v, 10); return !(n >= S.dati.annoMax - 92 && n <= S.dati.annoMax); }
+    if (d.tipo === 'scala_item') return scalaIncompleta(d);
     return vuota(v);
   }
 
@@ -245,20 +284,41 @@
       var q = el('div', { classe: 'q' + (errori && errori.indexOf(d.codice) >= 0 ? ' err' : ''), id: 'q-' + d.codice });
       if (d.tipo !== 'spunta') q.appendChild(el('div', { classe: 'q-testo' }, [d.testo, d.obbligatorio ? '' : el('span', { classe: 'opt', testo: /facoltativ/i.test(d.testo) ? '' : ' (facoltativa)' })]));
       q.appendChild(campo(d));
-      q.appendChild(el('div', { classe: 'q-err', testo: d.tipo === 'anno' ? 'Indica un anno valido' : d.tipo === 'righe_persone' ? 'Indica fascia d\'età e genere di ogni persona' : 'Risposta obbligatoria' }));
+      q.appendChild(el('div', { classe: 'q-err', testo: d.tipo === 'anno' ? 'Indica un anno valido' : d.tipo === 'righe_persone' ? 'Indica fascia d\'età e genere di ogni persona' : d.tipo === 'scala_item' ? 'Rispondi per ogni frase' : 'Risposta obbligatoria' }));
       app.appendChild(q);
+      if (errori && errori.indexOf(d.codice) >= 0 && d.tipo === 'scala_item') {
+        var vv = S.risposte[d.codice] || {};
+        ((d.campi || {}).items || []).forEach(function (f) { if (vv[f.v] === undefined || vv[f.v] === '') { var fr = document.getElementById('sf-' + d.codice + '-' + f.v); if (fr) fr.classList.add('manca'); } });
+      }
     });
     var av = el('div', { classe: 'avviso', id: 'avviso' });
     var nav = el('div', { classe: 'btn-nav' });
-    if (n > 1) nav.appendChild(el('button', { type: 'button', classe: 'btn-indietro', testo: '← Indietro', onclick: function () { salva(n).then(function () { S.sezione = n - 1; disegna(); scrollTo(0, 0); }); } }));
+    // Ez 09.11.26 P45b - "Indietro" salva le risposte ma non segna come finita la sezione che si lascia
+    if (n > 1) nav.appendChild(el('button', { type: 'button', classe: 'btn-indietro', testo: '← Indietro', onclick: function () { salva(n - 1).then(function () { S.sezione = n - 1; disegna(); scrollTo(0, 0); }); } }));
     nav.appendChild(el('button', { type: 'button', classe: 'btn-avanti', id: 'avanti', testo: n < tot ? 'Avanti →' : 'Invia il profilo', onclick: avanti }));
-    app.appendChild(nav); app.appendChild(av);
+    app.appendChild(nav);
+    app.appendChild(el('button', { type: 'button', classe: 'btn-dopo', testo: '💾 Salva e riprendi dopo', onclick: salvaERiprendi }));
+    app.appendChild(av);
     if (errori && errori.length) { av.style.display = 'block'; av.textContent = 'Mancano alcune risposte: le trovi evidenziate in rosso.'; var p = document.getElementById('q-' + errori[0]); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   }
 
   function salva(n) {
     return fetch(API + encodeURIComponent(token) + '/salva', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ risposte: S.risposte, sezione: n }) })
       .then(function (r) { return r.json(); }).then(function (d) { if (d.success) salvatoOk(); return d; }).catch(function () { return { success: false }; });
+  }
+
+  // Ez 09.11.26 P45b - salva anche la sezione a meta' e si riparte da questa (sezione n-1 = ultima finita)
+  function dataIt(iso) { try { return new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return ''; } }
+  function salvaERiprendi() {
+    var n = S.sezione;
+    salva(n - 1).then(function (d) {
+      if (!d.success) { var a = document.getElementById('avviso'); a.style.display = 'block'; a.textContent = d.error || 'Salvataggio non riuscito: controlla la connessione e riprova.'; return; }
+      app.innerHTML = '';
+      app.appendChild(el('div', { classe: 'box' }, [el('div', { classe: 'icon', testo: '💾' }), el('h2', { testo: 'Risposte salvate' }),
+        el('p', { testo: 'Puoi chiudere questa pagina. Per riprendere riapri il link che ti abbiamo mandato per email' + (S.dati.scadenza ? ': è valido fino al ' + dataIt(S.dati.scadenza) : '') + '. Ripartirai dalla sezione "' + nomeSezione(n) + '".' }),
+        el('p', null, [el('br'), el('button', { type: 'button', classe: 'btn-avanti', testo: 'Continua adesso', onclick: function () { disegna(); scrollTo(0, 0); } })])]));
+      scrollTo(0, 0);
+    });
   }
 
   function avanti() {
