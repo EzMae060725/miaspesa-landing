@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<!-- profilo-famiglia.html v1.2 - P45d (Ez 09.11.26): nelle domande "scala_item" con "casuale": true nel repertorio le
+<!-- profilo-famiglia.html v1.3 - P45f (Ez 10.11.26): domande "mostra solo se" (regola mostraSe dal server: una risposta precedente
+     o un dato del comune, il "contesto" calcolato dal server con dati ISTAT); la sezione si ridisegna quando cambia una risposta
+     da cui dipendono altre domande; il contesto si aggiorna a ogni salvataggio (se la famiglia corregge il comune)
+     profilo-famiglia.html v1.2 - P45d (Ez 09.11.26): nelle domande "scala_item" con "casuale": true nel repertorio le
      frasi escono in ordine casuale, diverso per ogni famiglia ma sempre uguale per lo stesso link (anche quando si riprende)
      profilo-famiglia.html v1.1 - P45b (Ez 09.11.26): tipo "scala_item" (piu' frasi, per ognuna una scala, es. "Per niente ...
      Del tutto": le frasi e la scala arrivano dal repertorio); pulsante "Salva e riprendi dopo" in ogni sezione (salva anche
@@ -119,7 +122,21 @@
   }
   function salvatoOk() { var s = document.getElementById('salvato'); s.classList.add('on'); setTimeout(function () { s.classList.remove('on'); }, 1800); }
   function vuota(v) { return v === undefined || v === null || v === false || (typeof v === 'string' && !v.trim()) || (Array.isArray(v) && !v.length); }
-  function domandeSezione(n) { return S.dati.domande.filter(function (d) { return d.sezione === n; }); }
+  // Ez 10.11.26 P45f - "mostra solo se": { domanda, valori } o { contesto, valori }, una lista = tutte vere
+  function visibile(d) {
+    if (!d.mostraSe) return true;
+    var regole = Array.isArray(d.mostraSe) ? d.mostraSe : [d.mostraSe];
+    return regole.every(function (r) {
+      var valori = (r.valori || []).map(String);
+      var v = r.contesto ? (S.dati.contesto || {})[r.contesto] : S.risposte[r.domanda];
+      if (v === undefined || v === null || v === '') return false;
+      return Array.isArray(v) ? v.some(function (x) { return valori.indexOf(String(x)) >= 0; }) : valori.indexOf(String(v)) >= 0;
+    });
+  }
+  function riferita(codice) {
+    return S.dati.domande.some(function (d) { var m = d.mostraSe; return m && (Array.isArray(m) ? m : [m]).some(function (r) { return r.domanda === codice; }); });
+  }
+  function domandeSezione(n) { return S.dati.domande.filter(function (d) { return d.sezione === n && visibile(d); }); }
   function nomeSezione(n) { var m = S.dati.nomiSezioni || {}; return m[n] || m[String(n)] || ('Sezione ' + n); }
   function numeroComponenti() {
     var v = String(S.risposte.QP_COMPONENTI || '').replace('+', '');
@@ -146,7 +163,7 @@
   function tendina(d, valori, valore, cambia) {
     var s = el('select', null, [el('option', { value: '', testo: 'Seleziona…' })]);
     valori.forEach(function (r) { var o = el('option', { value: r.v, testo: r.t }); if (String(valore) === r.v) o.selected = true; s.appendChild(o); });
-    s.addEventListener('change', function () { cambia(s.value); });
+    s.addEventListener('change', function () { cambia(s.value); if (d && riferita(d.codice)) disegna(); }); // P45f: altre domande dipendono da questa
     return s;
   }
   function campoInsegne(d, multi) {
@@ -318,7 +335,7 @@
 
   function salva(n) {
     return fetch(API + encodeURIComponent(token) + '/salva', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ risposte: S.risposte, sezione: n }) })
-      .then(function (r) { return r.json(); }).then(function (d) { if (d.success) salvatoOk(); return d; }).catch(function () { return { success: false }; });
+      .then(function (r) { return r.json(); }).then(function (d) { if (d.success) { salvatoOk(); if (d.data && d.data.contesto) S.dati.contesto = d.data.contesto; } return d; }) // P45f: contesto aggiornato.catch(function () { return { success: false }; });
   }
 
   // Ez 09.11.26 P45b - salva anche la sezione a meta' e si riparte da questa (sezione n-1 = ultima finita)
