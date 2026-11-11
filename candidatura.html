@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P45b (Ez 09.11.26): il comune si controlla con le province della regione scelta (prima col nome della
+<!-- candidatura.html - P47d (Ez 11.11.26): province aggiornate come nel file dei comuni (Sardegna: CA NU OR SS SU, tolte CI MD OG
+     OT VS che non esistono piu'; Ferrara tolta dal Veneto) e mostrate col nome, es. "Brescia (BS)"; comune e CAP si scelgono
+     da una lista che compare sotto il campo mentre si scrive (prima era la lista del browser, che sul telefono spesso non si vede)
+     P45b (Ez 09.11.26): il comune si controlla con le province della regione scelta (prima col nome della
      regione nel file dei comuni, che per esempio scrive "Trentino-Alto Adige/Südtirol": "Ala" (TN) veniva rifiutato);
      "Avanti" e "Invia" restano grigi finche' il passo non e' completo ma si possono premere: mostrano cosa manca e
      portano al primo campo da sistemare
@@ -93,6 +96,10 @@
 
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   /* Ez 05.05.26 - Bug B.2.24+25: layout 3 colonne con CAP piu' stretto */
+  .proposte { border: 1px solid #E5E7EB; border-radius: 10px; margin-top: 6px; overflow: hidden; background: white; display: none; }
+  .proposte button { display: block; width: 100%; text-align: left; padding: 11px 14px; border: none; border-top: 1px solid #F3F4F6; background: white; font-size: 0.95rem; cursor: pointer; font-family: inherit; color: #1A1A2E; }
+  .proposte.cap { border: none; background: transparent; }
+  .proposte.cap button { display: inline-block; width: auto; margin: 0 6px 6px 0; padding: 8px 12px; border: 1.5px solid #E5E7EB; border-radius: 18px; font-size: 0.88rem; }
   .grid3geo { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 12px; }
   @media (max-width: 640px) { .grid3geo { grid-template-columns: 1fr; } }
   #cap { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 1px; text-align: center; }
@@ -315,14 +322,16 @@
       </div>
       <div class="field" id="f-comune">
         <label>Comune *</label>
-        <input type="text" id="comune" placeholder="es. Brescia" list="comuni-list" autocomplete="off" disabled>
+        <input type="text" id="comune" placeholder="Scrivi e tocca il comune" autocomplete="off" disabled>
         <datalist id="comuni-list"></datalist>
+        <div class="proposte" id="comuni-proposte"></div>
         <div class="err">Campo obbligatorio</div>
       </div>
       <div class="field" id="f-cap">
         <label>CAP *</label>
-        <input type="text" id="cap" placeholder="es. 25100" inputmode="numeric" maxlength="5" autocomplete="off" list="cap-list" disabled>
+        <input type="text" id="cap" placeholder="es. 25100" inputmode="numeric" maxlength="5" autocomplete="off" disabled>
         <datalist id="cap-list"></datalist>
+        <div class="proposte cap" id="cap-proposte"></div>
         <div class="err">Campo obbligatorio</div>
       </div>
     </div>
@@ -1004,13 +1013,13 @@ var PROVINCE = {
   'Molise': ['CB','IS'],
   'Piemonte': ['AL','AT','BI','CN','NO','TO','VB','VC'],
   'Puglia': ['BA','BT','BR','FG','LE','TA'],
-  'Sardegna': ['CA','CI','MD','NU','OG','OR','OT','SS','VS'],
+  'Sardegna': ['CA','NU','OR','SS','SU'], // Ez 11.11.26 P47d - come nel file dei comuni (province dal 2016)
   'Sicilia': ['AG','CL','CT','EN','ME','PA','RG','SR','TP'],
   'Toscana': ['AR','FI','GR','LI','LU','MS','PI','PT','PO','SI'],
   'Trentino-Alto Adige': ['BZ','TN'],
   'Umbria': ['PG','TR'],
   "VdA": ['AO'],
-  'Veneto': ['BL','FE','PD','RO','TV','VE','VR','VI']
+  'Veneto': ['BL','PD','RO','TV','VE','VR','VI'] // Ez 11.11.26 P47d - tolta FE (Ferrara e' in Emilia-Romagna)
 };
 
 document.getElementById('regione').addEventListener('change', function() {
@@ -1024,6 +1033,12 @@ document.getElementById('regione').addEventListener('change', function() {
   });
   // Reset comune e CAP se cambia regione
   resetComuneCap();
+  // Ez 11.11.26 P47d - nome della provincia accanto alla sigla, dal file dei comuni
+  loadComuniData().then(function(data) {
+    var nomi = {};
+    (data || []).forEach(function(c) { if (c.provincia && !nomi[c.sigla]) nomi[c.sigla] = c.provincia.nome; });
+    Array.prototype.forEach.call(sel.options, function(o) { if (o.value && nomi[o.value]) o.textContent = nomi[o.value] + ' (' + o.value + ')'; });
+  }).catch(function() {});
 });
 
 // =============================================================
@@ -1040,6 +1055,7 @@ function resetComuneCap() {
   cap.value = ''; cap.disabled = true;
   document.getElementById('comuni-list').innerHTML = '';
   document.getElementById('cap-list').innerHTML = '';
+  nascondiProposte('comuni-proposte'); nascondiProposte('cap-proposte'); // Ez 11.11.26 P47d
   SELECTED_COMUNE = null;
   clearErr('comune'); clearErr('cap');
 }
@@ -1121,11 +1137,56 @@ document.getElementById('comune').addEventListener('input', function() {
   }
 });
 
+// Ez 11.11.26 P47d - liste che compaiono sotto il campo mentre si scrive (al posto della lista del browser)
+function normNome(v) { return String(v == null ? '' : v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ''); }
+function nascondiProposte(id) { var b = document.getElementById(id); if (b) { b.innerHTML = ''; b.style.display = 'none'; } }
+function mostraProposte(id, valori, scegli) {
+  var box = document.getElementById(id);
+  box.innerHTML = '';
+  if (!valori.length) { box.style.display = 'none'; return; }
+  valori.forEach(function(v) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = v;
+    b.addEventListener('mousedown', function(e) { e.preventDefault(); }); // il campo non perde il fuoco prima del tocco
+    b.addEventListener('click', function() { scegli(v); box.style.display = 'none'; });
+    box.appendChild(b);
+  });
+  box.style.display = 'block';
+}
+function proponiComuni() {
+  var inp = document.getElementById('comune');
+  var sigla = document.getElementById('provincia').value;
+  if (!COMUNI_DATA || !sigla || document.activeElement !== inp) { nascondiProposte('comuni-proposte'); return; }
+  var q = normNome(inp.value);
+  var nomi = COMUNI_DATA.filter(function(c) { return c.sigla === sigla; }).map(function(c) { return c.nome; });
+  if (nomi.some(function(n) { return normNome(n) === q; })) { nascondiProposte('comuni-proposte'); return; }
+  var prop = q ? nomi.filter(function(n) { return normNome(n).indexOf(q) === 0; }).concat(nomi.filter(function(n) { return normNome(n).indexOf(q) > 0; })) : nomi;
+  mostraProposte('comuni-proposte', prop.slice(0, 8), function(nome) {
+    inp.value = nome;
+    inp.dispatchEvent(new Event('input')); // stesso controllo di prima: comune scelto, CAP abilitato o compilato
+    validateComune();
+  });
+}
+function proponiCap() {
+  var inp = document.getElementById('cap');
+  if (!SELECTED_COMUNE || SELECTED_COMUNE.cap.length < 2 || document.activeElement !== inp) { nascondiProposte('cap-proposte'); return; }
+  var v = inp.value.trim();
+  if (SELECTED_COMUNE.cap.indexOf(v) >= 0) { nascondiProposte('cap-proposte'); return; }
+  mostraProposte('cap-proposte', SELECTED_COMUNE.cap.filter(function(c) { return c.indexOf(v) === 0; }).slice(0, 12), function(c) {
+    inp.value = c; clearErr('cap'); validateCAP();
+  });
+}
+document.getElementById('comune').addEventListener('input', proponiComuni);
+document.getElementById('comune').addEventListener('focus', proponiComuni);
+document.getElementById('cap').addEventListener('focus', proponiCap);
+
 document.getElementById('comune').addEventListener('blur', function() {
+  setTimeout(function() { nascondiProposte('comuni-proposte'); }, 200); // Ez 11.11.26 P47d
   if (this.value.trim()) validateComune(); else clearErr('comune'); // Ez 06.11.26 P34 - campo vuoto: errore solo su Avanti
 });
 
 document.getElementById('cap').addEventListener('blur', function() {
+  setTimeout(function() { nascondiProposte('cap-proposte'); }, 200); // Ez 11.11.26 P47d
   if (this.value.trim()) validateCAP(); else clearErr('cap'); // Ez 06.11.26 P34
 });
 
@@ -1133,6 +1194,7 @@ document.getElementById('cap').addEventListener('input', function() {
   // Solo cifre, max 5
   this.value = this.value.replace(/\D/g, '').slice(0, 5);
   clearErr('cap');
+  proponiCap(); // Ez 11.11.26 P47d
 });
 
 function validateComune() {
