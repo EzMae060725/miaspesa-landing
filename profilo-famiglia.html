@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<!-- profilo-famiglia.html v1.3 - P45f (Ez 10.11.26): domande "mostra solo se" (regola mostraSe dal server: una risposta precedente
+<!-- profilo-famiglia.html v1.4 - P47c (Ez 11.11.26): provincia da una lista della regione e comune da una lista della provincia
+     (si scrive e si tocca il nome: funziona anche sul telefono); controlli di coerenza fra risposte (anno di nascita e fascia
+     d'eta' della riga "Tu"): avviso giallo, una seconda pressione di Avanti prosegue; la fascia si propone dall'anno quando non
+     ci sono dubbi. Regole dal server (config candidature full.luoghi, full.coerenza), uguali all'app. Corretto: un errore di
+     rete nel salvataggio non bloccava piu' la pagina (il .catch era finito dentro un commento)
+     profilo-famiglia.html v1.3 - P45f (Ez 10.11.26): domande "mostra solo se" (regola mostraSe dal server: una risposta precedente
      o un dato del comune, il "contesto" calcolato dal server con dati ISTAT); la sezione si ridisegna quando cambia una risposta
      da cui dipendono altre domande; il contesto si aggiorna a ogni salvataggio (se la famiglia corregge il comune)
      profilo-famiglia.html v1.2 - P45d (Ez 09.11.26): nelle domande "scala_item" con "casuale": true nel repertorio le
@@ -76,6 +81,11 @@
   .btn-avanti { flex: 1; background: var(--viola); color: white; padding: 14px; border-radius: 50px; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; font-family: inherit; }
   .btn-avanti:disabled { background: var(--grigio); cursor: wait; }
   .btn-indietro { background: var(--grigio-light); color: var(--grigio); padding: 14px 22px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; border: none; cursor: pointer; font-family: inherit; }
+  .avviso.giallo, .attenzione { background: #FFFBEB; color: #92400E; }
+  .attenzione { margin-top: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid #FDE68A; font-size: 0.82rem; line-height: 1.45; }
+  .proposte { border: 1px solid #E5E7EB; border-radius: 10px; margin-top: 6px; overflow: hidden; background: white; }
+  .proposte button { display: block; width: 100%; text-align: left; padding: 11px 14px; border: none; border-top: 1px solid #F3F4F6; background: white; font-size: 0.92rem; cursor: pointer; font-family: inherit; color: #1A1A2E; }
+  .nota-comune { font-size: 0.78rem; color: #92400E; margin-top: 8px; }
   .avviso { display: none; margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: #FEF2F2; color: #991B1B; font-size: 0.88rem; line-height: 1.5; }
   .box { text-align: center; padding: 44px 24px; background: white; border-radius: 20px; border: 1px solid rgba(29,158,117,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
   .box .icon { font-size: 3rem; margin-bottom: 14px; }
@@ -102,7 +112,108 @@
   var API = 'https://panel-scontrini-production.up.railway.app/api/candidatura/full/';
   var token = new URLSearchParams(location.search).get('t') || '';
   var app = document.getElementById('app');
-  var S = { dati: null, risposte: {}, sezione: 1, invio: false };
+  var S = { dati: null, risposte: {}, sezione: 1, invio: false, comuni: {}, confermati: {} };
+
+  // ---------------------------------------------------------------- P47c: luoghi e coerenza (regole dal server)
+  function normNome(v) { return String(v == null ? '' : v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ''); }
+  function intervalloFascia(v) {
+    var x = String(v == null ? '' : v).trim(), m;
+    if ((m = x.match(/^(\d+)\s*-\s*(\d+)$/))) return [Number(m[1]), Number(m[2])];
+    if ((m = x.match(/^(\d+)\s*\+$/))) return [Number(m[1]), 200];
+    if ((m = x.match(/^(\d+)$/))) return [Number(m[1]), Number(m[1])];
+    return null;
+  }
+  function etaDaAnno(anno) { var a = parseInt(anno, 10); if (!(a > 1900)) return null; var e = new Date().getFullYear() - a; return [e - 1, e]; }
+  function fasceDi(r) { var d = S.dati.domande.filter(function (x) { return x.codice === r.righe; })[0]; return (d && d.campi && d.campi[r.campo || 'eta']) || []; }
+  function problemiCoerenza(n) {
+    var qs = domandeSezione(n).map(function (d) { return d.codice; });
+    return (S.dati.coerenza || []).map(function (r, i) {
+      if (qs.indexOf(r.anno) < 0 && qs.indexOf(r.righe) < 0) return null;
+      var eta = etaDaAnno(S.risposte[r.anno]);
+      var riga = (Array.isArray(S.risposte[r.righe]) ? S.risposte[r.righe] : [])[r.riga || 0] || {};
+      var cod = riga[r.campo || 'eta'], fascia = intervalloFascia(cod);
+      if (!eta || !fascia || (eta[1] >= fascia[0] && eta[0] <= fascia[1])) return null;
+      var et = fasceDi(r).filter(function (f) { return f.v === String(cod); })[0];
+      var testo = String(r.messaggio || 'Controlla le risposte: non sono coerenti.').replace('{anno}', S.risposte[r.anno]).replace('{eta}', eta[0] + ' o ' + eta[1]).replace('{fascia}', et ? et.t : cod);
+      return { chiave: 'c' + i, firma: String(S.risposte[r.anno]) + '|' + cod, codici: [r.anno, r.righe], righe: r.righe, testo: testo };
+    }).filter(Boolean);
+  }
+  // fascia proposta dall'anno di nascita se la riga e' vuota e l'anno non lascia dubbi; true se ha cambiato qualcosa
+  function proponiFascia() {
+    var cambiato = false;
+    (S.dati.coerenza || []).filter(function (r) { return r.proponi; }).forEach(function (r) {
+      var eta = etaDaAnno(S.risposte[r.anno]), fasce = fasceDi(r);
+      if (!eta || !fasce.length) return;
+      function trova(e) { return fasce.filter(function (f) { var iv = intervalloFascia(f.v); return iv && e >= iv[0] && e <= iv[1]; })[0]; }
+      var a = trova(eta[0]), b = trova(eta[1]);
+      if (!a || !b || a.v !== b.v) return;
+      var righe = Array.isArray(S.risposte[r.righe]) ? S.risposte[r.righe].slice() : [], i = r.riga || 0, k = r.campo || 'eta';
+      if (righe[i] && righe[i][k]) return;
+      while (righe.length <= i) righe.push({});
+      righe[i] = Object.assign({}, righe[i]); righe[i][k] = a.v;
+      S.risposte[r.righe] = righe; cambiato = true;
+    });
+    return cambiato;
+  }
+  function campoComune(d, sigla) {
+    if (!sigla) return el('input', { type: 'text', disabled: 'disabled', placeholder: 'Scegli prima la provincia' });
+    var box = el('div');
+    var inp = el('input', { type: 'text', autocomplete: 'off', placeholder: 'Scrivi le prime lettere e tocca il comune', value: S.risposte[d.codice] || '' });
+    var lista = el('div', { classe: 'proposte' }); lista.style.display = 'none';
+    var nota = el('div', { classe: 'nota-comune' }); nota.style.display = 'none';
+    function elenco() { return S.comuni[sigla] || []; }
+    function proponi() {
+      var q = normNome(inp.value), l = elenco();
+      var esatto = l.some(function (x) { return normNome(x) === q; });
+      var prop = q ? l.filter(function (x) { return normNome(x).indexOf(q) === 0; }).concat(l.filter(function (x) { return normNome(x).indexOf(q) > 0; })).slice(0, 8) : l.slice(0, 8);
+      lista.innerHTML = '';
+      if (esatto || !prop.length || document.activeElement !== inp) { lista.style.display = 'none'; return; }
+      prop.forEach(function (nome) {
+        var b = el('button', { type: 'button', testo: nome });
+        b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+        b.addEventListener('click', function () { inp.value = nome; S.risposte[d.codice] = nome; lista.style.display = 'none'; nota.style.display = 'none'; });
+        lista.appendChild(b);
+      });
+      lista.style.display = 'block';
+    }
+    function controlla() {
+      var q = normNome(inp.value), l = elenco();
+      var fuori = l.length && q && !l.some(function (x) { return normNome(x) === q; });
+      nota.textContent = fuori ? 'Non trovo "' + inp.value + '" fra i comuni della provincia (' + sigla + '): controlla come l\'hai scritto o sceglilo dalla lista.' : '';
+      nota.style.display = fuori ? 'block' : 'none';
+    }
+    inp.addEventListener('input', function () { S.risposte[d.codice] = inp.value; proponi(); });
+    inp.addEventListener('focus', proponi);
+    inp.addEventListener('blur', function () { setTimeout(function () { lista.style.display = 'none'; controlla(); }, 200); });
+    if (!S.comuni[sigla]) {
+      fetch(API + encodeURIComponent(token) + '/comuni/' + encodeURIComponent(sigla)).then(function (r) { return r.json(); })
+        .then(function (x) { S.comuni[sigla] = x && x.success ? x.data : []; controlla(); }).catch(function () { S.comuni[sigla] = []; });
+    } else setTimeout(controlla, 0);
+    box.appendChild(inp); box.appendChild(lista); box.appendChild(nota);
+    return box;
+  }
+  function campoLuogo(d) {
+    var L = S.dati.luoghi, v = S.risposte[d.codice];
+    if (!L) return null;
+    if (d.codice === L.provincia) {
+      var reg = L.regione ? S.risposte[L.regione] : null;
+      var lista = (L.province || {})[reg] || [];
+      if (L.regione && !reg) { var s0 = el('select', { disabled: 'disabled' }); s0.appendChild(el('option', { testo: 'Scegli prima la regione' })); return s0; }
+      if (lista.length) return tendina(null, lista, String(v || '').toUpperCase(), function (x) {
+        if (L.comune && x !== String(S.risposte[d.codice] || '').toUpperCase()) S.risposte[L.comune] = '';
+        S.risposte[d.codice] = x; disegna();
+      });
+      return null;
+    }
+    if (d.codice === L.comune) return campoComune(d, /^[A-Z]{2}$/.test(String(S.risposte[L.provincia] || '').toUpperCase()) ? String(S.risposte[L.provincia]).toUpperCase() : '');
+    if (d.codice === L.regione && d.risposte && d.risposte.length) return tendina(null, d.risposte, v || '', function (x) {
+      S.risposte[d.codice] = x;
+      var ok = ((L.province || {})[x] || []).some(function (p) { return p.v === String(S.risposte[L.provincia] || '').toUpperCase(); });
+      if (L.provincia && !ok) { S.risposte[L.provincia] = ''; if (L.comune) S.risposte[L.comune] = ''; }
+      disegna();
+    });
+    return null;
+  }
 
   function el(tag, attr, figli) {
     var e = document.createElement(tag);
@@ -265,6 +376,8 @@
 
   function campo(d) {
     var v = S.risposte[d.codice];
+    var luogo = S.dati.luoghi ? campoLuogo(d) : null; // Ez 11.11.26 P47c
+    if (luogo) return luogo;
     switch (d.tipo) {
       case 'multiselect': return chips(d, true);
       case 'select': case 'likert':
@@ -272,6 +385,7 @@
       case 'anno': {
         var i = el('input', { type: 'number', inputmode: 'numeric', min: String(S.dati.annoMax - 92), max: String(S.dati.annoMax), placeholder: d.placeholder || 'es. 1975', value: v || '' });
         i.addEventListener('input', function () { S.risposte[d.codice] = i.value.trim(); });
+        i.addEventListener('change', function () { if (proponiFascia()) disegna(); }); // Ez 11.11.26 P47c
         return i;
       }
       case 'textarea': { var t = el('textarea', { rows: '3', placeholder: d.placeholder || '' }); t.value = v || ''; t.addEventListener('input', function () { S.risposte[d.codice] = t.value; }); return t; }
@@ -301,7 +415,7 @@
   }
 
   // ---------------------------------------------------------------- pagina
-  function disegna(errori) {
+  function disegna(errori, attenzioni) {
     var n = S.sezione, tot = S.dati.sezioni;
     app.innerHTML = '';
     var barre = el('div', { classe: 'steps-bar' });
@@ -315,6 +429,7 @@
       var q = el('div', { classe: 'q' + (errori && errori.indexOf(d.codice) >= 0 ? ' err' : ''), id: 'q-' + d.codice });
       if (d.tipo !== 'spunta') q.appendChild(el('div', { classe: 'q-testo' }, [d.testo, d.obbligatorio ? '' : el('span', { classe: 'opt', testo: /facoltativ/i.test(d.testo) ? '' : ' (facoltativa)' })]));
       q.appendChild(campo(d));
+      (attenzioni || []).filter(function (p) { return p.righe === d.codice; }).forEach(function (p) { q.appendChild(el('div', { classe: 'attenzione', testo: '⚠️ ' + p.testo })); }); // P47c
       q.appendChild(el('div', { classe: 'q-err', testo: d.tipo === 'anno' ? 'Indica un anno valido' : d.tipo === 'righe_persone' ? 'Indica fascia d\'età e genere di ogni persona' : d.tipo === 'scala_item' ? 'Rispondi per ogni frase' : 'Risposta obbligatoria' }));
       app.appendChild(q);
       if (errori && errori.indexOf(d.codice) >= 0 && d.tipo === 'scala_item') {
@@ -330,12 +445,14 @@
     app.appendChild(nav);
     app.appendChild(el('button', { type: 'button', classe: 'btn-dopo', testo: '💾 Salva e riprendi dopo', onclick: salvaERiprendi }));
     app.appendChild(av);
+    if (attenzioni && attenzioni.length && !(errori && errori.length)) { av.className = 'avviso giallo'; av.style.display = 'block'; av.textContent = attenzioni.map(function (p) { return p.testo; }).join(' '); var pa = document.getElementById('q-' + attenzioni[0].codici[0]); if (pa) pa.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     if (errori && errori.length) { av.style.display = 'block'; av.textContent = 'Mancano alcune risposte: le trovi evidenziate in rosso.'; var p = document.getElementById('q-' + errori[0]); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   }
 
   function salva(n) {
     return fetch(API + encodeURIComponent(token) + '/salva', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ risposte: S.risposte, sezione: n }) })
-      .then(function (r) { return r.json(); }).then(function (d) { if (d.success) { salvatoOk(); if (d.data && d.data.contesto) S.dati.contesto = d.data.contesto; } return d; }) // P45f: contesto aggiornato.catch(function () { return { success: false }; });
+      .then(function (r) { return r.json(); }).then(function (d) { if (d.success) { salvatoOk(); if (d.data && d.data.contesto) S.dati.contesto = d.data.contesto; } return d; }) // P45f: contesto aggiornato
+      .catch(function () { return { success: false }; }); // Ez 11.11.26 P47c - prima il .catch era dentro il commento
   }
 
   // Ez 09.11.26 P45b - salva anche la sezione a meta' e si riparte da questa (sezione n-1 = ultima finita)
@@ -356,6 +473,9 @@
     var n = S.sezione;
     var err = domandeSezione(n).filter(function (d) { return d.obbligatorio && mancaRisposta(d); }).map(function (d) { return d.codice; });
     if (err.length) { disegna(err); return; }
+    // Ez 11.11.26 P47c - coerenza: alla prima pressione un avviso giallo, alla seconda (stessi valori) si prosegue
+    var pr = problemiCoerenza(n).filter(function (p) { return S.confermati[p.chiave] !== p.firma; });
+    if (pr.length) { pr.forEach(function (p) { S.confermati[p.chiave] = p.firma; }); disegna(null, pr); return; }
     var b = document.getElementById('avanti'); b.disabled = true;
     if (n < S.dati.sezioni) {
       salva(n).then(function (d) {
