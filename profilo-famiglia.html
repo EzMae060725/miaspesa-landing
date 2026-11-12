@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- profilo-famiglia.html v1.7 - P53 (Ez 12.11.26): testo libero con il limite di caratteri della domanda (maxCaratteri) e il contatore -->
 <!-- profilo-famiglia.html v1.6 - P52 (Ez 12.11.26): "in quale provincia" (luoghi.altreProvince) e "in quale comune" (luoghi.altriComuni:
      comuni della provincia di residenza o di quella risposta, nessuna provincia dentro la domanda); cambiando la provincia o
      "nella tua provincia?" il comune si svuota
@@ -476,7 +477,15 @@
         i.addEventListener('change', function () { if (proponiFascia()) disegna(); }); // Ez 11.11.26 P47c
         return i;
       }
-      case 'textarea': { var t = el('textarea', { rows: '3', placeholder: d.placeholder || '' }); t.value = v || ''; t.addEventListener('input', function () { S.risposte[d.codice] = t.value; }); return t; }
+      case 'textarea': { // Ez 12.11.26 P53 - limite di caratteri e contatore
+        var t = el('textarea', { rows: '4', placeholder: d.placeholder || '' }); t.value = v || '';
+        if (d.maxCaratteri) t.setAttribute('maxlength', String(d.maxCaratteri));
+        var box = el('div'); box.appendChild(t);
+        var cnt = null;
+        if (d.maxCaratteri) { cnt = el('div', { testo: (t.value.length) + ' / ' + d.maxCaratteri }); cnt.style.cssText = 'font-size:0.75rem;color:#9ca3af;text-align:right;margin-top:2px'; box.appendChild(cnt); }
+        t.addEventListener('input', function () { S.risposte[d.codice] = t.value; if (cnt) cnt.textContent = t.value.length + ' / ' + d.maxCaratteri; });
+        return box;
+      }
       case 'insegna': return campoInsegne(d, false);
       case 'insegne': return campoInsegne(d, true);
       case 'righe_persone': return campoPersone(d);
