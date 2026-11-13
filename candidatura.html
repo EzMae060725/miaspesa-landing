@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P57 (Ez 13.11.26): caselle allineate a Informativa privacy 2.0 e Termini 2.0 (approvati dal consulente):
+<!-- candidatura.html - P60 (Ez 14.11.26): versione del modulo (questionario breve) "QB v2.0" in fondo alla pagina e inviata
+     con la candidatura (moduloVersione): a OGNI modifica del modulo si cambia QB_VERSIONE qui sotto e si aggiunge una riga in
+     config candidature (versioni.breve.storia)
+     P57 (Ez 13.11.26): caselle allineate a Informativa privacy 2.0 e Termini 2.0 (approvati dal consulente):
      presa visione dell'informativa (la partecipazione si basa sul contratto, non sul consenso), approvazione specifica del
      punto 8 (prima 9), terminiVersione '2.0'
      P47d (Ez 11.11.26): province aggiornate come nel file dei comuni (Sardegna: CA NU OR SS SU, tolte CI MD OG
@@ -552,6 +555,9 @@
     </p>
     <a href="index.html">← Torna alla home</a>
   </div>
+
+  <!-- Ez 14.11.26 P60 - versione del modulo, per il controllo a vista -->
+  <div id="versioneModulo" style="text-align:right;font-size:0.7rem;color:#9CA3AF;margin-top:28px;letter-spacing:0.5px"></div>
 
 </div>
 
@@ -1255,6 +1261,9 @@ var _origGoStep = window.goStep;
 </script>
 
 <script>
+// Ez 14.11.26 P60 - versione del modulo di candidatura (questionario breve): si cambia a ogni modifica del modulo
+const QB_VERSIONE = '2.0';
+document.getElementById('versioneModulo').textContent = 'QB v' + QB_VERSIONE;
 const API = 'https://panel-scontrini-production.up.railway.app';
 const CODE = 'MIASPESA2026';
 let currentStep = 1;
@@ -1473,6 +1482,7 @@ async function invia() {
     cap: document.getElementById('cap').value.trim(),
     terminiOk: document.getElementById('terminiOk').checked === true, // Ez 07.11.26 P36 (backend P35)
     terminiVersione: '2.0', // Ez 13.11.26 P57 Termini 2.0 (punto 8 = vecchio punto 9)
+    moduloVersione: QB_VERSIONE, // Ez 14.11.26 P60 (backend P60, migrazione 35)
     clausoleOk: document.getElementById('clausoleOk').checked === true
   };
 

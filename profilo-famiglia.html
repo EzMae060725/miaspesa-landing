@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- profilo-famiglia.html v1.8 - P60 (Ez 14.11.26): versione del questionario (es. "QF v7.1", dal server) in fondo alla pagina -->
 <!-- profilo-famiglia.html v1.7 - P53 (Ez 12.11.26): testo libero con il limite di caratteri della domanda (maxCaratteri) e il contatore -->
 <!-- profilo-famiglia.html v1.6 - P52 (Ez 12.11.26): "in quale provincia" (luoghi.altreProvince) e "in quale comune" (luoghi.altriComuni:
      comuni della provincia di residenza o di quella risposta, nessuna provincia dentro la domanda); cambiando la provincia o
@@ -113,6 +114,8 @@
   <p>Circa 10 minuti. Puoi interrompere quando vuoi: le risposte si salvano a ogni sezione e riprendi dallo stesso link.</p>
 </div>
 <div class="wrap" id="app"><p style="text-align:center;color:#6B7280">Caricamento…</p></div>
+<!-- Ez 14.11.26 P60 - versione del questionario, per il controllo a vista -->
+<div id="versioneQ" style="max-width:680px;margin:0 auto;padding:0 20px 40px;text-align:right;font-size:0.7rem;color:#9CA3AF;letter-spacing:0.5px"></div>
 
 <script>
 (function () {
@@ -599,6 +602,7 @@
       if (!d.success) { messaggio('⌛', 'Link non attivo', d.error || 'Questo link non è più attivo.', true); return; }
       if (d.data.completata) { messaggio('✅', 'Profilo già inviato', 'Grazie' + (d.data.nome ? ', ' + d.data.nome : '') + '! Abbiamo già ricevuto il profilo della tua famiglia: ti scriviamo noi.'); return; }
       S.dati = d.data; S.risposte = d.data.risposte || {};
+      if (d.data.versione) document.getElementById('versioneQ').textContent = d.data.versione; // Ez 14.11.26 P60
       if (d.data.nome) document.getElementById('titolo').textContent = 'Ciao ' + d.data.nome + ', ecco il tuo profilo';
       S.sezione = Math.min(Math.max(1, (d.data.ultimaSezione || 0) + 1), d.data.sezioni);
       disegna();
