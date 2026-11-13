@@ -3,12 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy - Le mie spese</title>
+<title>Informativa privacy - Le mie spese</title>
+<!--
+     privacy.html v2.0 - P57 (Ez 13.11.26): Informativa privacy famiglie v2.0 approvata dal consulente (13/11/2026),
+     con le scelte confermate da Ezio: nessun DPO (contatto dpo@miaspesa.com), ricerca su base contrattuale, nessun dato
+     particolare, codice fiscale solo per obblighi fiscali, tempi di conservazione, server Railway in UE (Amsterdam),
+     consensi d) ed e) facoltativi "quando il servizio sara' attivo". Sostituisce la v1.0 del 27/04/2026.
+-->
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root { --viola: #3C3489; --grigio: #6B7280; --nero: #1A1A2E; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -25,103 +31,143 @@
   h1 { font-size:2.2rem; font-weight:700; margin-bottom:8px; line-height:1.2; }
   .meta { font-size:0.85rem; color:var(--grigio); margin-bottom:48px; }
   h2 { font-size:1.15rem; font-weight:700; margin:36px 0 12px; color:var(--nero); }
+  h3 { font-size:1rem; font-weight:700; margin:22px 0 8px; color:var(--nero); }
   p { font-size:0.95rem; color:#374151; line-height:1.75; margin-bottom:14px; }
   ul { padding-left:20px; margin-bottom:14px; }
   li { font-size:0.95rem; color:#374151; line-height:1.75; margin-bottom:6px; }
+  li ul { margin:6px 0 0; }
+  a { color:var(--viola); }
   .box {
     background:rgba(60,52,137,0.04); border:1px solid rgba(60,52,137,0.1);
     border-radius:12px; padding:24px 28px; margin:32px 0;
   }
   .box p { margin:0; }
+  .tab { width:100%; overflow-x:auto; margin:8px 0 18px; }
+  table { width:100%; border-collapse:collapse; font-size:0.9rem; color:#374151; }
+  th, td { text-align:left; vertical-align:top; padding:10px 12px; border-bottom:1px solid #E5E7EB; line-height:1.6; }
+  th { background:rgba(60,52,137,0.06); color:var(--nero); font-weight:600; }
   footer { text-align:center; padding:32px 5%; font-size:0.8rem; color:var(--grigio); border-top:1px solid #E5E7EB; }
   footer a { color:var(--viola); text-decoration:none; }
+  @media (max-width:560px) { h1 { font-size:1.7rem; } th, td { padding:8px 8px; font-size:0.85rem; } }
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">&larr; La Spesa che Conta</a>
+  <a href="index.html" class="nav-logo">&larr; Le mie spese</a>
 </nav>
 
 <div class="container">
   <div class="label">Informativa legale</div>
-  <h1>Privacy Policy</h1>
-  <p class="meta">Ultimo aggiornamento: 27 aprile 2026 &middot; Versione 1.0</p>
+  <h1>Informativa privacy per le famiglie</h1>
+  <p class="meta">Versione 2.0 &middot; in vigore dal 13 novembre 2026 &middot; sostituisce la versione 1.0 del 27 aprile 2026</p>
 
   <div class="box">
-    <p>La presente informativa descrive come Nomesis S.a.s. raccoglie, utilizza e protegge i dati personali degli utenti del panel "La Spesa che Conta", in conformit&agrave; al Regolamento UE 2016/679 (GDPR) e al D.Lgs. 196/2003.</p>
+    <p>Questa informativa spiega quali dati raccogliamo dalle famiglie che partecipano al panel <strong>&laquo;Le mie spese&raquo;</strong>, perch&eacute; li usiamo, a chi li comunichiamo, per quanto tempo li conserviamo e quali sono i tuoi diritti (Regolamento UE 2016/679, &laquo;GDPR&raquo;). L'abbiamo scritta in modo semplice di proposito.</p>
   </div>
 
-  <h2>1. Titolare del trattamento</h2>
-  <p><strong>Nomesis S.a.s.</strong><br>
-  Via Papa Giovanni XXIII, 74 &mdash; 25086 Rezzato (BS)<br>
-  P.IVA 03107170171<br>
-  <a href="https://www.nomesis.it" target="_blank">www.nomesis.it</a><br>
-  Email: privacy@miaspesa.com</p>
+  <h2>1. Chi tratta i tuoi dati</h2>
+  <p>Il titolare del trattamento &egrave; <strong>Nomesis S.a.s.</strong>, Via Papa Giovanni XXIII 74, 25086 Rezzato (BS), P.IVA e C.F. 03107170171, che gestisce il panel &laquo;Le mie spese&raquo;. Per qualsiasi domanda sui tuoi dati scrivi a <strong>privacy@miaspesa.com</strong>.</p>
+  <p>Nomesis non ha nominato un Responsabile della protezione dei dati (DPO), perch&eacute; con le dimensioni attuali del panel non &egrave; obbligatorio (art. 37 GDPR); la scelta sar&agrave; rivalutata con la crescita del panel. Per le questioni sulla protezione dei dati puoi scrivere anche a <strong>dpo@miaspesa.com</strong>.</p>
 
-  <h2>2. Dati raccolti</h2>
-  <p>Nell'ambito del panel raccogliamo le seguenti categorie di dati:</p>
+  <h2>2. Quali dati raccogliamo</h2>
+  <h3>Candidatura e profilo della famiglia</h3>
   <ul>
-    <li><strong>Dati di candidatura:</strong> nome, cognome, indirizzo email, composizione del nucleo familiare, area geografica di residenza</li>
-    <li><strong>Dati di spesa:</strong> immagini di scontrini della spesa, totali, date, punti vendita</li>
-    <li><strong>Dati comportamentali:</strong> risposte a questionari sulle abitudini di acquisto</li>
-    <li><strong>Dati tecnici:</strong> indirizzo IP, tipo di dispositivo, data e ora di accesso</li>
+    <li>Nome, cognome, email della persona di riferimento (maggiorenne).</li>
+    <li>Regione, provincia, comune e CAP di residenza.</li>
+    <li>Composizione del nucleo: numero di persone, e per ciascuna fascia d'et&agrave; e genere.</li>
+    <li>Risposte al questionario completo: anno di nascita, titolo di studio, condizione professionale, fascia di reddito, abitazione, abitudini di spesa, negozi preferiti, carte fedelt&agrave;, animali in casa, stile alimentare, opinioni sui consumi.</li>
   </ul>
-
-  <h2>3. Finalit&agrave; del trattamento</h2>
-  <p>I dati vengono trattati per le seguenti finalit&agrave;:</p>
+  <h3>Spese</h3>
   <ul>
-    <li>Gestione della partecipazione al panel di ricerca</li>
-    <li>Elaborazione dei dati di spesa ai fini della ricerca di mercato</li>
-    <li>Erogazione dei premi e vantaggi previsti dalla partecipazione</li>
-    <li>Comunicazioni relative al panel (notifiche, aggiornamenti, questionari)</li>
-    <li>Adempimento di obblighi legali e fiscali</li>
+    <li>Foto degli scontrini e i dati letti: negozio, partita IVA del negozio, data, ora, prodotti, prezzi, sconti, totale, modalit&agrave; di pagamento.</li>
+    <li>Numero della tessera fedelt&agrave; e <strong>solo le ultime 4 cifre</strong> della carta di pagamento, se stampati sullo scontrino: servono esclusivamente ai controlli contro i doppioni e gli abusi (punto 3.c).</li>
+    <li>Risposte ai questionari sulla spesa (chi ha fatto la spesa, per quale occasione, ecc.).</li>
   </ul>
-
-  <h2>4. Base giuridica</h2>
-  <p>Il trattamento si fonda sul consenso espresso dell'interessato (Art. 6, lett. a GDPR), prestato al momento della candidatura al panel. Il consenso pu&ograve; essere revocato in qualsiasi momento senza pregiudizio per la partecipazione pregressa.</p>
-
-  <h2>5. Modalit&agrave; di trattamento e conservazione</h2>
-  <p>I dati sono trattati con strumenti informatici e conservati su server sicuri situati in Europa. I dati di spesa vengono anonimizzati prima di essere condivisi con i clienti della ricerca &mdash; nessun dato individuale identificabile viene mai trasmesso a terzi.</p>
-  <p>I dati personali vengono conservati per tutta la durata della partecipazione al panel e per un periodo massimo di 24 mesi successivi alla cessazione, salvo diversi obblighi di legge.</p>
-
-  <h2>6. Condivisione dei dati</h2>
-  <p>I dati <strong>non vengono mai venduti</strong> a terzi. Possono essere condivisi esclusivamente:</p>
+  <h3>Premi</h3>
   <ul>
-    <li>In forma <strong>aggregata e anonima</strong> con i clienti della ricerca di mercato (aziende del settore alimentare e della distribuzione)</li>
-    <li>Con fornitori di servizi tecnici (hosting, email) vincolati da accordi di trattamento dati</li>
-    <li>Con autorit&agrave; competenti, se richiesto dalla legge</li>
+    <li>Saldo, movimenti, richieste di buono, codici dei buoni consegnati, email di consegna.</li>
+    <li>Codice fiscale del nucleo: solo se richiesto da obblighi fiscali sui premi (soglie e regime dei premi). Oggi non &egrave; raccolto in modo sistematico.</li>
   </ul>
-
-  <h2>7. Diritti dell'interessato</h2>
-  <p>In qualit&agrave; di interessato, hai il diritto di:</p>
+  <h3>Uso dell'app</h3>
   <ul>
-    <li><strong>Accesso:</strong> ottenere conferma del trattamento e copia dei dati</li>
-    <li><strong>Rettifica:</strong> correggere dati inesatti o incompleti</li>
-    <li><strong>Cancellazione:</strong> richiedere la cancellazione dei tuoi dati</li>
-    <li><strong>Portabilit&agrave;:</strong> ricevere i dati in formato strutturato</li>
-    <li><strong>Opposizione:</strong> opporti al trattamento per motivi legittimi</li>
-    <li><strong>Revoca del consenso:</strong> ritirare il consenso in qualsiasi momento</li>
+    <li>Codice famiglia, PIN (conservato solo in forma cifrata), sessioni, data e ora degli accessi, indirizzo IP, tipo di dispositivo, messaggi all'assistenza.</li>
   </ul>
-  <p>Per esercitare i tuoi diritti scrivi a: <strong>privacy@miaspesa.com</strong></p>
+  <p><strong>Dati degli altri componenti del nucleo.</strong> Dei familiari raccogliamo solo fascia d'et&agrave; e genere. Chi si candida si impegna a informarli di questa informativa. Non chiediamo nomi n&eacute; contatti dei familiari. I minori non possono partecipare come persona di riferimento.</p>
+  <p><strong>Dati particolari (salute, religione, ecc.).</strong> Non li chiediamo. Lo stile alimentare non prevede risposte legate a salute o religione. Gli scontrini di farmacia non fanno parte del panel. Se uno scontrino rivela comunque informazioni di questo tipo (per esempio un prodotto specifico), non lo usiamo per profilare la famiglia.</p>
 
-  <h2>8. Reclami</h2>
-  <p>Hai il diritto di proporre reclamo al Garante per la protezione dei dati personali (www.garanteprivacy.it) se ritieni che il trattamento violi il GDPR.</p>
+  <h2>3. Perch&eacute; li usiamo e su quale base</h2>
+  <div class="tab"><table>
+    <tr><th>Finalit&agrave;</th><th>Base giuridica</th></tr>
+    <tr><td>a) Gestire la tua partecipazione: candidatura, profilo, lettura degli scontrini, calcolo e consegna dei premi, assistenza, comunicazioni di servizio (email, notifiche dell'app)</td><td>Esecuzione del contratto di partecipazione, cio&egrave; i <a href="termini.html">Termini e condizioni</a> che accetti (art. 6.1.b)</td></tr>
+    <tr><td>b) Ricerca di mercato: elaborazioni statistiche sulle spese e sulle abitudini di consumo, consegnate ai clienti di Nomesis <strong>solo in forma aggregata</strong>, mai riferibili a una famiglia</td><td>Esecuzione del contratto: &egrave; lo scopo stesso del panel (art. 6.1.b)</td></tr>
+    <tr><td>c) Controlli contro doppioni, scontrini non propri e abusi (anche con tessera fedelt&agrave; e ultime 4 cifre della carta)</td><td>Legittimo interesse di Nomesis a premiare solo spese vere (art. 6.1.f)</td></tr>
+    <tr><td>d) Consultazione da parte dei clienti di dati <strong>pseudonimizzati</strong> a livello di famiglia (punto 5), quando il servizio sar&agrave; attivo</td><td><strong>Consenso facoltativo e separato</strong> (art. 6.1.a)</td></tr>
+    <tr><td>e) Archivio personale di tutte le tue spese, anche fuori dal panel, quando il servizio sar&agrave; attivo</td><td><strong>Consenso facoltativo e separato</strong> (art. 6.1.a)</td></tr>
+    <tr><td>f) Obblighi di legge (fiscali e contabili sui premi, richieste delle autorit&agrave;)</td><td>Obbligo di legge (art. 6.1.c)</td></tr>
+  </table></div>
+  <p>Senza i dati del punto a) non &egrave; possibile partecipare. I consensi d) ed e) sono facoltativi e ti verranno chiesti a parte quando i due servizi saranno attivi; si danno e si tolgono in qualsiasi momento dal profilo dell'app o scrivendo a privacy@miaspesa.com, e non cambiano i tuoi premi.</p>
 
-  <h2>9. Cookie</h2>
-  <p>Il sito utilizza esclusivamente cookie tecnici necessari al funzionamento. Non vengono utilizzati cookie di profilazione o di terze parti a scopo pubblicitario.</p>
+  <h2>4. Lettura automatica degli scontrini</h2>
+  <p>Gli scontrini sono letti da un sistema di intelligenza artificiale (<strong>Google Gemini</strong>) che estrae negozio, data, prodotti e importi. Google, in base alle condizioni del servizio usato da Nomesis, non usa questi dati per addestrare i propri modelli. Il premio di ogni scontrino &egrave; calcolato automaticamente con regole pubbliche (<a href="regolamento.html">Regolamento premi</a>). Gli scontrini dubbi passano a un controllo di una persona, e puoi sempre contestare un importo dalla pagina Assistenza dell'app: risponde una persona. Nessuna decisione che ti riguarda in modo significativo &egrave; presa solo in modo automatico.</p>
 
-  <h2>10. Modifiche alla presente informativa</h2>
-  <p>Ci riserviamo di aggiornare la presente informativa. Le modifiche sostanziali saranno comunicate agli iscritti al panel via email. La versione aggiornata sar&agrave; sempre disponibile su questa pagina.</p>
+  <h2>5. A chi comunichiamo i dati</h2>
+  <ul>
+    <li><strong>Clienti di Nomesis</strong> (aziende del largo consumo e della distribuzione):
+      <ul>
+        <li>sempre: solo risultati <strong>aggregati</strong>; i risultati basati su meno di un numero minimo di famiglie (es. 10) non vengono mostrati;</li>
+        <li>solo con il consenso d), quando il servizio sar&agrave; attivo: consultazione di dati pseudonimizzati (per esempio le spese di una famiglia identificata da un codice diverso per ogni cliente, con area e fasce del profilo, <strong>mai nome, email o indirizzo</strong>). La consultazione avviene solo dentro la piattaforma di Nomesis, senza possibilit&agrave; di scaricare i dati, e il cliente si impegna per contratto a non tentare di identificare le famiglie.</li>
+      </ul>
+    </li>
+    <li><strong>Fornitori che trattano dati per nostro conto</strong> (responsabili del trattamento, art. 28 GDPR), con contratto:</li>
+  </ul>
+  <div class="tab"><table>
+    <tr><th>Fornitore</th><th>Servizio</th><th>Dove</th><th>Trasferimento fuori UE</th></tr>
+    <tr><td>Railway</td><td>Server e database dell'app</td><td>UE (Paesi Bassi)</td><td>No: i dati restano su server nell'UE</td></tr>
+    <tr><td>Vercel</td><td>Pubblicazione dell'app e del sito</td><td>USA / UE</td><td>Data Privacy Framework / clausole contrattuali tipo</td></tr>
+    <tr><td>Google (Gemini API)</td><td>Lettura degli scontrini</td><td>USA / UE</td><td>Data Privacy Framework / clausole contrattuali tipo</td></tr>
+    <tr><td>Brevo</td><td>Invio delle email</td><td>UE (Francia)</td><td>No</td></tr>
+    <tr><td>GitHub</td><td>Copie di sicurezza cifrate</td><td>USA</td><td>Data Privacy Framework / clausole contrattuali tipo; copie cifrate, chiave solo in Nomesis</td></tr>
+  </table></div>
+  <ul>
+    <li><strong>Amazon</strong>: emette i buoni regalo; riceve da Nomesis solo l'ordine dei buoni, non i dati della famiglia. I codici dei buoni ti arrivano via email da Nomesis.</li>
+    <li><strong>Autorit&agrave;</strong>, solo se la legge lo richiede.</li>
+  </ul>
+  <p><strong>Non vendiamo i tuoi dati.</strong></p>
+
+  <h2>6. Per quanto tempo li conserviamo</h2>
+  <div class="tab"><table>
+    <tr><th>Dati</th><th>Conservazione</th></tr>
+    <tr><td>Candidature non accettate o in lista d'attesa</td><td>12 mesi dall'ultimo contatto, poi cancellate</td></tr>
+    <tr><td>Profilo, spese, questionari</td><td>Per tutta la partecipazione e fino a 24 mesi dopo l'uscita; poi cancellati o resi anonimi</td></tr>
+    <tr><td>Foto degli scontrini</td><td>24 mesi dal caricamento, poi cancellate (restano i dati letti, come sopra)</td></tr>
+    <tr><td>Movimenti dei premi e buoni consegnati</td><td>10 anni (obblighi contabili e fiscali)</td></tr>
+    <tr><td>Accessi all'app e registri tecnici</td><td>12 mesi</td></tr>
+    <tr><td>Archivio personale di tutte le spese (consenso e)</td><td>Finch&eacute; il consenso &egrave; attivo; cancellato entro 30 giorni dalla revoca</td></tr>
+  </table></div>
+  <p>I dati resi anonimi in modo irreversibile possono restare nelle statistiche.</p>
+
+  <h2>7. I tuoi diritti</h2>
+  <p>Puoi chiedere in qualsiasi momento di accedere ai tuoi dati, correggerli, cancellarli, limitarne l'uso, riceverli in un formato leggibile (portabilit&agrave;), opporti ai controlli del punto 3.c per motivi legati alla tua situazione, e togliere i consensi facoltativi. Scrivi a <strong>privacy@miaspesa.com</strong>: rispondiamo entro un mese. Puoi anche presentare reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">www.garanteprivacy.it</a>).</p>
+
+  <h2>8. Sicurezza</h2>
+  <p>Accesso all'app con codice famiglia e PIN personale, PIN conservati solo in forma cifrata, blocco dopo tentativi sbagliati, connessioni cifrate, copie di sicurezza giornaliere cifrate, accesso ai dati solo al personale autorizzato di Nomesis.</p>
+
+  <h2>9. Cookie e memoria del telefono</h2>
+  <p>Il sito e l'app usano solo cookie tecnici e la memoria del browser per tenerti collegato e ricordare le impostazioni. Nessun cookie di profilazione o pubblicit&agrave;.</p>
+
+  <h2>10. Modifiche</h2>
+  <p>Le modifiche importanti ti vengono comunicate via email e nell'app almeno 15 giorni prima. La versione in vigore &egrave; sempre su <a href="https://www.miaspesa.com/privacy.html">miaspesa.com/privacy.html</a>.</p>
 
   <div class="box" style="margin-top:48px">
-    <p>Per qualsiasi domanda sulla privacy: <strong>privacy@miaspesa.com</strong><br>
-    Nomesis S.a.s. &middot; Via Papa Giovanni XXIII 74, 25086 Rezzato (BS) &middot; P.IVA 03107170171</p>
+    <p><strong>Nomesis S.a.s.</strong> &middot; Fondata nel 1989<br>
+    Via Papa Giovanni XXIII, 74 &mdash; 25086 Rezzato (BS)<br>
+    P.IVA e C.F. 03107170171 &middot; privacy@miaspesa.com</p>
   </div>
 </div>
 
 <footer>
-  <p>&copy; 2026 Nomesis S.a.s. &middot; P.IVA 03107170171 &middot; Rezzato (BS) &middot; <a href="index.html">Torna al sito</a> &middot; <a href="contatti.html">Contatti</a> &middot; privacy@miaspesa.com</p>
+  <p>&copy; 2026 Nomesis S.a.s. &middot; P.IVA 03107170171 &middot; Rezzato (BS) &middot; <a href="index.html">Torna al sito</a> &middot; <a href="termini.html">Termini</a> &middot; <a href="regolamento.html">Regolamento premi</a> &middot; <a href="contatti.html">Contatti</a></p>
 </footer>
 
 </body>
