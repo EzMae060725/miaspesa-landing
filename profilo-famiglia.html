@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!-- profilo-famiglia.html v2.0 - P67 (Ez 14.11.26): domande spontanee "testi_brevi" (caselle per risposte brevi, al massimo N, pulsante
+     "Niente / Nessuno in particolare") e "quale e' migliore" (migliore_per: per gli aspetti giudicati peggio, lista delle insegne);
+     "mostra solo se" anche con valoriNo e su risposte a oggetto (la scala ridisegna le domande che ne dipendono); voti 0-10 come
+     pulsanti; testo sopra la prima sezione dal server (introPrimaSezione); "circa 12-15 minuti" -->
 <!-- profilo-famiglia.html v1.9 - P61 (Ez 14.11.26): tempo ATTIVO per sezione (pausa massima dal server) mandato a ogni salvataggio
      e all'invio con un codice di sessione (tempi): durata di compilazione in admin. Nessun cambio visibile -->
 <!-- profilo-famiglia.html v1.8 - P60 (Ez 14.11.26): versione del questionario (es. "QF v7.1", dal server) in fondo alla pagina -->
@@ -113,7 +117,7 @@
 <div class="hero-mini">
   <div class="label">Il profilo della tua famiglia</div>
   <h1 id="titolo">Il profilo della tua famiglia</h1>
-  <p>Circa 10 minuti. Puoi interrompere quando vuoi: le risposte si salvano a ogni sezione e riprendi dallo stesso link.</p>
+  <p>Circa 12-15 minuti. Puoi interrompere quando vuoi: le risposte si salvano a ogni sezione e riprendi dallo stesso link.</p>
 </div>
 <div class="wrap" id="app"><p style="text-align:center;color:#6B7280">Caricamento…</p></div>
 <!-- Ez 14.11.26 P60 - versione del questionario, per il controllo a vista -->
@@ -339,8 +343,24 @@
       var valori = (r.valori || []).map(String);
       var v = r.contesto ? (S.dati.contesto || {})[r.contesto] : S.risposte[r.domanda];
       if (v === undefined || v === null || v === '') return false;
-      return Array.isArray(v) ? v.some(function (x) { return valori.indexOf(String(x)) >= 0; }) : valori.indexOf(String(v)) >= 0;
+      // P67 - risposta a oggetto (scala per frase): i suoi valori; valoriNo: risposta data e fuori da quei valori
+      var elenco = Array.isArray(v) ? v.map(String) : typeof v === 'object' ? Object.keys(v).map(function (k) { return String(v[k]); }) : [String(v)];
+      if (!elenco.filter(function (x) { return x.trim() !== ''; }).length) return false;
+      if (Array.isArray(r.valoriNo)) { var no = r.valoriNo.map(String); return !elenco.some(function (x) { return no.indexOf(x) >= 0; }); }
+      return elenco.some(function (x) { return valori.indexOf(x) >= 0; });
     });
+  }
+  // Ez 14.11.26 P67 - "Niente / Nessuno in particolare", risposte brevi, voti 0-10, aspetti di "quale e' migliore"
+  var NESSUNO = '__nessuno__';
+  function testiPieni(v) { return Array.isArray(v) ? v.map(function (x) { return String(x == null ? '' : x).trim(); }).filter(Boolean) : []; }
+  function tuttiNumeri(arr) { return (arr || []).length > 0 && arr.every(function (r) { return /^\d{1,2}$/.test(String(r.t)); }); }
+  function aspettiPeggio(d) {
+    var c = d.campi || {}, giudizi = S.risposte[c.da];
+    if (!giudizi || typeof giudizi !== 'object') return [];
+    var peggio = (Array.isArray(c.peggio) ? c.peggio : ['1', '2']).map(function (x) { return String(x && typeof x === 'object' ? x.v : x); });
+    return (c.items || []).filter(function (f) { return peggio.indexOf(String(giudizi[f.v])) >= 0; })
+      .sort(function (a, b) { return peggio.indexOf(String(giudizi[a.v])) - peggio.indexOf(String(giudizi[b.v])); })
+      .slice(0, Number(c.max) || 3);
   }
   function riferita(codice) {
     return S.dati.domande.some(function (d) { var m = d.mostraSe; return m && (Array.isArray(m) ? m : [m]).some(function (r) { return r.domanda === codice; }); });
@@ -414,7 +434,7 @@
         t.addEventListener('input', function () { S.risposte[d.codice] = t.value; });
         t.addEventListener('change', function () { // P51: scritta a mano ma e' nell'elenco -> nome dell'elenco
           var n = nomi.filter(function (r) { return normNome(r.v) === normNome(t.value); })[0];
-          if (n) { S.risposte[d.codice] = n.v; S.altro[d.codice] = false; disegna(); } });
+          if (n) { S.risposte[d.codice] = n.v; S.altro[d.codice] = false; disegna(); } else if (riferita(d.codice) || S.dati.domande.some(function (x) { return String(x.testo || '').indexOf('{' + d.codice + '}') >= 0; })) disegna(); }); // P67: domande che dipendono da questa o la citano
         box.appendChild(t);
       }
     }
@@ -459,12 +479,14 @@
       var riga = el('div', { classe: 'scala-item' });
       riga.appendChild(el('div', { classe: 'scala-frase', id: 'sf-' + d.codice + '-' + f.v, testo: f.t }));
       var punti = el('div', { classe: 'scala-punti' });
+      if (scala.length > 5 && scala.length <= 7) punti.style.gridTemplateColumns = 'repeat(' + scala.length + ', 1fr)'; // P67: 6 punti (con "Non so") su una riga
       scala.forEach(function (p) {
         var cur = (S.risposte[d.codice] || {})[f.v];
         punti.appendChild(el('button', { type: 'button', classe: String(cur) === p.v ? 'on' : '', testo: p.t, onclick: function () {
           var r = Object.assign({}, S.risposte[d.codice] || {}); r[f.v] = p.v; S.risposte[d.codice] = r;
           Array.prototype.forEach.call(punti.children, function (b) { b.classList.remove('on'); }); this.classList.add('on');
           var fr = document.getElementById('sf-' + d.codice + '-' + f.v); if (fr) fr.classList.remove('manca');
+          if (riferita(d.codice) || S.dati.domande.some(function (x) { return x.campi && x.campi.da === d.codice; })) { var y = window.scrollY; disegna(); window.scrollTo(0, y); } // P67
         } }));
       });
       riga.appendChild(punti);
@@ -477,6 +499,67 @@
     return ((d.campi || {}).items || []).some(function (f) { return v[f.v] === undefined || v[f.v] === null || v[f.v] === ''; });
   }
 
+  // Ez 14.11.26 P67 - piu' risposte brevi spontanee: una casella per risposta (se ne aggiunge una mentre si scrive, fino a max)
+  function campoTestiBrevi(d) {
+    var c = d.campi || {}, max = Math.max(1, Number(c.max) || 1);
+    var v = S.risposte[d.codice];
+    var nessuno = Array.isArray(v) && v.length === 1 && v[0] === NESSUNO;
+    var arr = nessuno ? [] : (Array.isArray(v) ? v.map(function (x) { return String(x == null ? '' : x); }) : []);
+    var box = el('div'), caselle = el('div');
+    function aggiungi(i) {
+      var inp = el('input', { type: 'text', maxlength: '80', autocomplete: 'off', placeholder: max > 1 ? (i + 1) + '.' : '', value: arr[i] || '' });
+      if (i) inp.style.marginTop = '8px';
+      inp.addEventListener('input', function () {
+        var a = Array.isArray(S.risposte[d.codice]) && S.risposte[d.codice][0] !== NESSUNO ? S.risposte[d.codice].slice() : [];
+        while (a.length <= i) a.push('');
+        a[i] = inp.value.slice(0, 80); S.risposte[d.codice] = a;
+        if (i === caselle.children.length - 1 && inp.value.trim() && caselle.children.length < max) aggiungi(caselle.children.length);
+      });
+      inp.addEventListener('change', function () { if (riferita(d.codice)) disegna(); }); // es. "Perche' lo consiglieresti?"
+      caselle.appendChild(inp);
+    }
+    if (!nessuno) {
+      var quante = Math.min(max, Math.max(max <= 3 ? max : 3, testiPieni(arr).length + 1, arr.length));
+      for (var i = 0; i < quante; i++) aggiungi(i);
+      box.appendChild(caselle);
+      if (max > 1) { var h = el('div', { testo: max <= 3 ? 'Una parola o un\'espressione per casella' : 'Uno per casella, al massimo ' + max }); h.style.cssText = 'font-size:0.75rem;color:#9ca3af;margin-top:6px'; box.appendChild(h); }
+    }
+    if (c.nessuno) {
+      var b = el('button', { type: 'button', classe: 'chip' + (nessuno ? ' on' : ''), testo: c.nessuno, onclick: function () { S.risposte[d.codice] = nessuno ? [] : [NESSUNO]; disegna(); } });
+      b.style.marginTop = '10px'; box.appendChild(b);
+    }
+    return box;
+  }
+  // Ez 14.11.26 P67 - per ogni aspetto giudicato peggio: quale supermercato e' migliore (lista delle insegne, altro, nessuno)
+  function campoMiglioreDi(d) {
+    var c = d.campi || {};
+    var nomi = (S.dati.insegne || []).map(function (n) { return { v: n, t: n }; });
+    var box = el('div');
+    S.altro = S.altro || {};
+    aspettiPeggio(d).forEach(function (f, i) {
+      var val = S.risposte[d.codice] && typeof S.risposte[d.codice] === 'object' && !Array.isArray(S.risposte[d.codice]) ? S.risposte[d.codice] : {};
+      var x = val[f.v], chiave = d.codice + '|' + f.v;
+      var nota = x === NESSUNO || nomi.some(function (r) { return r.v === x; });
+      var altro = S.altro[chiave] || (!!x && !nota);
+      function metti(y) { var o = Object.assign({}, S.risposte[d.codice] && typeof S.risposte[d.codice] === 'object' ? S.risposte[d.codice] : {}); o[f.v] = y; S.risposte[d.codice] = o; }
+      var riga = el('div', { classe: 'scala-item' });
+      riga.appendChild(el('div', { classe: 'scala-frase', testo: f.t }));
+      var lista = nomi.concat([{ v: '__altro', t: 'Altro (scrivilo)' }], c.nessuno ? [{ v: NESSUNO, t: c.nessuno }] : []);
+      riga.appendChild(tendina(null, lista, altro ? '__altro' : (x || ''), function (y) {
+        if (y === '__altro') { S.altro[chiave] = true; if (nota) metti(''); } else { S.altro[chiave] = false; metti(y); }
+        disegna(); }));
+      if (altro) {
+        var t = el('input', { type: 'text', placeholder: 'Nome del supermercato', value: nota ? '' : (x || '') });
+        t.style.marginTop = '8px';
+        t.addEventListener('input', function () { metti(t.value); });
+        t.addEventListener('change', function () { var n = nomi.filter(function (r) { return normNome(r.v) === normNome(t.value); })[0]; if (n) { metti(n.v); S.altro[chiave] = false; disegna(); } });
+        riga.appendChild(t);
+      }
+      box.appendChild(riga);
+    });
+    return box;
+  }
+
   function campo(d) {
     var v = S.risposte[d.codice];
     var luogo = S.dati.luoghi ? campoLuogo(d) : null; // Ez 11.11.26 P47c
@@ -484,7 +567,7 @@
     switch (d.tipo) {
       case 'multiselect': return chips(d, true);
       case 'select': case 'likert':
-        return (d.risposte || []).length > 8 ? tendina(d, d.risposte, v || '', function (x) { S.risposte[d.codice] = x; }) : chips(d, false);
+        return (d.risposte || []).length > 8 && !tuttiNumeri(d.risposte) /* P67: voti 0-10 come pulsanti */ ? tendina(d, d.risposte, v || '', function (x) { S.risposte[d.codice] = x; }) : chips(d, false);
       case 'anno': {
         var i = el('input', { type: 'number', inputmode: 'numeric', min: String(S.dati.annoMax - 92), max: String(S.dati.annoMax), placeholder: d.placeholder || 'es. 1975', value: v || '' });
         i.addEventListener('input', function () { S.risposte[d.codice] = i.value.trim(); });
@@ -504,6 +587,8 @@
       case 'insegne': return campoInsegne(d, true);
       case 'righe_persone': return campoPersone(d);
       case 'scala_item': return campoScala(d);
+      case 'testi_brevi': return campoTestiBrevi(d); // P67
+      case 'migliore_per': return campoMiglioreDi(d); // P67
       case 'spunta': {
         var c = el('input', { type: 'checkbox' }); c.checked = v === true;
         c.addEventListener('change', function () { S.risposte[d.codice] = c.checked; });
@@ -522,6 +607,8 @@
     if (d.tipo === 'righe_persone') return !Array.isArray(v) || !v.length || v.some(function (p) { return !p || !p.eta || !p.genere; });
     if (d.tipo === 'anno') { var n = parseInt(v, 10); return !(n >= S.dati.annoMax - 92 && n <= S.dati.annoMax); }
     if (d.tipo === 'scala_item') return scalaIncompleta(d);
+    if (d.tipo === 'testi_brevi') { var c = d.campi || {}; if (Array.isArray(v) && v.length === 1 && v[0] === NESSUNO) return !c.nessuno; return testiPieni(v).length < Math.max(1, Number(c.min) || 1); } // P67
+    if (d.tipo === 'migliore_per') { var o = v && typeof v === 'object' ? v : {}; return aspettiPeggio(d).some(function (f) { return vuota(o[f.v]); }); } // P67
     return vuota(v);
   }
 
@@ -535,14 +622,14 @@
     app.appendChild(barre);
     app.appendChild(el('div', { classe: 'steps-label' }, [el('span', { testo: 'Sezione ' + n + ' di ' + tot }), el('span', { testo: nomeSezione(n) })]));
     app.appendChild(el('div', { classe: 'sez-titolo', testo: nomeSezione(n) }));
-    if (n === 1) app.appendChild(el('div', { classe: 'info' }, ['Alcune risposte sono già compilate con i dati della tua candidatura: controllale e correggile se serve. Le risposte servono solo per selezionare le famiglie del panel e per statistiche in forma aggregata e anonima. ',
+    if (n === 1) app.appendChild(el('div', { classe: 'info' }, [S.dati.introPrimaSezione ? S.dati.introPrimaSezione + ' ' /* P67 */ : 'Alcune risposte sono già compilate con i dati della tua candidatura: controllale e correggile se serve. Le risposte servono solo per selezionare le famiglie del panel e per statistiche in forma aggregata e anonima. ',
       el('a', { href: 'privacy.html', target: '_blank', testo: 'Informativa privacy' })]));
     domandeSezione(n).forEach(function (d) {
       var q = el('div', { classe: 'q' + (errori && errori.indexOf(d.codice) >= 0 ? ' err' : ''), id: 'q-' + d.codice });
       if (d.tipo !== 'spunta') q.appendChild(el('div', { classe: 'q-testo' }, [testoConRisposte(d.testo), d.obbligatorio ? '' : el('span', { classe: 'opt', testo: /facoltativ/i.test(d.testo) ? '' : ' (facoltativa)' })]));
       q.appendChild(campo(d));
       (attenzioni || []).filter(function (p) { return p.sotto === d.codice; }).forEach(function (p) { q.appendChild(el('div', { classe: 'attenzione', testo: '⚠️ ' + p.testo })); }); // P47c
-      q.appendChild(el('div', { classe: 'q-err', testo: d.tipo === 'anno' ? 'Indica un anno valido' : d.tipo === 'righe_persone' ? 'Indica fascia d\'età e genere di ogni persona' : d.tipo === 'scala_item' ? 'Rispondi per ogni frase' : 'Risposta obbligatoria' }));
+      q.appendChild(el('div', { classe: 'q-err', testo: d.tipo === 'anno' ? 'Indica un anno valido' : d.tipo === 'righe_persone' ? 'Indica fascia d\'età e genere di ogni persona' : d.tipo === 'scala_item' ? 'Rispondi per ogni frase' : d.tipo === 'testi_brevi' ? 'Scrivi almeno una risposta' + ((d.campi || {}).nessuno ? ' o tocca "' + d.campi.nessuno + '"' : '') : d.tipo === 'migliore_per' ? 'Rispondi per ogni aspetto' : 'Risposta obbligatoria' })); // P67
       app.appendChild(q);
       if (errori && errori.indexOf(d.codice) >= 0 && d.tipo === 'scala_item') {
         var vv = S.risposte[d.codice] || {};
