@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P60 (Ez 14.11.26): versione del modulo (questionario breve) "QB v2.0" in fondo alla pagina e inviata
+<!-- candidatura.html - P61 (Ez 14.11.26): durata di compilazione: tempo ATTIVO per passo (le pause oltre TRACK_PAUSA secondi senza
+     toccare nulla non contano), mandato con la candidatura (tracking) -> FamilyApplication.tracking.qb. Nessun cambio visibile
+     P60 (Ez 14.11.26): versione del modulo (questionario breve) "QB v2.0" in fondo alla pagina e inviata
      con la candidatura (moduloVersione): a OGNI modifica del modulo si cambia QB_VERSIONE qui sotto e si aggiunge una riga in
      config candidature (versioni.breve.storia)
      P57 (Ez 13.11.26): caselle allineate a Informativa privacy 2.0 e Termini 2.0 (approvati dal consulente):
@@ -1267,6 +1269,16 @@ document.getElementById('versioneModulo').textContent = 'QB v' + QB_VERSIONE;
 const API = 'https://panel-scontrini-production.up.railway.app';
 const CODE = 'MIASPESA2026';
 let currentStep = 1;
+// Ez 14.11.26 P61 - tempo attivo per passo. TRACK_PAUSA = config candidature tracking.pausaMaxSecondi (se cambia li', cambiarla qui)
+const TRACK_PAUSA = 300;
+const TR = { sid: (Math.random().toString(36).slice(2, 10) + Date.now().toString(36)).toLowerCase(), ultimo: Date.now(), per: {} };
+function trAttivita() {
+  const ora = Date.now(), d = (ora - TR.ultimo) / 1000;
+  TR.ultimo = ora;
+  if (d > 0 && d <= TRACK_PAUSA) TR.per[currentStep] = (TR.per[currentStep] || 0) + d;
+}
+['input', 'change', 'click', 'keydown', 'scroll', 'touchstart', 'pointerdown'].forEach(function (e) { document.addEventListener(e, trAttivita, { passive: true, capture: true }); });
+function trDati() { trAttivita(); const p = {}; for (const k in TR.per) p[k] = Math.round(TR.per[k]); return { sid: TR.sid, perSezione: p }; }
 
 function goStep(n) {
   if (n > currentStep && !validateStep(currentStep)) { vaiAlPrimoErrore(); return; }
@@ -1483,6 +1495,7 @@ async function invia() {
     terminiOk: document.getElementById('terminiOk').checked === true, // Ez 07.11.26 P36 (backend P35)
     terminiVersione: '2.0', // Ez 13.11.26 P57 Termini 2.0 (punto 8 = vecchio punto 9)
     moduloVersione: QB_VERSIONE, // Ez 14.11.26 P60 (backend P60, migrazione 35)
+    tracking: trDati(), // Ez 14.11.26 P61 (backend P61, migrazione 36)
     clausoleOk: document.getElementById('clausoleOk').checked === true
   };
 

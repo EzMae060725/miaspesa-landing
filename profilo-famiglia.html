@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- profilo-famiglia.html v1.9 - P61 (Ez 14.11.26): tempo ATTIVO per sezione (pausa massima dal server) mandato a ogni salvataggio
+     e all'invio con un codice di sessione (tempi): durata di compilazione in admin. Nessun cambio visibile -->
 <!-- profilo-famiglia.html v1.8 - P60 (Ez 14.11.26): versione del questionario (es. "QF v7.1", dal server) in fondo alla pagina -->
 <!-- profilo-famiglia.html v1.7 - P53 (Ez 12.11.26): testo libero con il limite di caratteri della domanda (maxCaratteri) e il contatore -->
 <!-- profilo-famiglia.html v1.6 - P52 (Ez 12.11.26): "in quale provincia" (luoghi.altreProvince) e "in quale comune" (luoghi.altriComuni:
@@ -123,6 +125,15 @@
   var token = new URLSearchParams(location.search).get('t') || '';
   var app = document.getElementById('app');
   var S = { dati: null, risposte: {}, sezione: 1, invio: false, comuni: {}, confermati: {} };
+  // Ez 14.11.26 P61 - tempo attivo per sezione (le pause oltre la pausa massima non contano)
+  var TR = { sid: (Math.random().toString(36).slice(2, 10) + Date.now().toString(36)).toLowerCase(), ultimo: Date.now(), per: {} };
+  function trAttivita() {
+    var ora = Date.now(), d = (ora - TR.ultimo) / 1000, pausa = (S.dati && S.dati.tracking && S.dati.tracking.pausaMaxSecondi) || 300;
+    TR.ultimo = ora;
+    if (S.dati && d > 0 && d <= pausa) TR.per[S.sezione] = (TR.per[S.sezione] || 0) + d;
+  }
+  ['input', 'change', 'click', 'keydown', 'scroll', 'touchstart', 'pointerdown'].forEach(function (e) { document.addEventListener(e, trAttivita, { passive: true, capture: true }); });
+  function trDati() { trAttivita(); if (S.dati && S.dati.tracking && S.dati.tracking.attivo === false) return null; var p = {}; for (var k in TR.per) p[k] = Math.round(TR.per[k]); return { sid: TR.sid, perSezione: p }; }
 
   // ---------------------------------------------------------------- P47c: luoghi e coerenza (regole dal server)
   function normNome(v) { return String(v == null ? '' : v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ''); }
@@ -551,7 +562,7 @@
   }
 
   function salva(n) {
-    return fetch(API + encodeURIComponent(token) + '/salva', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ risposte: S.risposte, sezione: n }) })
+    return fetch(API + encodeURIComponent(token) + '/salva', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ risposte: S.risposte, sezione: n, tempi: trDati() }) })
       .then(function (r) { return r.json(); }).then(function (d) { if (d.success) { salvatoOk(); if (d.data && d.data.contesto) S.dati.contesto = d.data.contesto; } return d; }) // P45f: contesto aggiornato
       .catch(function () { return { success: false }; }); // Ez 11.11.26 P47c - prima il .catch era dentro il commento
   }
@@ -585,7 +596,7 @@
       });
       return;
     }
-    fetch(API + encodeURIComponent(token) + '/invia', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ risposte: S.risposte }) })
+    fetch(API + encodeURIComponent(token) + '/invia', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ risposte: S.risposte, tempi: trDati() }) })
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (d.success) { messaggio('🎉', 'Grazie, profilo inviato!', 'Abbiamo ricevuto il profilo della tua famiglia. Lo valutiamo e ti scriviamo entro 3 giorni lavorativi: se entri nel panel riceverai il codice famiglia e il PIN per accedere all\'app.'); scrollTo(0, 0); return; }
