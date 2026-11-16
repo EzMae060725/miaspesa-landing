@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- profilo-famiglia.html v2.0 - P67 (Ez 14.11.26): domande spontanee "testi_brevi" (caselle per risposte brevi, al massimo N, pulsante
+<!-- profilo-famiglia.html v2.1 - P76b (Ez 16.11.26): nelle domande a piu' risposte una risposta "esclusiva" (es. "Preferisco non
+     rispondere") toglie le altre, e scegliendo un'altra risposta si toglie l'esclusiva.
+     v2.0 - P67 (Ez 14.11.26): domande spontanee "testi_brevi" (caselle per risposte brevi, al massimo N, pulsante
      "Niente / Nessuno in particolare") e "quale e' migliore" (migliore_per: per gli aspetti giudicati peggio, lista delle insegne);
      "mostra solo se" anche con valoriNo e su risposte a oggetto (la scala ridisegna le domande che ne dipendono); voti 0-10 come
      pulsanti; testo sopra la prima sezione dal server (introPrimaSezione); "circa 12-15 minuti" -->
@@ -381,7 +383,11 @@
       box.appendChild(el('button', { type: 'button', classe: 'chip' + (on ? ' on' : ''), testo: r.t, onclick: function () {
         if (multi) {
           var a = Array.isArray(S.risposte[d.codice]) ? S.risposte[d.codice].slice() : [];
-          var i = a.indexOf(r.v); if (i >= 0) a.splice(i, 1); else a.push(r.v);
+          var escl = (d.risposte || []).filter(function (x) { return x.esclusiva; }).map(function (x) { return x.v; }); // P76b
+          var i = a.indexOf(r.v);
+          if (i >= 0) a.splice(i, 1);
+          else if (r.esclusiva) a = [r.v];
+          else { a = a.filter(function (x) { return escl.indexOf(x) < 0; }); a.push(r.v); }
           S.risposte[d.codice] = a;
         } else S.risposte[d.codice] = r.v;
         disegna();

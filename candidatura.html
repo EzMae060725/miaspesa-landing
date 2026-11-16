@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- candidatura.html - P76 (Ez 16.11.26): chi apre Privacy, Termini o Regolamento non perde piu' le risposte: (1) i documenti si
+<!-- candidatura.html - P76b (Ez 16.11.26): "Ricomincia da capo" ora svuota davvero il modulo (prima la pagina, chiudendosi,
+     risalvava le risposte e si ripartiva dal passo 3).
+     P76 (Ez 16.11.26): chi apre Privacy, Termini o Regolamento non perde piu' le risposte: (1) i documenti si
      aprono in una finestra dentro la pagina (con "Apri in una nuova scheda"); (2) le risposte si salvano mentre si compila
      (sessionStorage della scheda, scadono dopo BOZZA_ORE ore, si cancellano all'invio) e al ritorno la pagina riparte da dove
      si era, con l'avviso "Abbiamo ripreso le risposte" e "Ricomincia da capo". Le caselle dei consensi non si ripristinano:
@@ -1583,7 +1585,7 @@ var BOZZA_RIPRISTINO = false;
 })();
 // risposte salvate nella scheda
 function salvaBozza() {
-  if (BOZZA_RIPRISTINO) return;
+  if (BOZZA_RIPRISTINO || (typeof BOZZA_SCARTATA !== 'undefined' && BOZZA_SCARTATA)) return;
   try {
     var box = document.getElementById('successBox');
     if (box && box.style.display === 'block') return;
@@ -1652,9 +1654,13 @@ function riprendiBozza() {
   fine();
 }
 document.getElementById('bozzaChiudi').addEventListener('click', function () { document.getElementById('bozzaAvviso').style.display = 'none'; });
+var BOZZA_SCARTATA = false;
 document.getElementById('bozzaRicomincia').addEventListener('click', function () {
+  BOZZA_SCARTATA = true; // P76b: la pagina che si chiude non deve risalvare le risposte (pagehide)
+  clearTimeout(bozzaTimer);
   try { sessionStorage.removeItem(BOZZA_CHIAVE); } catch (e) {}
-  location.reload();
+  try { document.querySelectorAll('form').forEach(function (f) { f.reset(); }); } catch (e) {}
+  location.replace(location.pathname + location.search); // nuova apertura, non "ricarica": il browser non rimette i valori
 });
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(riprendiBozza, 0); });
 else setTimeout(riprendiBozza, 0);
