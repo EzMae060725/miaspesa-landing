@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!-- candidatura.html - P76 (Ez 16.11.26): chi apre Privacy, Termini o Regolamento non perde piu' le risposte: (1) i documenti si
+     aprono in una finestra dentro la pagina (con "Apri in una nuova scheda"); (2) le risposte si salvano mentre si compila
+     (sessionStorage della scheda, scadono dopo BOZZA_ORE ore, si cancellano all'invio) e al ritorno la pagina riparte da dove
+     si era, con l'avviso "Abbiamo ripreso le risposte" e "Ricomincia da capo". Le caselle dei consensi non si ripristinano:
+     si spuntano di nuovo, consapevolmente. Domande invariate: resta QB v2.0 -->
 <!-- candidatura.html - P61 (Ez 14.11.26): durata di compilazione: tempo ATTIVO per passo (le pause oltre TRACK_PAUSA secondi senza
      toccare nulla non contano), mandato con la candidatura (tracking) -> FamilyApplication.tracking.qb. Nessun cambio visibile
      P60 (Ez 14.11.26): versione del modulo (questionario breve) "QB v2.0" in fondo alla pagina e inviata
@@ -1069,10 +1074,12 @@ function resetComuneCap() {
   clearErr('comune'); clearErr('cap');
 }
 
+var COMUNI_PROMESSA = null; // Ez 16.11.26 P76 - chi chiede i comuni mentre si caricano aspetta lo stesso caricamento (prima riceveva null)
 function loadComuniData() {
-  if (COMUNI_DATA || COMUNI_LOADING) return Promise.resolve(COMUNI_DATA);
+  if (COMUNI_DATA) return Promise.resolve(COMUNI_DATA);
+  if (COMUNI_PROMESSA) return COMUNI_PROMESSA;
   COMUNI_LOADING = true;
-  return fetch('data/comuni-italiani.json')
+  COMUNI_PROMESSA = fetch('data/comuni-italiani.json')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       COMUNI_DATA = data;
@@ -1081,9 +1088,11 @@ function loadComuniData() {
     })
     .catch(function(err) {
       COMUNI_LOADING = false;
+      COMUNI_PROMESSA = null;
       console.error('Errore caricamento comuni:', err);
       throw err;
     });
+  return COMUNI_PROMESSA;
 }
 
 document.getElementById('provincia').addEventListener('change', function() {
@@ -1515,6 +1524,7 @@ async function invia() {
       document.getElementById('successBox').style.display = 'block';
       document.querySelector('.progress-wrap').style.display = 'none';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      try { sessionStorage.removeItem(BOZZA_CHIAVE); } catch (e) { /* niente */ } // P76: inviata, la bozza non serve piu'
     } else {
       mostraErroreInvio((data && data.error) || 'Errore durante l\'invio. Riprova.');
       btn.classList.remove('loading');
@@ -1526,6 +1536,128 @@ async function invia() {
     btn.disabled = false;
   }
 }
+</script>
+
+<!-- Ez 16.11.26 P76 - documenti in una finestra dentro la pagina + risposte salvate mentre si compila -->
+<div id="docOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:12px">
+  <div style="background:white;border-radius:14px;width:100%;max-width:760px;height:88vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #eee;gap:8px">
+      <strong id="docTitolo" style="color:#3C3489;font-size:0.95rem"></strong>
+      <span style="display:flex;gap:8px;align-items:center">
+        <a id="docNuova" href="#" target="_blank" rel="noopener" style="font-size:0.78rem;color:#6b7280">Apri in una nuova scheda</a>
+        <button type="button" id="docChiudi" style="background:#3C3489;color:white;border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer">Chiudi e torna al modulo</button>
+      </span>
+    </div>
+    <iframe id="docFrame" title="Documento" style="flex:1;border:0;width:100%"></iframe>
+  </div>
+</div>
+<div id="bozzaAvviso" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;max-width:576px;margin:0 auto;background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;border-radius:12px;padding:10px 14px;font-size:0.85rem;z-index:9000;box-shadow:0 6px 20px rgba(0,0,0,0.12)">
+  ✓ Abbiamo ripreso le risposte che avevi già dato: continua da qui.
+  <button type="button" id="bozzaRicomincia" style="margin-left:6px;background:none;border:none;color:#065f46;text-decoration:underline;cursor:pointer;font-size:0.82rem">Ricomincia da capo</button>
+  <button type="button" id="bozzaChiudi" style="float:right;background:none;border:none;color:#065f46;cursor:pointer;font-size:1rem;line-height:1">✕</button>
+</div>
+<script>
+var BOZZA_CHIAVE = 'candidaturaBozza';
+var BOZZA_ORE = 6;
+var BOZZA_ESCLUSI = ['privacyOk', 'terminiOk', 'clausoleOk'];
+var BOZZA_RIPRISTINO = false;
+// documenti nella finestra
+(function () {
+  var TITOLI = { 'privacy.html': 'Informativa privacy', 'termini.html': 'Termini e condizioni', 'regolamento.html': 'Regolamento premi' };
+  var ov = document.getElementById('docOverlay'), fr = document.getElementById('docFrame');
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var nome = href.split('#')[0].split('?')[0].split('/').pop();
+    if (!TITOLI[nome] || !a.closest('.form-wrap')) return;
+    e.preventDefault(); e.stopPropagation();
+    salvaBozza();
+    document.getElementById('docTitolo').textContent = TITOLI[nome];
+    document.getElementById('docNuova').href = href;
+    fr.src = href;
+    ov.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }, true);
+  document.getElementById('docChiudi').addEventListener('click', function () { ov.style.display = 'none'; fr.src = 'about:blank'; document.body.style.overflow = ''; });
+})();
+// risposte salvate nella scheda
+function salvaBozza() {
+  if (BOZZA_RIPRISTINO) return;
+  try {
+    var box = document.getElementById('successBox');
+    if (box && box.style.display === 'block') return;
+    var campi = {}, radio = {};
+    document.querySelectorAll('.form-wrap input, .form-wrap select, .form-wrap textarea').forEach(function (el) {
+      if (BOZZA_ESCLUSI.indexOf(el.id) >= 0) return;
+      if (el.type === 'radio') { if (el.checked && el.name) radio[el.name] = el.value; return; }
+      if (el.type === 'checkbox') { if (el.id) campi[el.id] = el.checked; return; }
+      if (el.id && el.type !== 'button' && el.type !== 'submit') campi[el.id] = el.value;
+    });
+    var vuoto = !Object.keys(campi).some(function (k) { return typeof campi[k] === 'string' && campi[k].trim(); });
+    if (vuoto && !Object.keys(radio).length) return;
+    sessionStorage.setItem(BOZZA_CHIAVE, JSON.stringify({ v: 1, il: Date.now(), passo: typeof currentStep === 'number' ? currentStep : 1, campi: campi, radio: radio, emailOk: emailConfirmed && !emailUsata ? (campi.email || '').trim() : null }));
+  } catch (e) { /* senza memoria: nessun salvataggio */ }
+}
+var bozzaTimer = null;
+['input', 'change'].forEach(function (ev) { document.addEventListener(ev, function () { clearTimeout(bozzaTimer); bozzaTimer = setTimeout(salvaBozza, 400); }); });
+window.addEventListener('pagehide', salvaBozza);
+document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') salvaBozza(); });
+
+function metti(id, v, evento) {
+  var el = document.getElementById(id);
+  if (!el || v === undefined || v === null) return;
+  if (el.type === 'checkbox') el.checked = !!v; else el.value = v;
+  if (evento) el.dispatchEvent(new Event(evento, { bubbles: true }));
+}
+function riprendiBozza() {
+  var b = null;
+  try { b = JSON.parse(sessionStorage.getItem(BOZZA_CHIAVE) || 'null'); } catch (e) { b = null; }
+  if (!b || b.v !== 1 || !b.campi || Date.now() - (b.il || 0) > BOZZA_ORE * 3600 * 1000) return;
+  BOZZA_RIPRISTINO = true;
+  var c = b.campi, SPECIALI = ['regione', 'provincia', 'comune', 'cap', 'tipologia', 'supermercato', 'insegnaSpec'];
+  Object.keys(c).forEach(function (id) { if (SPECIALI.indexOf(id) < 0) metti(id, c[id]); });
+  Object.keys(b.radio || {}).forEach(function (n) {
+    var r = document.querySelector('input[type="radio"][name="' + n + '"][value="' + String(b.radio[n]).replace(/"/g, '') + '"]');
+    if (r) r.checked = true;
+  });
+  try { styleRadio(); } catch (e) {}
+  try { onTelefonoTipo(); } catch (e) {}
+  if (b.emailOk && String(c.email || '').trim() === b.emailOk) { // email gia' confermata: non la si richiede
+    emailConfirmed = true;
+    document.getElementById('email-confirm').style.display = 'none';
+    document.getElementById('email-ok').style.display = 'block';
+    try { controllaEmailConfermata(); } catch (e) {}
+  }
+  if (c.tipologia) { metti('tipologia', c.tipologia); try { onTipologiaChange(); } catch (e) {} metti('supermercato', c.supermercato); try { onInsegnaInput(); } catch (e) {} metti('insegnaSpec', c.insegnaSpec); }
+  var fine = function () {
+    BOZZA_RIPRISTINO = false;
+    var passo = Math.min(3, Math.max(1, Number(b.passo) || 1));
+    for (var n = 2; n <= passo; n++) { if (currentStep !== n - 1) break; goStep(n); }
+    try { aggiornaPulsanti(); } catch (e) {}
+    document.getElementById('bozzaAvviso').style.display = 'block';
+  };
+  if (c.regione) {
+    loadComuniData().then(function () { // prima i comuni, poi regione -> provincia -> comune -> CAP
+      metti('regione', c.regione, 'change');
+      if (c.provincia) metti('provincia', c.provincia, 'change');
+      setTimeout(function () {
+        if (c.provincia && c.comune) metti('comune', c.comune, 'input');
+        if (c.provincia && c.cap) metti('cap', c.cap, 'input');
+        fine();
+      }, 80);
+    }).catch(function () { metti('regione', c.regione, 'change'); fine(); });
+    return;
+  }
+  fine();
+}
+document.getElementById('bozzaChiudi').addEventListener('click', function () { document.getElementById('bozzaAvviso').style.display = 'none'; });
+document.getElementById('bozzaRicomincia').addEventListener('click', function () {
+  try { sessionStorage.removeItem(BOZZA_CHIAVE); } catch (e) {}
+  location.reload();
+});
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(riprendiBozza, 0); });
+else setTimeout(riprendiBozza, 0);
 </script>
 
 </body>
