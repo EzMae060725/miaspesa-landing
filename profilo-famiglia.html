@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- profilo-famiglia.html v2.2 - P80 (Ez 17.11.26, punto 3.3 fase 1): liste lunghe di insegne (oltre 15) piu' corte: "Suggerite
+<!-- profilo-famiglia.html v2.3 - P80b (Ez 17.11.26): tendine con i gruppi "Suggerite per te" / "Tutte le insegne"; suggerimenti
+     aggiornati appena si scrive un'insegna; la domanda non suggerisce a se stessa; nome uguale a un'insegna senza varianti.
+     v2.2 - P80 (Ez 17.11.26, punto 3.3 fase 1): liste lunghe di insegne (oltre 15) piu' corte: "Suggerite
      per te" dalle insegne gia' nominate, ricerca, "Mostra tutte"; nelle tendine le suggerite in cima con la stella.
      v2.1 - P76b (Ez 16.11.26): nelle domande a piu' risposte una risposta "esclusiva" (es. "Preferisco non
      rispondere") toglie le altre, e scegliendo un'altra risposta si toglie l'esclusiva.
@@ -149,21 +151,25 @@
   // Ez 17.11.26 P80 (3.3 fase 1) - liste lunghe di insegne: "Suggerite per te" dalle insegne gia' nominate, ricerca, "Mostra tutte"
   var SUGG_FONTI = ['QP_SUPERMERCATO1', 'QP_SUPERMERCATO2', 'QP_SUPERMERCATO3', 'QP_NOTORIETA', 'QP_CONSIGLIA', 'QP_CARTE_NOMI', 'QP_APP_CATENE'];
   function cfgSugg() { return (S.dati && S.dati.suggerimentiInsegne) || {}; }
-  function insegneSuggerite(nomi) {
-    var SC = cfgSugg(), fonti = (SC.fonti && SC.fonti.length) ? SC.fonti : SUGG_FONTI, parole = [], singole = {};
+  function insegneSuggerite(nomi, escludi) {
+    var SC = cfgSugg(), fonti = ((SC.fonti && SC.fonti.length) ? SC.fonti : SUGG_FONTI).filter(function (c) { return c !== escludi; }), risp = []; // P80b
     fonti.forEach(function (c) { var v = S.risposte[c]; (Array.isArray(v) ? v : [v]).forEach(function (x) { if (typeof x === 'string') x.split(/[,;\n]/).forEach(function (y) {
-      var n = normNome(y); if (n.length >= 2) parole.push(n); y.split(/\s+/).forEach(function (w) { var m = normNome(w); if (m) singole[m] = true; }); }); }); });
+      var n = normNome(y); if (n.length >= 2) risp.push({ p: n, w: y.split(/\s+/).map(normNome).filter(Boolean) }); }); }); });
+    var esatti = {}; nomi.forEach(function (r) { var n = normNome(r.v); if (n && risp.some(function (a) { return a.p === n || a.w.indexOf(n) >= 0; })) esatti[n] = true; });
+    var libere = risp.filter(function (a) { return !esatti[a.p] && !a.w.some(function (x) { return esatti[x]; }); }); // gia' riconosciute: niente varianti
     return nomi.filter(function (r) {
       var n = normNome(r.v), prima = normNome(String(r.v).split(/\s+/)[0]);
       if (!n) return false;
-      return !!singole[n] || parole.some(function (p) { return p === n || (n.length >= 3 && p.indexOf(n) >= 0) || (p.length >= 4 && n.indexOf(p) >= 0) || (prima.length >= 4 && p.indexOf(prima) >= 0); }); });
+      return !!esatti[n] || libere.some(function (a) { var p = a.p; return (n.length >= 3 && p.indexOf(n) >= 0) || (p.length >= 4 && n.indexOf(p) >= 0) || (prima.length >= 4 && p.indexOf(prima) >= 0); }); });
   }
-  function ordinaSuggerite(nomi) {
-    if (nomi.length <= (Number(cfgSugg().soglia) || 15)) return nomi;
-    var sugg = insegneSuggerite(nomi);
+  function ordinaSuggerite(nomi, codice) { // P80b: gruppi "Suggerite per te" / "Tutte le insegne"
+    var SC = cfgSugg();
+    if (nomi.length <= (Number(SC.soglia) || 15)) return nomi;
+    var sugg = insegneSuggerite(nomi, codice);
     if (!sugg.length) return nomi;
-    return sugg.map(function (r) { return { v: r.v, t: '\u2605 ' + r.t }; }).concat([{ v: '__sep', t: '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500', disabled: true }],
-      nomi.filter(function (r) { return !sugg.some(function (x) { return x.v === r.v; }); }));
+    var g1 = SC.titolo || 'Suggerite per te', g2 = SC.titoloTutte || 'Tutte le insegne';
+    return sugg.map(function (r) { return { v: r.v, t: r.t, gruppo: g1 }; }).concat(
+      nomi.filter(function (r) { return !sugg.some(function (x) { return x.v === r.v; }); }).map(function (r) { return { v: r.v, t: r.t, gruppo: g2 }; }));
   }
   function intervalloFascia(v) {
     var x = String(v == null ? '' : v).trim(), m;
@@ -419,7 +425,12 @@
   }
   function tendina(d, valori, valore, cambia) {
     var s = el('select', null, [el('option', { value: '', testo: 'Seleziona…' })]);
-    valori.forEach(function (r) { var o = el('option', { value: r.v, testo: r.t }); if (r.disabled) o.disabled = true; if (String(valore) === r.v) o.selected = true; s.appendChild(o); }); // P80 separatore
+    var gruppi = {}; // P80b: voci con "gruppo" dentro un <optgroup>
+    valori.forEach(function (r) {
+      var o = el('option', { value: r.v, testo: r.t }); if (String(valore) === r.v) o.selected = true;
+      if (!r.gruppo) { s.appendChild(o); return; }
+      if (!gruppi[r.gruppo]) { gruppi[r.gruppo] = document.createElement('optgroup'); gruppi[r.gruppo].label = r.gruppo; s.appendChild(gruppi[r.gruppo]); }
+      gruppi[r.gruppo].appendChild(o); });
     s.addEventListener('change', function () { cambia(s.value); if (d && riferita(d.codice)) disegna(); }); // P45f: altre domande dipendono da questa
     return s;
   }
@@ -443,7 +454,7 @@
         box.appendChild(c);
         if (nomi.length > soglia) box.appendChild(link('Mostra meno \u25B2', function () { S.tutteIns[d.codice] = false; disegna(); }));
       } else { // Ez 17.11.26 P80 - suggerite, ricerca, mostra tutte
-        var sugg = insegneSuggerite(nomi);
+        var sugg = insegneSuggerite(nomi, d.codice);
         nomi.forEach(function (r) { if (arr.indexOf(r.v) >= 0 && !sugg.some(function (x) { return x.v === r.v; })) sugg.push(r); });
         var tit = el('div', { testo: SC.titolo || 'Suggerite per te' }); tit.style.cssText = 'font-size:0.8rem;font-weight:700;color:#3C3489;margin-bottom:6px';
         box.appendChild(tit);
@@ -478,7 +489,7 @@
       S.altro = S.altro || {};
       var nota = nomi.some(function (r) { return r.v === val; });
       var altro = S.altro[d.codice] || (!!val && !nota);
-      var tend = tendina(d, ordinaSuggerite(nomi).concat([{ v: '__altro', t: 'Altro (scrivilo)' }]), altro ? '__altro' : (val || ''), function (v) {
+      var tend = tendina(d, ordinaSuggerite(nomi, d.codice).concat([{ v: '__altro', t: 'Altro (scrivilo)' }]), altro ? '__altro' : (val || ''), function (v) {
         if (v === '__altro') { S.altro[d.codice] = true; if (nota) S.risposte[d.codice] = ''; }
         else { S.altro[d.codice] = false; S.risposte[d.codice] = v; }
         disegna(); });
@@ -570,7 +581,7 @@
         a[i] = inp.value.slice(0, 80); S.risposte[d.codice] = a;
         if (i === caselle.children.length - 1 && inp.value.trim() && caselle.children.length < max) aggiungi(caselle.children.length);
       });
-      inp.addEventListener('change', function () { if (riferita(d.codice)) disegna(); }); // es. "Perche' lo consiglieresti?"
+      inp.addEventListener('change', function () { if (riferita(d.codice) || SUGG_FONTI.indexOf(d.codice) >= 0) disegna(); }); // es. "Perche' lo consiglieresti?"; P80b: e le insegne suggerite
       caselle.appendChild(inp);
     }
     if (!nessuno) {
@@ -599,7 +610,7 @@
       function metti(y) { var o = Object.assign({}, S.risposte[d.codice] && typeof S.risposte[d.codice] === 'object' ? S.risposte[d.codice] : {}); o[f.v] = y; S.risposte[d.codice] = o; }
       var riga = el('div', { classe: 'scala-item' });
       riga.appendChild(el('div', { classe: 'scala-frase', testo: f.t }));
-      var lista = ordinaSuggerite(nomi).concat([{ v: '__altro', t: 'Altro (scrivilo)' }], c.nessuno ? [{ v: NESSUNO, t: c.nessuno }] : []); // P80
+      var lista = ordinaSuggerite(nomi, d.codice).concat([{ v: '__altro', t: 'Altro (scrivilo)' }], c.nessuno ? [{ v: NESSUNO, t: c.nessuno }] : []); // P80
       riga.appendChild(tendina(null, lista, altro ? '__altro' : (x || ''), function (y) {
         if (y === '__altro') { S.altro[chiave] = true; if (nota) metti(''); } else { S.altro[chiave] = false; metti(y); }
         disegna(); }));
