@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!-- candidatura.html - P99 (Ez 24.11.26): risposta immediata. Dopo l'invio la pagina mostra "Stiamo esaminando il tuo profilo..."
+     e, quando il sistema (IA) ha controllato la candidatura e mandato l'invito, "Profilo compatibile" con il pulsante per iniziare
+     subito il questionario (link personale chiesto con la chiave usa e getta ricevuta all'invio: /api/admin/join-esito). Eta':
+     anno di nascita da (anno attuale - 105) a (anno attuale - 18), sotto i 18 anni "riservato ai maggiorenni". Tolto "ti
+     scriviamo entro 3 giorni lavorativi". Testi in ESITO_TESTI qui sotto -->
 <!-- candidatura.html - P76b (Ez 16.11.26): "Ricomincia da capo" ora svuota davvero il modulo (prima la pagina, chiudendosi,
      risalvava le risposte e si ripartiva dal passo 3).
      P76 (Ez 16.11.26): chi apre Privacy, Termini o Regolamento non perde piu' le risposte: (1) i documenti si
@@ -176,7 +181,7 @@
 <div class="hero-mini">
   <div class="label">Candidatura al panel</div>
   <h1>Candidati a Le mie spese</h1>
-  <p>Il panel della spesa delle famiglie italiane. Compila il modulo in 2 minuti: ti scriviamo entro 3 giorni lavorativi.</p>
+  <p>Il panel della spesa delle famiglie italiane. Compila il modulo in 2 minuti: ti rispondiamo subito.</p>
 </div>
 
 <!-- PROGRESS -->
@@ -261,8 +266,8 @@
       </div>
       <div class="field" id="f-anno">
         <label>Anno di nascita *</label>
-        <input type="number" id="annoNascita" placeholder="es. 1980" min="1924" max="2006" onblur="if (this.value.trim()) validateAnno()" oninput="clearErr('anno')">
-        <div class="err">Anno non valido (1924–2006)</div>
+        <input type="number" id="annoNascita" placeholder="es. 1980" onblur="if (this.value.trim()) validateAnno()" oninput="clearErr('anno')">
+        <div class="err" id="annoErrTesto">Anno di nascita non valido</div>
       </div>
     </div>
 
@@ -556,10 +561,15 @@
   <div class="success-box" id="successBox">
     <div class="icon">🎉</div>
     <h2>Candidatura ricevuta!</h2>
-    <p>
+    <!-- Ez 24.11.26 P99 - esito immediato -->
+    <div id="esitoAttesa" style="margin:6px 0 14px;font-size:1rem;color:#3C3489;font-weight:600"></div>
+    <div id="esitoOk" style="display:none;margin:6px 0 16px">
+      <p id="esitoOkTesto" style="font-weight:700;color:#065f46;margin-bottom:12px"></p>
+      <a id="esitoLink" href="#" style="display:inline-block;background:#3C3489;color:white;padding:13px 22px;border-radius:999px;font-weight:700;text-decoration:none"></a>
+      <p id="esitoOkNota" style="font-size:0.85rem;color:#6B7280;margin-top:10px"></p>
+    </div>
+    <p id="esitoTesto">
       Grazie per aver compilato il modulo.<br>
-      Riceverai una email di conferma a breve.<br>
-      Ti scriviamo entro 3 giorni lavorativi con il prossimo passo.<br>
       Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni.
     </p>
     <a href="index.html">← Torna alla home</a>
@@ -571,6 +581,41 @@
 </div>
 
 <script>
+// Ez 24.11.26 P99 - esito immediato della candidatura: la pagina chiede ogni ESITO_OGNI_SEC secondi se l'invito e' partito
+var ESITO_OGNI_SEC = 5, ESITO_MAX_SEC = 360;
+var ESITO_TESTI = {
+  attesa: '⏳ Stiamo esaminando il tuo profilo…',
+  ok: '✅ Profilo compatibile: puoi iniziare subito il secondo passo.',
+  bottone: 'Inizia il questionario (circa 10 minuti) →',
+  okNota: 'Ti abbiamo mandato lo stesso link anche per email: puoi interrompere e riprendere quando vuoi.',
+  operatore: 'Grazie! La tua candidatura la guarda una persona del nostro gruppo: ti scriviamo entro 3 giorni lavorativi.<br>Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni.',
+  tempo: 'Ti scriviamo tra pochi minuti con il secondo passo: tieni d\'occhio la posta (anche Spam e Promozioni).',
+  senzaEsito: 'Grazie per aver compilato il modulo.<br>Ti scriviamo a breve con il secondo passo: tieni d\'occhio la posta (anche Spam e Promozioni).'
+};
+function attendiEsito(id, chiave) {
+  var att = document.getElementById('esitoAttesa'), t0 = Date.now();
+  att.textContent = ESITO_TESTI.attesa;
+  document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.tempo;
+  function giro() {
+    fetch(API + '/api/admin/join-esito/' + encodeURIComponent(id) + '?k=' + encodeURIComponent(chiave)).then(function (r) { return r.json(); }).then(function (d) {
+      var e = d && d.success && d.data ? d.data : null;
+      if (e && e.stato === 'compatibile' && e.link) {
+        att.style.display = 'none';
+        document.getElementById('esitoOk').style.display = 'block';
+        document.getElementById('esitoOkTesto').textContent = ESITO_TESTI.ok;
+        var a = document.getElementById('esitoLink'); a.href = e.link; a.textContent = ESITO_TESTI.bottone;
+        document.getElementById('esitoOkNota').textContent = ESITO_TESTI.okNota;
+        document.getElementById('esitoTesto').style.display = 'none';
+        return;
+      }
+      if (e && e.stato === 'operatore') { att.style.display = 'none'; document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.operatore; return; }
+      if ((Date.now() - t0) / 1000 < ESITO_MAX_SEC) setTimeout(giro, ESITO_OGNI_SEC * 1000);
+      else att.style.display = 'none';
+    }).catch(function () { if ((Date.now() - t0) / 1000 < ESITO_MAX_SEC) setTimeout(giro, ESITO_OGNI_SEC * 2000); else att.style.display = 'none'; });
+  }
+  setTimeout(giro, ESITO_OGNI_SEC * 1000);
+}
+
 // Ez 05.05.26 - Bug B.2.20 fix: validazione onBlur nome/cognome (stesso pattern email B.2.19)
 function validateNomeCognome(id) {
   var v = document.getElementById(id).value.trim();
@@ -591,6 +636,11 @@ function validateNomeCognome(id) {
   return true;
 }
 
+// Ez 24.11.26 P99 - eta': maggiorenni (anno attuale - 18) e anno plausibile (anno attuale - 105); oltre gli 85 anni decide l'operatore
+var ETA_MINIMA = 18, ETA_MASSIMA_PLAUSIBILE = 105;
+var ANNO_ORA = new Date().getFullYear(), ANNO_MAX = ANNO_ORA - ETA_MINIMA, ANNO_MIN = ANNO_ORA - ETA_MASSIMA_PLAUSIBILE;
+var TESTO_MINORENNE = 'Il panel è riservato ai maggiorenni (18 anni compiuti).';
+function annoErrato(anno) { return anno > ANNO_MAX ? TESTO_MINORENNE : (anno < ANNO_MIN ? 'Anno non valido (' + ANNO_MIN + '-' + ANNO_MAX + ')' : null); }
 // Ez 05.05.26 - Bug B.2.21 fix: validazione onBlur anno nascita (4 cifre + range 1924-2006)
 function validateAnno() {
   var raw = document.getElementById('annoNascita').value.trim();
@@ -604,8 +654,8 @@ function validateAnno() {
     return false;
   }
   var anno = parseInt(raw, 10);
-  if (anno < 1924 || anno > 2006) {
-    setErr('anno', 'Anno non valido (1924-2006)');
+  if (annoErrato(anno)) { // Ez 24.11.26 P99
+    setErr('anno', annoErrato(anno));
     return false;
   }
   clearErr('anno');
@@ -643,8 +693,8 @@ function validateAnno() {
     return false;
   }
   var anno = parseInt(raw, 10);
-  if (anno < 1924 || anno > 2006) {
-    setErr('anno', 'Anno non valido (1924-2006)');
+  if (annoErrato(anno)) { // Ez 24.11.26 P99
+    setErr('anno', annoErrato(anno));
     return false;
   }
   clearErr('anno');
@@ -1405,7 +1455,7 @@ function validateStep(s) {
     if (!telTipo) { setErr('telefonoTipo'); ok = false; }
     else if (telTipo === 'nessuno') { if (!SILENZIOSO) document.getElementById('tel-nessuno').style.display = 'block'; ok = false; }
     else clearErr('telefonoTipo');
-    if (!anno || anno < 1924 || anno > 2006) { setErr('anno'); ok = false; } else clearErr('anno');
+    if (!anno || annoErrato(anno)) { setErr('anno', anno ? annoErrato(anno) : 'Inserisci anno di nascita'); ok = false; } else clearErr('anno'); // P99
     // Ez 05.05.26 - Bug B.2.18 fix: regex email con TLD min 2 char (blocca nome@dominio.i)
     if (!email) {
       setErr('email', 'Inserisci email');
@@ -1527,6 +1577,8 @@ async function invia() {
       document.querySelector('.progress-wrap').style.display = 'none';
       window.scrollTo({ top: 0, behavior: 'smooth' });
       try { sessionStorage.removeItem(BOZZA_CHIAVE); } catch (e) { /* niente */ } // P76: inviata, la bozza non serve piu'
+      if (data.data && data.data.id && data.data.chiaveEsito) attendiEsito(data.data.id, data.data.chiaveEsito); // Ez 24.11.26 P99
+      else document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.senzaEsito;
     } else {
       mostraErroreInvio((data && data.error) || 'Errore durante l\'invio. Riprova.');
       btn.classList.remove('loading');

@@ -460,12 +460,34 @@
     .hero-nums { gap: 24px; }
     .guadagno-box { flex-direction: column; }
   }
+  /* Ez 24.11.26 P99 - "Guarda come e' facile": finestra con le schermate dell'app */
+  .link-guarda { display: inline-block; margin-top: 12px; color: var(--viola); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--oro-light); }
+  .link-guarda:hover { border-bottom-color: var(--oro); }
+  .link-guarda-chiaro { color: var(--oro-light); border-bottom-color: rgba(253,230,138,0.5); }
+  #guarda { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(20,18,50,0.96); align-items: center; justify-content: center; padding: 16px; }
+  #guarda.aperto { display: flex; }
+  .guarda-box { position: relative; width: 100%; max-width: 380px; text-align: center; color: white; }
+  .guarda-telefono { background: #111; border-radius: 34px; padding: 10px; box-shadow: 0 20px 60px rgba(0,0,0,0.45); }
+  .guarda-telefono img { display: block; width: 100%; height: auto; max-height: 66vh; object-fit: contain; border-radius: 26px; background: #6b6fd6; }
+  .guarda-passo { font-size: 0.78rem; letter-spacing: 1px; text-transform: uppercase; color: var(--oro-light); margin: 14px 0 4px; }
+  .guarda-didascalia { font-size: 1.02rem; line-height: 1.45; min-height: 2.9em; }
+  .guarda-frecce { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .guarda-frecce button { background: rgba(255,255,255,0.14); color: white; border: none; border-radius: 999px; width: 46px; height: 46px; font-size: 1.3rem; cursor: pointer; }
+  .guarda-frecce button:disabled { opacity: 0.3; cursor: default; }
+  .guarda-punti { display: flex; gap: 7px; justify-content: center; }
+  .guarda-punti span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.35); }
+  .guarda-punti span.on { background: var(--oro); }
+  .guarda-chiudi { position: absolute; top: -6px; right: -6px; background: white; color: var(--viola); border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 1.1rem; font-weight: 700; cursor: pointer; z-index: 2; }
+  .guarda-cta { display: inline-block; margin-top: 14px; background: var(--oro); color: var(--nero); padding: 10px 20px; border-radius: 999px; font-weight: 700; text-decoration: none; }
 </style>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body>
+<!-- index.html v2.3 - P99 (Ez 24.11.26): "Guarda come è facile" nel box "Fotografa lo scontrino" e sotto "Il tuo tempo vale": schermate
+     dell'app in una finestra a scorrimento (frecce, scorrimento col dito, punti, Esc). Indirizzo diretto miaspesa.com/#guarda (anche
+     #guarda-5 per partire dalla schermata 5). Schermate in img/app/ (codice famiglia oscurato); elenco e testi in GUARDA qui sotto -->
 <!-- index.html v2.2 - P42 (Ez 07.11.26): privacy, "i tuoi dati personali non vengono mai ceduti a nessuno" (prima "mai venduti") nel riquadro e nelle domande frequenti -->
 <!-- index.html v2.1 - P39 (Ez 07.11.26): frase sotto il titolo con "vale fino a 2 euro" e "Veloce, sicuro, premiato"; link al
      Regolamento premi (regolamento.html)
@@ -544,6 +566,7 @@
         <div class="step-icon">📸</div>
         <h3>Fotografa lo scontrino</h3>
         <p>Dopo la spesa apri l'app e scatta una foto. Ogni scontrino vale fino a 2 € se lo carichi entro un'ora dall'acquisto, con foto nitida e scontrino completo.</p>
+        <a href="#guarda" class="link-guarda" data-schermata="1">Guarda come è facile →</a>
       </div>
       <div class="step reveal" data-num="3" style="transition-delay:0.2s">
         <div class="step-icon">🎁</div>
@@ -587,6 +610,7 @@
         <strong>fino a 500 € l'anno</strong>
       </div>
     </div>
+    <p style="text-align:center;margin:-8px 0 22px"><a href="#guarda-5" class="link-guarda link-guarda-chiaro" data-schermata="5">Guarda come vedi i tuoi premi nell'app →</a></p>
 
     <div class="guadagno-box reveal">
       <div class="guadagno-num">€</div>
@@ -722,6 +746,72 @@
       floatCta.style.display = window.scrollY > 400 ? 'block' : 'none';
     });
   }
+</script>
+<!-- Ez 24.11.26 P99 - "Guarda come e' facile" -->
+<div id="guarda" role="dialog" aria-modal="true" aria-label="Come funziona l'app">
+  <div class="guarda-box">
+    <button type="button" class="guarda-chiudi" id="guardaChiudi" aria-label="Chiudi">✕</button>
+    <div class="guarda-telefono"><img id="guardaImg" alt=""></div>
+    <div class="guarda-passo" id="guardaPasso"></div>
+    <div class="guarda-didascalia" id="guardaTesto"></div>
+    <div class="guarda-frecce">
+      <button type="button" id="guardaPrima" aria-label="Schermata precedente">←</button>
+      <div class="guarda-punti" id="guardaPunti"></div>
+      <button type="button" id="guardaDopo" aria-label="Schermata successiva">→</button>
+    </div>
+    <a href="candidatura.html" class="guarda-cta" id="guardaCta" style="display:none">Candidati: bastano 2 minuti →</a>
+  </div>
+</div>
+<script>
+// Ez 24.11.26 P99 - elenco delle schermate: per cambiarne una si cambia solo questa lista (immagini in img/app/)
+var GUARDA = {
+  attivo: true,
+  passo: 'Passo {n} di {tot}',
+  schermate: [
+    { img: 'img/app/1-home.webp', testo: 'Dopo la spesa apri l\'app: un tocco su "Carica lo scontrino".' },
+    { img: 'img/app/2-carica.webp', testo: 'Scatta la foto: ti diciamo anche quali scontrini valgono.' },
+    { img: 'img/app/3-storico.webp', testo: 'Ogni scontrino ti dà un premio, già verificato.' },
+    { img: 'img/app/4-analisi.webp', testo: 'Controlla dove e quanto spendi, mese per mese.' },
+    { img: 'img/app/5-premi.webp', testo: 'Arrivato a 10 € chiedi il tuo Buono Amazon.' }
+  ]
+};
+(function () {
+  var box = document.getElementById('guarda'); if (!box) return;
+  if (!GUARDA.attivo) { document.querySelectorAll('.link-guarda').forEach(function (a) { a.style.display = 'none'; }); return; }
+  var i = 0, img = document.getElementById('guardaImg'), N = GUARDA.schermate.length, xInizio = null;
+  var punti = document.getElementById('guardaPunti');
+  for (var k = 0; k < N; k++) punti.appendChild(document.createElement('span'));
+  function mostra(n) {
+    i = Math.max(0, Math.min(N - 1, n));
+    var s = GUARDA.schermate[i];
+    img.src = s.img; img.alt = s.testo;
+    document.getElementById('guardaTesto').textContent = s.testo;
+    document.getElementById('guardaPasso').textContent = GUARDA.passo.replace('{n}', i + 1).replace('{tot}', N);
+    document.getElementById('guardaPrima').disabled = i === 0;
+    document.getElementById('guardaDopo').disabled = i === N - 1;
+    document.getElementById('guardaCta').style.display = i === N - 1 ? 'inline-block' : 'none';
+    punti.querySelectorAll('span').forEach(function (p, j) { p.className = j === i ? 'on' : ''; });
+    if (i + 1 < N) { var pre = new Image(); pre.src = GUARDA.schermate[i + 1].img; }
+  }
+  function apri(n) { box.classList.add('aperto'); document.body.style.overflow = 'hidden'; mostra(n); }
+  function chiudi() { box.classList.remove('aperto'); document.body.style.overflow = ''; if (/^#guarda/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search); }
+  document.querySelectorAll('.link-guarda').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); apri((parseInt(a.getAttribute('data-schermata'), 10) || 1) - 1); });
+  });
+  document.getElementById('guardaChiudi').onclick = chiudi;
+  document.getElementById('guardaPrima').onclick = function () { mostra(i - 1); };
+  document.getElementById('guardaDopo').onclick = function () { mostra(i + 1); };
+  box.addEventListener('click', function (e) { if (e.target === box) chiudi(); });
+  document.addEventListener('keydown', function (e) {
+    if (!box.classList.contains('aperto')) return;
+    if (e.key === 'Escape') chiudi(); else if (e.key === 'ArrowLeft') mostra(i - 1); else if (e.key === 'ArrowRight') mostra(i + 1);
+  });
+  box.addEventListener('touchstart', function (e) { xInizio = e.touches[0].clientX; }, { passive: true });
+  box.addEventListener('touchend', function (e) { if (xInizio == null) return; var dx = e.changedTouches[0].clientX - xInizio; if (Math.abs(dx) > 40) mostra(i + (dx < 0 ? 1 : -1)); xInizio = null; });
+  // indirizzo diretto: miaspesa.com/#guarda oppure #guarda-5
+  var h = location.hash.match(/^#guarda(?:-(\d+))?$/);
+  if (h) apri((parseInt(h[1], 10) || 1) - 1);
+})();
 </script>
 </body>
 </html>
