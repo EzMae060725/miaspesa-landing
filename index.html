@@ -463,6 +463,12 @@
   /* Ez 24.11.26 P99 - "Guarda come e' facile": finestra con le schermate dell'app */
   .link-guarda { display: inline-block; margin-top: 12px; color: var(--viola); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--oro-light); }
   .link-guarda:hover { border-bottom-color: var(--oro); }
+  /* S1 (Ez 24.11.26) hero: "Scopri l'app" in fondo alla frase e freccina "Come funziona" in fondo all'hero */
+  .hero-scopri { margin-top: 0; white-space: nowrap; }
+  .hero-giu { margin-top: 24px; color: rgba(255,255,255,0.6); font-size: 0.85rem; text-decoration: none; letter-spacing: 0.3px; position: relative; z-index: 1; animation: fadeUp 0.7s ease 0.5s both; }
+  .hero-giu span { display: inline-block; animation: giu 1.8s ease-in-out infinite; }
+  .hero-giu:hover { color: white; }
+  @keyframes giu { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
   .link-guarda-chiaro { color: var(--oro-light); border-bottom-color: rgba(253,230,138,0.5); }
   #guarda { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(20,18,50,0.96); align-items: center; justify-content: center; padding: 16px; }
   #guarda.aperto { display: flex; }
@@ -485,6 +491,8 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body>
+<!-- index.html v2.4 - S1 (Ez 24.11.26): hero con "▶ Guarda come è facile" al posto di "Come funziona ↓" (apre le schermate dalla 1),
+     "Scopri l'app →" in fondo alla frase (schermata 1), freccina "Come funziona ↓" in fondo all'hero, pay-off dritto (non corsivo) -->
 <!-- index.html v2.3 - P99 (Ez 24.11.26): "Guarda come è facile" nel box "Fotografa lo scontrino" e sotto "Il tuo tempo vale": schermate
      dell'app in una finestra a scorrimento (frecce, scorrimento col dito, punti, Esc). Indirizzo diretto miaspesa.com/#guarda (anche
      #guarda-5 per partire dalla schermata 5). Schermate in img/app/ (codice famiglia oscurato); elenco e testi in GUARDA qui sotto -->
@@ -506,13 +514,14 @@
 <section class="hero">
   <div class="hero-tag">Il panel della spesa delle famiglie italiane · Nomesis</div>
   <h1>Le mie<em>spese.</em></h1>
-  <p style="font-family:'Playfair Display',serif;font-size:clamp(1rem,2.2vw,1.4rem);font-style:italic;color:#FDE68A;margin:0 0 12px;letter-spacing:0.2px;animation:fadeUp 0.7s ease 0.15s both">Controlla · Confronta · Guadagna</p>
+  <p style="font-family:'Playfair Display',serif;font-size:clamp(1rem,2.2vw,1.4rem);font-style:normal;color:#FDE68A;margin:0 0 12px;letter-spacing:0.2px;animation:fadeUp 0.7s ease 0.15s both">Controlla · Confronta · Guadagna</p>
   <p class="hero-sub">
     Fotografa lo scontrino dopo la spesa e caricalo in pochi secondi: ogni scontrino vale fino a 2 € e il tuo saldo diventa buoni Amazon. Veloce, sicuro, premiato.
+    <a href="#guarda" class="link-guarda link-guarda-chiaro hero-scopri" data-schermata="1">Scopri l'app →</a>
   </p>
   <div class="hero-ctas">
     <a href="candidatura.html" class="btn-primary">Candidati: bastano 2 minuti →</a>
-    <a href="#come-funziona" class="btn-secondary">Come funziona ↓</a>
+    <a href="#guarda" class="btn-secondary apri-guarda" data-schermata="1" data-senza-guarda="Come funziona ↓|#come-funziona">▶ Guarda come è facile</a>
   </div>
   <div class="hero-nums">
     <div class="hero-num"><strong>fino a 2 €</strong><span>per ogni scontrino</span></div>
@@ -520,6 +529,7 @@
     <div class="hero-num"><strong>fino a 500 €</strong><span>all'anno per famiglia</span></div>
     <div class="hero-num"><strong>gratis</strong><span>e senza impegno</span></div>
   </div>
+  <a href="#come-funziona" class="hero-giu">Come funziona <span>↓</span></a>
 </section>
 
 <!-- CONTROLLA · CONFRONTA · GUADAGNA -->
@@ -777,7 +787,12 @@ var GUARDA = {
 };
 (function () {
   var box = document.getElementById('guarda'); if (!box) return;
-  if (!GUARDA.attivo) { document.querySelectorAll('.link-guarda').forEach(function (a) { a.style.display = 'none'; }); return; }
+  if (!GUARDA.attivo) {
+    document.querySelectorAll('.link-guarda').forEach(function (a) { a.style.display = 'none'; });
+    // S1: il pulsante dell'hero torna "Come funziona" (testo|indirizzo in data-senza-guarda)
+    document.querySelectorAll('.apri-guarda').forEach(function (a) { var d = (a.getAttribute('data-senza-guarda') || '').split('|'); if (d[1]) { a.textContent = d[0]; a.setAttribute('href', d[1]); } else a.style.display = 'none'; });
+    return;
+  }
   var i = 0, img = document.getElementById('guardaImg'), N = GUARDA.schermate.length, xInizio = null;
   var punti = document.getElementById('guardaPunti');
   for (var k = 0; k < N; k++) punti.appendChild(document.createElement('span'));
@@ -795,7 +810,7 @@ var GUARDA = {
   }
   function apri(n) { box.classList.add('aperto'); document.body.style.overflow = 'hidden'; mostra(n); }
   function chiudi() { box.classList.remove('aperto'); document.body.style.overflow = ''; if (/^#guarda/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search); }
-  document.querySelectorAll('.link-guarda').forEach(function (a) {
+  document.querySelectorAll('.link-guarda, .apri-guarda').forEach(function (a) {
     a.addEventListener('click', function (e) { e.preventDefault(); apri((parseInt(a.getAttribute('data-schermata'), 10) || 1) - 1); });
   });
   document.getElementById('guardaChiudi').onclick = chiudi;
