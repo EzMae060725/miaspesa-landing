@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- candidatura.html - P102 (Ez 25.11.26): script analytics.js; la candidatura porta con se la provenienza (sorgente) per il
+     funnel degli analytics; eventi candidatura_inviata, esito_compatibile, esito_operatore -->
 <!-- candidatura.html - P99c (Ez 24.11.26): la pagina chiede SUBITO la valutazione (POST /api/admin/join-esito/:id/valuta) e
      mostra un conto alla rovescia di ESITO_CONTO secondi col testo approvato da Ezio; l'esito appare appena pronto (non prima di
      ESITO_MIN secondi); oltre ESITO_CONTO "Ancora qualche secondo..." fino a ESITO_MAX, poi il rimando all'email -->
@@ -606,6 +608,7 @@ ESITO_TESTI.conto = 'Grazie! Il nostro sistema sta valutando la tua candidatura 
 ESITO_TESTI.ancora = 'Ancora qualche secondo…';
 ESITO_TESTI.email = 'Ti abbiamo scritto per email: trovi lì il link al secondo passo (controlla anche Spam e Promozioni).';
 function mostraCompatibile(link) {
+  if (window.msTraccia) window.msTraccia('esito_compatibile'); // Ez 25.11.26 P102
   document.getElementById('esitoConto').style.display = 'none';
   document.getElementById('esitoAttesa').style.display = 'none';
   document.getElementById('esitoOk').style.display = 'block';
@@ -615,6 +618,7 @@ function mostraCompatibile(link) {
   document.getElementById('esitoTesto').style.display = 'none';
 }
 function mostraOperatore() {
+  if (window.msTraccia) window.msTraccia('esito_operatore'); // Ez 25.11.26 P102
   document.getElementById('esitoConto').style.display = 'none';
   document.getElementById('esitoAttesa').style.display = 'none';
   document.getElementById('esitoTesto').style.display = 'block';
@@ -1602,6 +1606,7 @@ async function invia() {
     terminiVersione: '2.0', // Ez 13.11.26 P57 Termini 2.0 (punto 8 = vecchio punto 9)
     moduloVersione: QB_VERSIONE, // Ez 14.11.26 P60 (backend P60, migrazione 35)
     tracking: trDati(), // Ez 14.11.26 P61 (backend P61, migrazione 36)
+    sorgente: (window.msSorgente ? window.msSorgente() : null), // Ez 25.11.26 P102 provenienza per il funnel degli analytics
     clausoleOk: document.getElementById('clausoleOk').checked === true
   };
 
@@ -1622,6 +1627,7 @@ async function invia() {
       document.querySelector('.progress-wrap').style.display = 'none';
       window.scrollTo({ top: 0, behavior: 'smooth' });
       try { sessionStorage.removeItem(BOZZA_CHIAVE); } catch (e) { /* niente */ } // P76: inviata, la bozza non serve piu'
+      if (window.msTraccia) window.msTraccia('candidatura_inviata'); // Ez 25.11.26 P102
       if (data.data && data.data.id && data.data.chiaveEsito) valutaSubito(data.data.id, data.data.chiaveEsito); // Ez 24.11.26 P99c
       else document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.senzaEsito;
     } else {
@@ -1763,5 +1769,6 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 else setTimeout(riprendiBozza, 0);
 </script>
 
+<script src="/analytics.js" defer></script><!-- P102 analytics senza cookie -->
 </body>
 </html>
