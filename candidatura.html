@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- candidatura.html - P105 (Ez 26.11.26): conto alla rovescia "B" dopo l'invio: "Ti rispondiamo subito", tre passi
+     (ricevuta, valutazione in corso, la tua risposta), "Risposta tra N secondi" con barra, "Resta su questa pagina" (approvato da Ezio) -->
 <!-- candidatura.html - P103 (Ez 26.11.26): "aggiungi panel@miaspesa.com ai tuoi contatti" accanto a Spam e Promozioni nei testi
      dopo l'invio (approvato da Ezio il 26/11/2026) -->
 <!-- candidatura.html - P102 (Ez 25.11.26): script analytics.js; la candidatura porta con se la provenienza (sorgente) per il
@@ -571,9 +573,24 @@
     <!-- Ez 24.11.26 P99 - esito immediato -->
     <div id="esitoAttesa" style="margin:6px 0 14px;font-size:1rem;color:#3C3489;font-weight:600"></div>
     <!-- Ez 24.11.26 P99c - conto alla rovescia -->
-    <div id="esitoConto" style="display:none;margin:4px auto 16px;max-width:320px">
-      <div id="esitoContoNum" style="font-size:3rem;font-weight:800;color:#3C3489;line-height:1">15</div>
-      <div style="height:8px;background:#E0E7FF;border-radius:999px;overflow:hidden;margin-top:10px"><div id="esitoContoBarra" style="height:100%;width:0;background:#F59E0B;transition:width 1s linear"></div></div>
+    <!-- Ez 26.11.26 P105 - conto alla rovescia "B": tre passi + "Risposta tra N secondi" (testi in ESITO_TESTI qui sotto) -->
+    <style>
+      .conto-passi{display:flex;justify-content:space-between;margin:14px 0 12px;position:relative}
+      .conto-passi:before{content:'';position:absolute;top:13px;left:16%;right:16%;height:3px;background:#E0E7FF}
+      .conto-passi:after{content:'';position:absolute;top:13px;left:16%;width:34%;height:3px;background:#F59E0B}
+      .conto-passo{position:relative;z-index:1;width:33%;font-size:0.78rem;color:#6B7280;line-height:1.3}
+      .conto-passo i{display:flex;margin:0 auto 6px;width:28px;height:28px;border-radius:50%;align-items:center;justify-content:center;font-style:normal;font-size:0.85rem;font-weight:700;background:#E0E7FF;color:#3C3489}
+      .conto-passo.ok i{background:#16a34a;color:#fff}
+      .conto-passo.ora i{background:#F59E0B;color:#fff}
+      .conto-passo.ora{color:#92400e;font-weight:700}
+    </style>
+    <div id="esitoConto" style="display:none;margin:4px auto 16px;max-width:400px">
+      <div id="esitoContoTitolo" style="font-size:1.2rem;font-weight:800;color:#3C3489"></div>
+      <div id="esitoContoSotto" style="font-size:0.9rem;color:#4B5563;margin-top:4px"></div>
+      <div class="conto-passi" id="esitoContoPassi"></div>
+      <div id="esitoContoRiga" style="font-size:1.05rem;font-weight:700;color:#3C3489;margin:4px 0 8px"></div>
+      <div style="height:8px;background:#E0E7FF;border-radius:999px;overflow:hidden"><div id="esitoContoBarra" style="height:100%;width:0;background:#F59E0B;transition:width 1s linear"></div></div>
+      <div id="esitoContoNota" style="font-size:0.8rem;color:#6B7280;margin-top:10px"></div>
     </div>
     <div id="esitoOk" style="display:none;margin:6px 0 16px">
       <p id="esitoOkTesto" style="font-weight:700;color:#065f46;margin-bottom:12px"></p>
@@ -608,6 +625,14 @@ var ESITO_TESTI = {
 var ESITO_CONTO = 15, ESITO_MIN = 5, ESITO_MAX = 45;
 ESITO_TESTI.conto = 'Grazie! Il nostro sistema sta valutando la tua candidatura per verificare che sia compatibile con il profilo delle famiglie che stiamo cercando. <strong>La risposta arriva in circa 15 secondi: resta su questa pagina.</strong>';
 ESITO_TESTI.ancora = 'Ancora qualche secondo…';
+// Ez 26.11.26 P105 - conto alla rovescia "B" (approvato da Ezio il 26/11/2026)
+ESITO_TESTI.contoTitolo = '⏳ Ti rispondiamo subito';
+ESITO_TESTI.contoSotto = 'Stiamo confrontando le tue risposte con il profilo delle famiglie che cerchiamo.';
+ESITO_TESTI.contoPassi = ['Candidatura ricevuta', 'Valutazione in corso', 'La tua risposta'];
+ESITO_TESTI.contoRiga = 'Risposta tra {n} secondi';
+ESITO_TESTI.contoRigaUno = 'Risposta tra 1 secondo';
+ESITO_TESTI.contoRigaZero = 'Risposta in arrivo…';
+ESITO_TESTI.contoNota = 'Resta su questa pagina: non serve ricaricare.';
 ESITO_TESTI.email = 'Ti abbiamo scritto per email: trovi lì il link al secondo passo (controlla anche Spam e Promozioni e aggiungi panel@miaspesa.com ai tuoi contatti).';
 function mostraCompatibile(link) {
   if (window.msTraccia) window.msTraccia('esito_compatibile'); // Ez 25.11.26 P102
@@ -628,13 +653,20 @@ function mostraOperatore() {
 }
 function valutaSubito(id, chiave) {
   var t0 = Date.now(), finito = false, esito = null;
-  var conto = document.getElementById('esitoConto'), num = document.getElementById('esitoContoNum'), barra = document.getElementById('esitoContoBarra');
-  document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.conto;
+  var conto = document.getElementById('esitoConto'), riga = document.getElementById('esitoContoRiga'), barra = document.getElementById('esitoContoBarra');
+  // Ez 26.11.26 P105 - versione "B": titolo, tre passi, "Risposta tra N secondi", barra e nota; il testo lungo resta nascosto
+  document.getElementById('esitoTesto').innerHTML = '';
+  document.getElementById('esitoContoTitolo').textContent = ESITO_TESTI.contoTitolo;
+  document.getElementById('esitoContoSotto').textContent = ESITO_TESTI.contoSotto;
+  document.getElementById('esitoContoNota').textContent = ESITO_TESTI.contoNota;
+  document.getElementById('esitoContoPassi').innerHTML = ESITO_TESTI.contoPassi.map(function (t, i) {
+    return '<div class="conto-passo' + (i === 0 ? ' ok' : i === 1 ? ' ora' : '') + '"><i>' + (i === 0 ? '✓' : (i + 1)) + '</i>' + t + '</div>';
+  }).join('');
   conto.style.display = 'block';
   var timer = setInterval(function () {
     var sec = (Date.now() - t0) / 1000;
     var resta = Math.max(0, Math.ceil(ESITO_CONTO - sec));
-    num.textContent = resta > 0 ? resta : '…';
+    riga.textContent = resta > 1 ? ESITO_TESTI.contoRiga.replace('{n}', resta) : resta === 1 ? ESITO_TESTI.contoRigaUno : ESITO_TESTI.contoRigaZero; // P105
     barra.style.width = Math.min(100, sec / ESITO_CONTO * 100) + '%';
     if (esito && sec >= ESITO_MIN) { clearInterval(timer); finito = true; mostra(esito); return; }
     if (sec > ESITO_CONTO && !esito) document.getElementById('esitoAttesa').textContent = ESITO_TESTI.ancora;
