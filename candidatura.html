@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- candidatura.html - P103 (Ez 26.11.26): "aggiungi panel@miaspesa.com ai tuoi contatti" accanto a Spam e Promozioni nei testi
+     dopo l'invio (approvato da Ezio il 26/11/2026) -->
 <!-- candidatura.html - P102 (Ez 25.11.26): script analytics.js; la candidatura porta con se la provenienza (sorgente) per il
      funnel degli analytics; eventi candidatura_inviata, esito_compatibile, esito_operatore -->
 <!-- candidatura.html - P99c (Ez 24.11.26): la pagina chiede SUBITO la valutazione (POST /api/admin/join-esito/:id/valuta) e
@@ -580,7 +582,7 @@
     </div>
     <p id="esitoTesto">
       Grazie per aver compilato il modulo.<br>
-      Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni.
+      Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni e aggiungi panel@miaspesa.com ai tuoi contatti.
     </p>
     <a href="index.html">← Torna alla home</a>
   </div>
@@ -597,16 +599,16 @@ var ESITO_TESTI = {
   attesa: '⏳ Stiamo esaminando il tuo profilo…',
   ok: '✅ Profilo compatibile: puoi iniziare subito il secondo passo.',
   bottone: 'Inizia il questionario (circa 10 minuti) →',
-  okNota: 'Ti abbiamo mandato lo stesso link anche per email: puoi interrompere e riprendere quando vuoi.',
-  operatore: 'Grazie! La tua candidatura la guarda una persona del nostro gruppo: ti scriviamo entro 3 giorni lavorativi.<br>Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni.',
-  tempo: 'Ti scriviamo tra pochi minuti con il secondo passo: tieni d\'occhio la posta (anche Spam e Promozioni).',
-  senzaEsito: 'Grazie per aver compilato il modulo.<br>Ti scriviamo a breve con il secondo passo: tieni d\'occhio la posta (anche Spam e Promozioni).'
+  okNota: 'Ti abbiamo mandato lo stesso link anche per email (da panel@miaspesa.com: aggiungilo ai tuoi contatti): puoi interrompere e riprendere quando vuoi.',
+  operatore: 'Grazie! La tua candidatura la guarda una persona del nostro gruppo: ti scriviamo entro 3 giorni lavorativi.<br>Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni e aggiungi panel@miaspesa.com ai tuoi contatti.',
+  tempo: 'Ti scriviamo tra pochi minuti con il secondo passo: tieni d\'occhio la posta (anche Spam e Promozioni) e aggiungi panel@miaspesa.com ai tuoi contatti.',
+  senzaEsito: 'Grazie per aver compilato il modulo.<br>Ti scriviamo a breve con il secondo passo: tieni d\'occhio la posta (anche Spam e Promozioni) e aggiungi panel@miaspesa.com ai tuoi contatti.'
 };
 // Ez 24.11.26 P99c - valutazione subito con conto alla rovescia
 var ESITO_CONTO = 15, ESITO_MIN = 5, ESITO_MAX = 45;
 ESITO_TESTI.conto = 'Grazie! Il nostro sistema sta valutando la tua candidatura per verificare che sia compatibile con il profilo delle famiglie che stiamo cercando. <strong>La risposta arriva in circa 15 secondi: resta su questa pagina.</strong>';
 ESITO_TESTI.ancora = 'Ancora qualche secondo…';
-ESITO_TESTI.email = 'Ti abbiamo scritto per email: trovi lì il link al secondo passo (controlla anche Spam e Promozioni).';
+ESITO_TESTI.email = 'Ti abbiamo scritto per email: trovi lì il link al secondo passo (controlla anche Spam e Promozioni e aggiungi panel@miaspesa.com ai tuoi contatti).';
 function mostraCompatibile(link) {
   if (window.msTraccia) window.msTraccia('esito_compatibile'); // Ez 25.11.26 P102
   document.getElementById('esitoConto').style.display = 'none';
