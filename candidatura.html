@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- candidatura.html - P112 (Ez 27.11.26): codice del link di invito da ?invito= (link di prova e di campagna), altrimenti MIASPESA2026 -->
 <!-- candidatura.html - P105 (Ez 26.11.26): conto alla rovescia "B" dopo l'invio: "Ti rispondiamo subito", tre passi
      (ricevuta, valutazione in corso, la tua risposta), "Risposta tra N secondi" con barra, "Resta su questa pagina" (approvato da Ezio) -->
 <!-- candidatura.html - P103 (Ez 26.11.26): "aggiungi panel@miaspesa.com ai tuoi contatti" accanto a Spam e Promozioni nei testi
@@ -1411,7 +1412,8 @@ var _origGoStep = window.goStep;
 const QB_VERSIONE = '2.0';
 document.getElementById('versioneModulo').textContent = 'QB v' + QB_VERSIONE;
 const API = 'https://panel-scontrini-production.up.railway.app';
-const CODE = 'MIASPESA2026';
+// Ez 27.11.26 P112 - codice del link di invito: ?invito=CODICE (campagne, prove) altrimenti il link del sito
+const CODE = (function () { try { var c = (new URLSearchParams(location.search).get('invito') || '').trim().toUpperCase(); return /^[A-Z0-9-]{4,30}$/.test(c) ? c : 'MIASPESA2026'; } catch (e) { return 'MIASPESA2026'; } })();
 let currentStep = 1;
 // Ez 14.11.26 P61 - tempo attivo per passo. TRACK_PAUSA = config candidature tracking.pausaMaxSecondi (se cambia li', cambiarla qui)
 const TRACK_PAUSA = 300;
