@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- profilo-famiglia.html v2.4 - P114 (Ez 28.11.26): domande a testo con togliCivico (QP_VIA, via di residenza senza numero civico):
+     uscendo dalla casella il numero finale si toglie (stessa regola del server) e compare l'avviso "Abbiamo tolto il numero civico". -->
 <!-- profilo-famiglia.html v2.3 - P80b (Ez 17.11.26): tendine con i gruppi "Suggerite per te" / "Tutte le insegne"; suggerimenti
      aggiornati appena si scrive un'insegna; la domanda non suggerisce a se stessa; nome uguale a un'insegna senza varianti.
      v2.2 - P80 (Ez 17.11.26, punto 3.3 fase 1): liste lunghe di insegne (oltre 15) piu' corte: "Suggerite
@@ -186,6 +188,17 @@
     if (r.tipo === 'insegne_ripetute') return Array.isArray(r.codici) ? r.codici : [];
     if (r.tipo === 'carte_numero') return [r.numero, r.nomi].filter(Boolean);
     return [r.anno, r.righe].filter(Boolean);
+  }
+  // Ez 28.11.26 P114 - toglie il numero civico in fondo alla via (stessa regola di questionarioFull.js togliNumeroCivico)
+  function togliNumeroCivico(testo) {
+    if (typeof testo !== 'string') return testo;
+    var t = testo.trim();
+    var m = t.match(/^(.*?)[\s,]+(?:(?:n\.?|n°|nr\.?|num\.?|civico)\s*)?\d+(?:\s*[\/-]?\s*(?:[a-z]{1,2}|bis|ter))?$/i);
+    if (!m) return t;
+    var resto = m[1].trim().replace(/[\s,]+$/, '');
+    if (!/[a-zà-ù]{2,}/i.test(resto) || resto.split(/\s+/).length < 2) return t;
+    if (/\b(provinciale|statale|regionale|comunale|sp|ss|sr|sc|km)\.?$/i.test(resto)) return t;
+    return resto;
   }
   function testoConRisposte(testo) {
     function val(c) { var v = S.risposte[c]; return v == null ? '' : Array.isArray(v) ? v.join(', ') : typeof v === 'object' ? '' : String(v).trim(); }
@@ -664,7 +677,16 @@
         if (d.risposte && d.risposte.length) return tendina(d, d.risposte, v || '', function (x) { S.risposte[d.codice] = x; });
         var x = el('input', { type: 'text', placeholder: d.placeholder || '', value: v || '' });
         x.addEventListener('input', function () { S.risposte[d.codice] = x.value; });
-        return x;
+        if (!d.togliCivico) return x;
+        // Ez 28.11.26 P114 - via senza numero civico: il numero finale si toglie uscendo dalla casella
+        if (d.maxCaratteri) x.setAttribute('maxlength', String(d.maxCaratteri));
+        var boxV = el('div'); boxV.appendChild(x);
+        var avv = el('div', { testo: 'Abbiamo tolto il numero civico: ci serve solo il nome della via.' });
+        avv.style.cssText = 'display:none;margin-top:6px;background:#fff7e0;color:#7a4b00;border-radius:8px;padding:6px 10px;font-size:0.8rem';
+        boxV.appendChild(avv);
+        x.addEventListener('input', function () { avv.style.display = 'none'; });
+        x.addEventListener('blur', function () { var y = togliNumeroCivico(x.value); if (y !== x.value.trim()) { x.value = y; S.risposte[d.codice] = y; avv.style.display = 'block'; } });
+        return boxV;
       }
     }
   }

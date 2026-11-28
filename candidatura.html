@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<!-- candidatura.html - P114 (Ez 28.11.26): QB 2.1. "Il negozio e'..." con 5 risposte (il piu' vicino, vicino ma non il piu' vicino, lavoro,
+     tragitto abituale, altra); dopo l'invio, in tutti gli esiti, il riquadro giallo "Non trovi la nostra email?" (aggiorna la posta,
+     Spam e Promozioni, aggiungi panel@miaspesa.com): testi in ESITO_TESTI.posta (approvati da Ezio il 28/11/2026) -->
 <!-- candidatura.html - P112 (Ez 27.11.26): codice del link di invito da ?invito= (link di prova e di campagna), altrimenti MIASPESA2026 -->
 <!-- candidatura.html - P105 (Ez 26.11.26): conto alla rovescia "B" dopo l'invio: "Ti rispondiamo subito", tre passi
      (ricevuta, valutazione in corso, la tua risposta), "Risposta tra N secondi" con barra, "Resta su questa pagina" (approvato da Ezio) -->
@@ -489,8 +492,10 @@
         <label>Il negozio è... <span class="opt">(opz.)</span></label>
         <select id="posizioneNegozio">
           <option value="">Seleziona...</option>
-          <option value="casa">Vicino a casa</option>
+          <option value="piu_vicino">È il più vicino a casa</option>
+          <option value="vicino_non_piu">Vicino a casa, ma non il più vicino</option>
           <option value="lavoro">Vicino al lavoro</option>
+          <option value="tragitto">Lungo un tragitto abituale (scuola, palestra, …)</option>
           <option value="altra">Altra situazione</option>
         </select>
       </div>
@@ -602,6 +607,8 @@
       Grazie per aver compilato il modulo.<br>
       Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni e aggiungi panel@miaspesa.com ai tuoi contatti.
     </p>
+    <!-- Ez 28.11.26 P114 - riquadro "Non trovi la nostra email?" in tutti gli esiti (testi in ESITO_TESTI.posta) -->
+    <div id="esitoPosta" style="display:none;text-align:left;max-width:440px;margin:4px auto 18px;background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:12px;padding:12px 16px;color:#78350F;font-size:0.92rem;line-height:1.45"></div>
     <a href="index.html">← Torna alla home</a>
   </div>
 
@@ -617,11 +624,28 @@ var ESITO_TESTI = {
   attesa: '⏳ Stiamo esaminando il tuo profilo…',
   ok: '✅ Profilo compatibile: puoi iniziare subito il secondo passo.',
   bottone: 'Inizia il questionario (circa 10 minuti) →',
-  okNota: 'Ti abbiamo mandato lo stesso link anche per email (da panel@miaspesa.com: aggiungilo ai tuoi contatti): puoi interrompere e riprendere quando vuoi.',
-  operatore: 'Grazie! La tua candidatura la guarda una persona del nostro gruppo: ti scriviamo entro 3 giorni lavorativi.<br>Se non trovi le nostre email, controlla anche le cartelle Spam e Promozioni e aggiungi panel@miaspesa.com ai tuoi contatti.',
-  tempo: 'Ti scriviamo tra pochi minuti con il secondo passo: tieni d\'occhio la posta (anche Spam e Promozioni) e aggiungi panel@miaspesa.com ai tuoi contatti.',
-  senzaEsito: 'Grazie per aver compilato il modulo.<br>Ti scriviamo a breve con il secondo passo: tieni d\'occhio la posta (anche Spam e Promozioni) e aggiungi panel@miaspesa.com ai tuoi contatti.'
+  okNota: 'Ti abbiamo mandato lo stesso link anche per email: puoi interrompere e riprendere quando vuoi.', // P114
+  operatore: 'Grazie! La tua candidatura la guarda una persona del nostro gruppo: ti scriviamo entro 3 giorni lavorativi.', // P114: Spam nel riquadro
+  tempo: 'Ti scriviamo tra pochi minuti con il secondo passo: tieni d\'occhio la posta.',
+  senzaEsito: 'Grazie per aver compilato il modulo.<br>Ti scriviamo a breve con il secondo passo: tieni d\'occhio la posta.',
+  // Ez 28.11.26 P114 - riquadro giallo sotto l'esito, uguale in tutti i casi (approvato da Ezio il 28/11/2026)
+  posta: {
+    titolo: '📬 Non trovi la nostra email?',
+    punti: [
+      '<strong>Aggiorna la posta in arrivo</strong> (sul telefono: trascina la lista verso il basso)',
+      'Guarda nelle cartelle <strong>Spam</strong> e <strong>Promozioni</strong>',
+      'Aggiungi <strong>panel@miaspesa.com</strong> ai tuoi contatti, così le prossime arrivano subito'
+    ]
+  }
 };
+// Ez 28.11.26 P114 - mostra il riquadro "Non trovi la nostra email?"
+function mostraPosta() {
+  var P = ESITO_TESTI.posta, box = document.getElementById('esitoPosta');
+  if (!P || !box) return;
+  box.innerHTML = '<div style="font-weight:800;margin-bottom:6px">' + P.titolo + '</div><ol style="margin:0;padding-left:20px">' +
+    P.punti.map(function (t) { return '<li style="margin:3px 0">' + t + '</li>'; }).join('') + '</ol>';
+  box.style.display = 'block';
+}
 // Ez 24.11.26 P99c - valutazione subito con conto alla rovescia
 var ESITO_CONTO = 15, ESITO_MIN = 5, ESITO_MAX = 45;
 ESITO_TESTI.conto = 'Grazie! Il nostro sistema sta valutando la tua candidatura per verificare che sia compatibile con il profilo delle famiglie che stiamo cercando. <strong>La risposta arriva in circa 15 secondi: resta su questa pagina.</strong>';
@@ -634,7 +658,7 @@ ESITO_TESTI.contoRiga = 'Risposta tra {n} secondi';
 ESITO_TESTI.contoRigaUno = 'Risposta tra 1 secondo';
 ESITO_TESTI.contoRigaZero = 'Risposta in arrivo…';
 ESITO_TESTI.contoNota = 'Resta su questa pagina: non serve ricaricare.';
-ESITO_TESTI.email = 'Ti abbiamo scritto per email: trovi lì il link al secondo passo (controlla anche Spam e Promozioni e aggiungi panel@miaspesa.com ai tuoi contatti).';
+ESITO_TESTI.email = 'Ti abbiamo scritto per email: trovi lì il link al secondo passo.'; // P114: Spam nel riquadro
 function mostraCompatibile(link) {
   if (window.msTraccia) window.msTraccia('esito_compatibile'); // Ez 25.11.26 P102
   document.getElementById('esitoConto').style.display = 'none';
@@ -644,6 +668,7 @@ function mostraCompatibile(link) {
   var a = document.getElementById('esitoLink'); a.href = link; a.textContent = ESITO_TESTI.bottone;
   document.getElementById('esitoOkNota').textContent = ESITO_TESTI.okNota;
   document.getElementById('esitoTesto').style.display = 'none';
+  mostraPosta(); // P114
 }
 function mostraOperatore() {
   if (window.msTraccia) window.msTraccia('esito_operatore'); // Ez 25.11.26 P102
@@ -651,6 +676,7 @@ function mostraOperatore() {
   document.getElementById('esitoAttesa').style.display = 'none';
   document.getElementById('esitoTesto').style.display = 'block';
   document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.operatore;
+  mostraPosta(); // P114
 }
 function valutaSubito(id, chiave) {
   var t0 = Date.now(), finito = false, esito = null;
@@ -671,7 +697,7 @@ function valutaSubito(id, chiave) {
     barra.style.width = Math.min(100, sec / ESITO_CONTO * 100) + '%';
     if (esito && sec >= ESITO_MIN) { clearInterval(timer); finito = true; mostra(esito); return; }
     if (sec > ESITO_CONTO && !esito) document.getElementById('esitoAttesa').textContent = ESITO_TESTI.ancora;
-    if (sec > ESITO_MAX && !esito) { clearInterval(timer); finito = true; conto.style.display = 'none'; document.getElementById('esitoAttesa').style.display = 'none'; document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.email; }
+    if (sec > ESITO_MAX && !esito) { clearInterval(timer); finito = true; conto.style.display = 'none'; document.getElementById('esitoAttesa').style.display = 'none'; document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.email; mostraPosta(); /* P114 */ }
   }, 250);
   function mostra(e) {
     if (e.stato === 'compatibile' && e.link) mostraCompatibile(e.link);
@@ -688,6 +714,7 @@ function attendiEsito(id, chiave) {
   var att = document.getElementById('esitoAttesa'), t0 = Date.now();
   att.textContent = ESITO_TESTI.attesa;
   document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.tempo;
+  mostraPosta(); // P114
   function giro() {
     fetch(API + '/api/admin/join-esito/' + encodeURIComponent(id) + '?k=' + encodeURIComponent(chiave)).then(function (r) { return r.json(); }).then(function (d) {
       var e = d && d.success && d.data ? d.data : null;
@@ -1409,7 +1436,7 @@ var _origGoStep = window.goStep;
 
 <script>
 // Ez 14.11.26 P60 - versione del modulo di candidatura (questionario breve): si cambia a ogni modifica del modulo
-const QB_VERSIONE = '2.0';
+const QB_VERSIONE = '2.1'; // P114
 document.getElementById('versioneModulo').textContent = 'QB v' + QB_VERSIONE;
 const API = 'https://panel-scontrini-production.up.railway.app';
 // Ez 27.11.26 P112 - codice del link di invito: ?invito=CODICE (campagne, prove) altrimenti il link del sito
@@ -1665,7 +1692,7 @@ async function invia() {
       try { sessionStorage.removeItem(BOZZA_CHIAVE); } catch (e) { /* niente */ } // P76: inviata, la bozza non serve piu'
       if (window.msTraccia) window.msTraccia('candidatura_inviata'); // Ez 25.11.26 P102
       if (data.data && data.data.id && data.data.chiaveEsito) valutaSubito(data.data.id, data.data.chiaveEsito); // Ez 24.11.26 P99c
-      else document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.senzaEsito;
+      else { document.getElementById('esitoTesto').innerHTML = ESITO_TESTI.senzaEsito; mostraPosta(); } // P114
     } else {
       mostraErroreInvio((data && data.error) || 'Errore durante l\'invio. Riprova.');
       btn.classList.remove('loading');
